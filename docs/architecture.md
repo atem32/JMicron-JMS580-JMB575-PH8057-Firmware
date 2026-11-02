@@ -1,6 +1,6 @@
 # Architecture and command ownership
 
-The supplied PH8057 evidence describes a four-drive enclosure with a JMS580 bridge upstream of a JMB575 port multiplier. JMicron's [JMS580 product brief](https://www.jmicron.com/file/download/1053/JMS580.pdf) describes the USB-to-SATA bridge; its [JMB575 brief](https://www.jmicron.com/file/download/1058/JMB575.pdf) describes a one-to-five SATA port multiplier supporting command/FIS switching. Those generic capabilities do not prove a particular PH8057 firmware feature is enabled or correct.
+The owner identifies the PH8057 as a **five-bay enclosure**, with a JMS580 bridge upstream of a JMB575 port multiplier. Four HDDs were present in the supplied OMV enumeration; the fifth bay's drive discovery, LUN routing, and actual operation remain unverified by this project. JMicron's [JMS580 product brief](https://www.jmicron.com/file/download/1053/JMS580.pdf) describes the USB-to-SATA bridge; its [JMB575 brief](https://www.jmicron.com/file/download/1058/JMB575.pdf) describes a one-to-five SATA port multiplier supporting command/FIS switching. Those generic capabilities do not prove a particular PH8057 firmware feature is enabled or correct.
 
 ## Address spaces
 
