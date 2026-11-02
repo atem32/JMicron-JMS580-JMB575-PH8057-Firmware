@@ -1,5 +1,15 @@
 # Authorship, provenance and distribution scope
 
+## AI-generated authorship and responsibility
+
+**The project-authored portions of this repository were written entirely with generative AI (ChatGPT), under the device owner's direction.** This includes the original analysis, documentation, patch builders, test harnesses and firmware patch proposals. This statement does **not** claim AI authorship of JMicron firmware or bundled third-party components; those remain their respective authors' works.
+
+AI-generated code and reverse-engineering conclusions may be incomplete or wrong. No independent professional safety or reliability certification is claimed. **You are solely responsible for the consequences of using, modifying or flashing firmware**, including device failure, data corruption and data loss; verify compatibility, preserve your own backups and establish a recovery procedure before proceeding. All project material is provided **AS IS, WITHOUT WARRANTY**, subject to the terms and limitations of the applicable licenses and law.
+
+## Copyright and omitted downloads
+
+**Neither the original nor the modified full firmware binaries, nor proprietary Windows firmware flashing executables, are published in this repository.** They may contain third-party copyrighted material for which redistribution permission has not been established. This is intentional, not an indication that the binary images or flashing application are open-source or free to redistribute. The repository supplies patch source, verified hashes, reproducible build instructions and upstream references; users must obtain proprietary inputs and tools through lawful means.
+
 The project-specific patch builders, emulator, test fixtures and historical research were supplied by the project owner as the output of the PH8057 investigation and are consolidated here with independent corrections. Historical file hashes are preserved. The archive does not independently certify every earlier author's identity or acquisition chain; it provides traceable supplied-source provenance instead of attributing vendor work to this project.
 
 The project license covers project-authored contributions only. Proprietary firmware, board design, private register definitions and vendor names remain their respective owners' material. A checksum is an identity, not a redistribution permission. All original, donor and modified full BIN files are omitted from the public package. Modified full images still contain vendor code and are therefore retained only in the separately supplied private research archive.
@@ -29,4 +39,4 @@ The public release includes current project sources, small guarded instruction r
 
 The factory serial payload at OEM `056..077` is redacted in every public byte table and decoded view. Original full images necessarily retain that payload privately. Product-level VID/PID and model strings are retained because they identify the researched product, not an individual unit. No commit-author email or unrelated account data is included in the public source metadata.
 
-No GitHub repository was created or published by this task. The distribution boundary is explicit; the private archive and candidate bundle must not be uploaded as a public release asset merely because the source project has an MIT license.
+This GitHub repository is publicly published as a **source-only** research project. The distribution boundary is explicit: the private research archive and firmware candidate bundle must not be uploaded as public release assets merely because the project-authored source has an MIT license.
