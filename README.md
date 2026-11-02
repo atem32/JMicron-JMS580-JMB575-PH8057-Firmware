@@ -8,6 +8,10 @@
 >
 > **COPYRIGHT — NO VENDOR BINARIES OR WINDOWS FLASHER.** Complete original and modified firmware BIN files and proprietary Windows flashing software are **not distributed in this repository** because permission to redistribute these third-party copyrighted materials has not been established. The repository provides patch sources, reproducible builders, manifests, and references instead.
 
+### A word from the carbon-based owner 🥩
+
+> The carbon-based lifeform behind this project has absolutely no idea what half of these registers are doing. He just wanted proper SMART data and a sensible HDD standby setup. He got what he came for. The AI can argue with the silicon about the rest. 😄
+
 This project consolidates the supplied PH8057 research into reproducible offline analysis, a corrected OEM decoder, a strict 8051 executor, regression tests, and guarded firmware patch builders. PH8057 is the four-drive enclosure examined in the supplied evidence: a **JMicron JMS580 USB-to-SATA bridge** communicates with a **JMB575 SATA port multiplier**. This repository applies to the exact captured firmware identified below; it is not a general JMS580 firmware distribution.
 
 **The independent audit produced a revised CK_COND candidate and corrected analysis/test defects. It did not establish a safe UDMA residue repair.** The UDMA candidate is an observation trampoline that deliberately retains the known accounting defect. The original audit was entirely offline. Subsequently, on **2026-11-02**, the enclosure owner installed the SMART-only revised firmware in a PH8057 and reported successful read-only SMART STATUS and CHECK POWER MODE tests on one physical HDD. This is **limited hardware evidence, not full qualification**; other commands, LUNs, interruption handling and data integrity remain unverified. See [post-flash verification](docs/postflash-hardware-check-2026-11-02.md).
