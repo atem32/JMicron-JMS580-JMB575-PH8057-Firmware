@@ -14,9 +14,9 @@
 >
 > And yes, this paragraph was also written by AI. The human was too lazy to write even his own disclaimer. 🤖
 
-<img src="https://ir.ozone.ru/s3/multimedia-1-g/7106407540.jpg" alt="PH8057 enclosure — external product photo from Ozon" width="560">
+<img src="assets/images/ph8057.jpg" alt="USB-to-SATA adapter board product photo" width="560">
 
-*Product image hosted by [Ozon](https://ir.ozone.ru/s3/multimedia-1-g/7106407540.jpg). The image is linked externally and is not redistributed with this repository.*
+*Product photo supplied by the project owner, originally shown in an Ozon listing. The image is now stored in this repository; see [image attribution](NOTICE.md#image-attribution).*
 
 This project consolidates the supplied PH8057 research into reproducible offline analysis, a corrected OEM decoder, a strict 8051 executor, regression tests, and guarded firmware patch builders. PH8057 is the four-drive enclosure examined in the supplied evidence: a **JMicron JMS580 USB-to-SATA bridge** communicates with a **JMB575 SATA port multiplier**. This repository applies to the exact captured firmware identified below; it is not a general JMS580 firmware distribution.
 

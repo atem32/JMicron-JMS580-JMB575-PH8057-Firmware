@@ -40,3 +40,7 @@ The public release includes current project sources, small guarded instruction r
 The factory serial payload at OEM `056..077` is redacted in every public byte table and decoded view. Original full images necessarily retain that payload privately. Product-level VID/PID and model strings are retained because they identify the researched product, not an individual unit. No commit-author email or unrelated account data is included in the public source metadata.
 
 This GitHub repository is publicly published as a **source-only** research project. The distribution boundary is explicit: the private research archive and firmware candidate bundle must not be uploaded as public release assets merely because the project-authored source has an MIT license.
+
+## Image attribution
+
+`assets/images/ph8057.jpg` is a size-optimized copy of a product photograph provided by the repository owner; the supplied image was originally linked from [Ozon](https://ir.ozone.ru/s3/multimedia-1-g/7106407540.jpg). The photo is included solely as a visual illustration. Copyright in the photograph, if applicable, remains with its respective rightsholder; the repository's MIT license does **not** cover this third-party image. This attribution is not a statement that redistribution permission has been obtained.
