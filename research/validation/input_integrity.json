@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "verified_file_entries": 945,
+  "unique_payload_sha256": 413,
+  "expanded_bytes": 18178198,
+  "scope": "Integrity of all originally supplied extracted files; no source code executed"
+}

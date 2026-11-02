@@ -1,0 +1,30 @@
+{
+  "provenance": "User-provided raw USB/BOT excerpt, repeated in supplied reassessment report; no full usbmon capture supplied",
+  "raw_cbw": "55534243fa0d00000002000000011085170600000001001000000001403500",
+  "raw_csw": "55534253fa0d00000002000000",
+  "decoded": {
+    "tag": "0x00000DFA",
+    "lun": 1,
+    "requested_bytes": 512,
+    "direction": "out",
+    "usb_completed_bytes": 512,
+    "usb_completions_clean": true,
+    "csw_status": 0,
+    "csw_residue_raw": 512,
+    "csw_residue_meaningful": true,
+    "device_claimed_processed_bytes": 0,
+    "sg_io_residue_matches_csw": true,
+    "sat": {
+      "protocol": 11,
+      "extend": true,
+      "ck_cond": false,
+      "t_dir": false,
+      "byt_blok": true,
+      "t_length": 2,
+      "ata_command": "0x35",
+      "sector_count_register": 1
+    },
+    "matches_reported_ph8057_udma_anomaly": true,
+    "proof_limit": "USB bytes received are not an independent measurement of bytes processed by the device"
+  }
+}

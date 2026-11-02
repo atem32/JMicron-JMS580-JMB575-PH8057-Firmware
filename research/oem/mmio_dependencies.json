@@ -1,0 +1,98 @@
+[
+  {
+    "address": "7801",
+    "source": "F2.6",
+    "code_effect": "64B7 ORs bit4 only if IRAM bit39 is zero; usual preceding write is41",
+    "limitation": "Physical bit meaning unknown"
+  },
+  {
+    "address": "7058",
+    "source": "F2.4,F2.5",
+    "code_effect": "Dispatcher3F61 controls bits5/4 by state",
+    "limitation": "Not a globally fixed register value"
+  },
+  {
+    "address": "5082",
+    "source": "E7.7",
+    "code_effect": "D682 sets bit3 always and assigns bits1/2; cleanup clears1/2",
+    "limitation": "Peripheral meaning unknown"
+  },
+  {
+    "address": "7085,508F",
+    "source": "E7.3",
+    "code_effect": "D422 conditional writes2F and01",
+    "limitation": "Peripheral meaning unknown"
+  },
+  {
+    "address": "7086",
+    "source": "FB,F3.2",
+    "code_effect": "385A copies4175;7321 tests zero and arms event",
+    "limitation": "No time unit or hotplug interpretation proven"
+  },
+  {
+    "address": "7E18",
+    "source": "FA",
+    "code_effect": "6232 writes4174 after validated SET_ADDRESS;279B reads when415E enabled",
+    "limitation": "Raw value, not established milliseconds"
+  },
+  {
+    "address": "70B0-70B3",
+    "source": "F2.3,F4-F7,MODE SELECT",
+    "code_effect": "9185 path submits runtime4881 four bytes throughB409",
+    "limitation": "Byte-transfer relation confirmed; peripheral timebase unknown"
+  },
+  {
+    "address": "70B4-70B5,70B7",
+    "source": "UNKNOWN",
+    "code_effect": "No OEM-specific meaning established",
+    "limitation": "Do not interpolate adjacent-register meanings"
+  },
+  {
+    "address": "70B6",
+    "source": "MODE SELECT",
+    "code_effect": "9711/B409 path uses command/mode value2",
+    "limitation": "Context-dependent command interface"
+  },
+  {
+    "address": "70B8",
+    "source": "MODE SELECT",
+    "code_effect": "9185 path writes64",
+    "limitation": "Physical meaning unknown"
+  },
+  {
+    "address": "70C0",
+    "source": "MODE SELECT",
+    "code_effect": "9711 interprets synthetic result1/2 with alternate SZCT values",
+    "limitation": "NOT a universally valid byte-count register"
+  },
+  {
+    "address": "70C1-70C7",
+    "source": "UNKNOWN",
+    "code_effect": "No universal OEM role established",
+    "limitation": "UDMA counter roles require separate context and hardware evidence"
+  },
+  {
+    "address": "70C8",
+    "source": "MODE SELECT",
+    "code_effect": "Related completion/status path",
+    "limitation": "Physical bit semantics not proven"
+  },
+  {
+    "address": "7075",
+    "source": "FC",
+    "code_effect": "003E: threshold>100 decrements4A18, increments4A9B, clears7075",
+    "limitation": "Tick source and unit unknown"
+  },
+  {
+    "address": "7300-73FF",
+    "source": "F8.7",
+    "code_effect": "256-byte staging copy and comparison",
+    "limitation": "Not proven SPI/NVRAM storage"
+  },
+  {
+    "address": "7500-75FF",
+    "source": "F8.6",
+    "code_effect": "256-byte CODE table copy",
+    "limitation": "Peripheral table function unknown"
+  }
+]

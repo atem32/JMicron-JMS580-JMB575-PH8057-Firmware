@@ -1,0 +1,720 @@
+{
+  "reported_units_by_category": {
+    "NATIVE_CODE_WITH_SYNTHETIC_MEMORY": 28635,
+    "STATIC_BYTES_OR_RAW_SCAN": 241,
+    "NATIVE_CODE_WITH_HOST_COPY_FIXTURE": 2624,
+    "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB": 2316
+  },
+  "reported_units_by_suite": {
+    "23": 1577,
+    "24": 2296,
+    "25": 1985,
+    "26": 7981,
+    "27": 2164,
+    "28": 5903,
+    "29": 10005,
+    "final": 1905
+  },
+  "families": [
+    {
+      "suite": "23",
+      "family": "F2_all_256_values",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "23",
+      "family": "OEM_to_live_all_256_each",
+      "reported_units": 512,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "23",
+      "family": "local_E7_and_F3_bit_gates",
+      "reported_units": 30,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "23",
+      "family": "live_E7_F3_mask_at_6F4C",
+      "reported_units": 768,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "23",
+      "family": "mask_and_F2_source_anchor_checks",
+      "reported_units": 5,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "23",
+      "family": "F2_machine_code_anchors",
+      "reported_units": 6,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "24",
+      "family": "machine_code_anchors",
+      "reported_units": 33,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "24",
+      "family": "F2b6_register_and_overwrite",
+      "reported_units": 16,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "24",
+      "family": "F3b6_TRIM_identify_gates",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "24",
+      "family": "F3b6_TRIM_runtime_queries",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "24",
+      "family": "F3b7_NCQ_identify_gates",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "24",
+      "family": "timer_4byte_conversion",
+      "reported_units": 711,
+      "category": "NATIVE_CODE_WITH_HOST_COPY_FIXTURE",
+      "scope": "Original surrounding instructions but800A memory copy replaced by host-side ABI fixture."
+    },
+    {
+      "suite": "25",
+      "family": "factory_code_anchors",
+      "reported_units": 72,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "25",
+      "family": "oem_source_execution",
+      "reported_units": 14,
+      "category": "NATIVE_CODE_WITH_HOST_COPY_FIXTURE",
+      "scope": "Original surrounding instructions but800A memory copy replaced by host-side ABI fixture."
+    },
+    {
+      "suite": "25",
+      "family": "MODE_SENSE_0x1A_original_handler",
+      "reported_units": 1776,
+      "category": "NATIVE_CODE_WITH_HOST_COPY_FIXTURE",
+      "scope": "Original surrounding instructions but800A memory copy replaced by host-side ABI fixture."
+    },
+    {
+      "suite": "25",
+      "family": "MODE_SELECT_initial_runtime_snapshot",
+      "reported_units": 24,
+      "category": "NATIVE_CODE_WITH_HOST_COPY_FIXTURE",
+      "scope": "Original surrounding instructions but800A memory copy replaced by host-side ABI fixture."
+    },
+    {
+      "suite": "25",
+      "family": "MODE_SELECT_0x1A_parser_and_synthetic_MMIO",
+      "reported_units": 71,
+      "category": "NATIVE_CODE_WITH_HOST_COPY_FIXTURE",
+      "scope": "Original surrounding instructions but800A memory copy replaced by host-side ABI fixture."
+    },
+    {
+      "suite": "25",
+      "family": "MODE_SELECT_original_runtime_commit",
+      "reported_units": 14,
+      "category": "NATIVE_CODE_WITH_HOST_COPY_FIXTURE",
+      "scope": "Original surrounding instructions but800A memory copy replaced by host-side ABI fixture."
+    },
+    {
+      "suite": "25",
+      "family": "factory_to_MODE_SELECT_to_MODE_SENSE_stage_chain",
+      "reported_units": 14,
+      "category": "NATIVE_CODE_WITH_HOST_COPY_FIXTURE",
+      "scope": "Original surrounding instructions but800A memory copy replaced by host-side ABI fixture."
+    },
+    {
+      "suite": "26",
+      "family": "E7_b0_USB_power_descriptor",
+      "reported_units": 512,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "E7_b3_7085_508F",
+      "reported_units": 6,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "E7_b4_DPOFUA_WP_mode_sense_header",
+      "reported_units": 512,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "E7_b4_header_copy",
+      "reported_units": 8,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "E7_b5_7A_status",
+      "reported_units": 8,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "E7_b7_5082",
+      "reported_units": 512,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F2_b4_7058_bit5",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F2_b5_7058_bit4",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F2_complete_256_value_decoding",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F3_b1_b2_vendor_reply_3506_3507",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F3_b1_b2_vendor_reply_4054_4055",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F3_b4_FSM_gate",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F3_b5_FSM_gate",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "F8_b6_b7_call_gates",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "26",
+      "family": "FA_to_7E18",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "FB_to_7086",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "FC_via_4AD6_to_4A18",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "26",
+      "family": "code_anchor",
+      "reported_units": 23,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "26",
+      "family": "extended_OEM_2200",
+      "reported_units": 1280,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "anchor",
+      "reported_units": 12,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "27",
+      "family": "native_7616_ROM256",
+      "reported_units": 2,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "27",
+      "family": "native_7616_state",
+      "reported_units": 2,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "27",
+      "family": "native_77DA_COPY256",
+      "reported_units": 2,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "27",
+      "family": "native_77DA_SOURCE_UNCHANGED",
+      "reported_units": 2,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "27",
+      "family": "native_77DA_VERIFY256",
+      "reported_units": 2,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "27",
+      "family": "native_77DA_OPCODE0111",
+      "reported_units": 2,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "27",
+      "family": "E7b2b6_F3b0_cleared_in_6F4C",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "E7_remaining_bits_6F4C",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "F3b5_FSM_50_branch",
+      "reported_units": 32,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "F3b5_header_4052_4053",
+      "reported_units": 6,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "FC_downstream_4A18_periodic_decrement",
+      "reported_units": 30,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "FA_7E18_readback_branch",
+      "reported_units": 8,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "F2b5_7058_bit4",
+      "reported_units": 6,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "F2b4_7058_bit5",
+      "reported_units": 6,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "27",
+      "family": "F3b1b2_JM_indicator",
+      "reported_units": 4,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "stock_code_anchors",
+      "reported_units": 12,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "28",
+      "family": "factory_F3b5_OFF",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "28",
+      "family": "factory_F2_38",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "28",
+      "family": "F3b5_USB_state_6_vs_7",
+      "reported_units": 4096,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "F3b5_bcdUSB_2_00",
+      "reported_units": 512,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "F3b5_BOS_supported",
+      "reported_units": 128,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "F3b5_BOS_suppressed",
+      "reported_units": 384,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "F2b4b5_7058_full_dispatch",
+      "reported_units": 128,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "F2_full_dispatch_clears_4_port_context",
+      "reported_units": 80,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "F2_full_dispatch_preserves_port_context",
+      "reported_units": 48,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "F2b7_raw_bitop_inventory",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "28",
+      "family": "IRAM27_snapshot_to_B008",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "28",
+      "family": "IRAM27_restored_from_B008",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "stock_code_anchors",
+      "reported_units": 16,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "29",
+      "family": "stock_OEM_anchors",
+      "reported_units": 5,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Image byte anchor/metadata or raw occurrence; not behavior proof by itself."
+    },
+    {
+      "suite": "29",
+      "family": "FA_SET_ADDRESS_valid",
+      "reported_units": 640,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "FA_SET_ADDRESS_reject_out_of_range",
+      "reported_units": 640,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "FA_SET_ADDRESS_8B_setup_predicate",
+      "reported_units": 1792,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "FB_copy_to_4175",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "FB_4175_to_7086",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "F3b2_zero_7086_arms_event",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "F3b2_JM_event_report_clear",
+      "reported_units": 2304,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "F3b4_event_subtype_filter",
+      "reported_units": 1024,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Call/condition/copy instructions execute, but at least one peripheral/callee response is supplied."
+    },
+    {
+      "suite": "29",
+      "family": "E7b7_5082_init_masks",
+      "reported_units": 1280,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "29",
+      "family": "5082_cleanup_b1b2",
+      "reported_units": 768,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Executes original instructions, supplied RAM/MMIO values and bounded entry/exit; no silicon timing/IRQ behavior."
+    },
+    {
+      "suite": "final",
+      "family": "factory_image_exact",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "image_layout",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "oem_signatures",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "v8_untouched_length",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F2_native_slice_terminates",
+      "reported_units": 508,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F2_full_byte_native_effect",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F2_b0_b1_no_effect_in_loader",
+      "reported_units": 63,
+      "category": "NATIVE_CODE_WITH_SYNTHETIC_MEMORY",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F8_dispatch_terminates",
+      "reported_units": 512,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F8_full_byte_native_gate",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F8_b0_b5_no_dispatch_in_C4D3",
+      "reported_units": 256,
+      "category": "NATIVE_CODE_WITH_PERIPHERAL_OR_CALL_STUB",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "static_xref_count",
+      "reported_units": 10,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F3_44F1_direct_reference_count",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "F3_b3_no_immediate_individual_test",
+      "reported_units": 24,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "provided_donor_count",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "factory_OEM_nonzero_77",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "PH8057_second_256_zero",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "donor_second_256_exception",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "donor_aux_5_fields_constant",
+      "reported_units": 9,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "v29_atlas_512_rows",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    },
+    {
+      "suite": "final",
+      "family": "v29_32_flags",
+      "reported_units": 1,
+      "category": "STATIC_BYTES_OR_RAW_SCAN",
+      "scope": "Final audit overlaps earlier suites; counters include termination and output checks for the same invocation."
+    }
+  ],
+  "notes": [
+    "Categories describe dominant proof method, not independent functionality.",
+    "No hardware validation is included.",
+    "No category validates arbitrary MMIO semantics.",
+    "Expected data are mostly code-derived formulas, not independent peripheral measurements.",
+    "Some static/schema assertions only verify internal bookkeeping; report does not treat them as physical feature tests."
+  ]
+}

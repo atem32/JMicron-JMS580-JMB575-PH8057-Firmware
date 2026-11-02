@@ -1,0 +1,367 @@
+{
+  "status": "PASS",
+  "scenarios": 36,
+  "results": [
+    {
+      "candidate": "stock",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 0,
+      "ck": false,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 40,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 0,
+      "ck": true,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 1,
+      "ck": false,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 40,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 80,
+      "ata_error": 0,
+      "csw_status": 0,
+      "sense": 0,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 81,
+      "ata_error": 4,
+      "csw_status": 1,
+      "sense": 4,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "stock",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    },
+    {
+      "candidate": "original_v8",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 165
+    },
+    {
+      "candidate": "revised",
+      "usb_ready": 1,
+      "ck": true,
+      "ata_status": 112,
+      "ata_error": 0,
+      "csw_status": 1,
+      "sense": 38,
+      "descriptor_valid": 0
+    }
+  ],
+  "interpretation": "Revised candidate preserves stock CSW/native sense and does not attach an ATA descriptor after native USB-wait abort"
+}

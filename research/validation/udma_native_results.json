@@ -1,0 +1,2990 @@
+{
+  "status": "ROOT_CAUSE_LOCALIZED__OLD_COUNTER_PATCH_REJECTED__NO_QUALIFIED_RESIDUE_FIX",
+  "source_hashes": {
+    "stock": "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09",
+    "original_ckcond_v8": "4b7ac3e5bd124d8e44281e9aa79b7b65f7b62c54410ffd1abd8af4a586d74e11"
+  },
+  "hardware_excerpt": {
+    "provenance": "User-provided raw USB/BOT excerpt, repeated in supplied reassessment report; no full usbmon capture supplied",
+    "raw_cbw": "55534243fa0d00000002000000011085170600000001001000000001403500",
+    "raw_csw": "55534253fa0d00000002000000",
+    "decoded": {
+      "tag": "0x00000DFA",
+      "lun": 1,
+      "requested_bytes": 512,
+      "direction": "out",
+      "usb_completed_bytes": 512,
+      "usb_completions_clean": true,
+      "csw_status": 0,
+      "csw_residue_raw": 512,
+      "csw_residue_meaningful": true,
+      "device_claimed_processed_bytes": 0,
+      "sg_io_residue_matches_csw": true,
+      "sat": {
+        "protocol": 11,
+        "extend": true,
+        "ck_cond": false,
+        "t_dir": false,
+        "byt_blok": true,
+        "t_length": 2,
+        "ata_command": "0x35",
+        "sector_count_register": 1
+      },
+      "matches_reported_ph8057_udma_anomaly": true,
+      "proof_limit": "USB bytes received are not an independent measurement of bytes processed by the device"
+    }
+  },
+  "native_static_checks": {
+    "exact_instruction_guards": {
+      "0x7BF4": "907988e0f558a3e0f557a3e0f556a3e0f555",
+      "0x248C": "75596722",
+      "0x7367": "e559b4640be4f558f557f556f5558019e4ff12aef48012",
+      "0xAEF9": "301229",
+      "0xAEFC": "85ac5885ad5785ae56e5af543ff555",
+      "0xAF30": "12cbe3",
+      "0xCC07": "c322",
+      "0xE140": "e59f20e202d322c322",
+      "0x9529": "904008e558f0a3e557f0a3e556f0a3e555f0"
+    },
+    "command02_then_result_read_sites": [
+      "0x2B97",
+      "0x7710",
+      "0x7726",
+      "0x973A",
+      "0x9760",
+      "0x9A91",
+      "0xB2DE"
+    ],
+    "raw_signature_sites_are_not_a_complete_CFG": true
+  },
+  "staged_native_reproduction": {
+    "stages": {
+      "cbw_parser_residue": 512,
+      "sat_state": 103,
+      "sat_requested_bytes_under_arithmetic_hypothesis": 512,
+      "sata_programmed_bytes_6318": 512,
+      "sata_taskfile_6300_6313": "010035001000014000000000000000d008000227",
+      "scheduled_handler": "0x7308",
+      "new_70B6_operations_during_launch": 0
+    },
+    "outcome": "native_handler_returned",
+    "completion_steps": 47,
+    "residue_before_finalizer": 512,
+    "state": 103,
+    "sense_code": 0,
+    "scheduled_handler": "0x94F9",
+    "carry_after_handler": 0,
+    "trace_helper_entered": false,
+    "cc07_normal_wait_return_reached": true,
+    "cbe3_inactive_return_reached": false,
+    "csw": {
+      "hex": "55534253fa0d00000002000000",
+      "status": 0,
+      "residue": 512,
+      "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+    },
+    "observations": [
+      {
+        "pc": "0x7377",
+        "step": 1043,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 146
+      },
+      {
+        "pc": "0xAEF4",
+        "step": 1046,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 148
+      },
+      {
+        "pc": "0xAF25",
+        "step": 1050,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 148
+      },
+      {
+        "pc": "0xCBE3",
+        "step": 1054,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 150
+      },
+      {
+        "pc": "0xCC07",
+        "step": 1059,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 150
+      },
+      {
+        "pc": "0x94F9",
+        "step": 1071,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 146
+      },
+      {
+        "pc": "0x9529",
+        "step": 1135,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 1,
+        "data_in": 0,
+        "sp": 146
+      }
+    ],
+    "final_sense_code": 0,
+    "ck_slot_header": "0000",
+    "max_sp": 152,
+    "end_sp": 144
+  },
+  "trace_only_reproduction": {
+    "stages": {
+      "cbw_parser_residue": 512,
+      "sat_state": 103,
+      "sat_requested_bytes_under_arithmetic_hypothesis": 512,
+      "sata_programmed_bytes_6318": 512,
+      "sata_taskfile_6300_6313": "010035001000014000000000000000d008000227",
+      "scheduled_handler": "0x7308",
+      "new_70B6_operations_during_launch": 0
+    },
+    "outcome": "native_handler_returned",
+    "completion_steps": 53,
+    "residue_before_finalizer": 512,
+    "state": 103,
+    "sense_code": 0,
+    "scheduled_handler": "0x94F9",
+    "carry_after_handler": 0,
+    "trace_helper_entered": true,
+    "cc07_normal_wait_return_reached": true,
+    "cbe3_inactive_return_reached": false,
+    "csw": {
+      "hex": "55534253fa0d00000002000000",
+      "status": 0,
+      "residue": 512,
+      "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+    },
+    "observations": [
+      {
+        "pc": "0x7377",
+        "step": 1043,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 146
+      },
+      {
+        "pc": "0xE700",
+        "step": 1044,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 148
+      },
+      {
+        "pc": "0xAEF4",
+        "step": 1047,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 150
+      },
+      {
+        "pc": "0xAF25",
+        "step": 1051,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 150
+      },
+      {
+        "pc": "0xCBE3",
+        "step": 1055,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 152
+      },
+      {
+        "pc": "0xCC07",
+        "step": 1060,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 152
+      },
+      {
+        "pc": "0xE705",
+        "step": 1067,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 148
+      },
+      {
+        "pc": "0x94F9",
+        "step": 1077,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 0,
+        "data_in": 0,
+        "sp": 146
+      },
+      {
+        "pc": "0x9529",
+        "step": 1141,
+        "residue": 512,
+        "state": 103,
+        "csw_state": 1,
+        "carry": 1,
+        "data_in": 0,
+        "sp": 146
+      }
+    ],
+    "final_sense_code": 0,
+    "ck_slot_header": "0000",
+    "max_sp": 152,
+    "end_sp": 144
+  },
+  "trace_only_patch": {
+    "classification": "UDMA_TRACE_ONLY_DO_NOT_FLASH__NOT_A_RESIDUE_FIX",
+    "source_sha256": "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09",
+    "patches": [
+      {
+        "cpu": "0x7377",
+        "old": "e4ff12aef4",
+        "new": "12e7000000"
+      },
+      {
+        "cpu": "0xE700",
+        "old": "0000000000000000",
+        "new": "e4ff12aef4000022"
+      }
+    ],
+    "observation_points": {
+      "before_original_completion": "0xE700",
+      "after_original_completion": "0xE705"
+    },
+    "new_persistent_ram_bytes": 0,
+    "new_mmio_reads": 0,
+    "additional_nested_stack_bytes": 2,
+    "known_effect": "Retains original accounting, including the known 512-byte residue defect",
+    "not_qualified": [
+      "Real execution of the code cave and added stack depth",
+      "Timing, interrupts, reset races, and physical controller behavior",
+      "A debugger, trace port, or persistent device-side observation channel",
+      "A real Data-Out processed-byte source"
+    ]
+  },
+  "four_way_original_ckcond_v8_matrix": [
+    {
+      "base": "stock",
+      "case": "full_512_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "full_4096_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 4096,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000010000000",
+          "status": 0,
+          "residue": 4096,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "full_512_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "ata_abrt_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 4,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 4,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "ata_device_fault",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 38,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 38,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "ata_busy",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 50,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 50,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "no_d2h_yet",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "completion_bit21_clear",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 41,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 41,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "usb_short_or_pending_flag",
+      "native_result": {
+        "outcome": "native_handler_waited_until_fixture_step_limit",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "endpoint_stall_or_busy_flag",
+      "native_result": {
+        "outcome": "native_handler_waited_until_fixture_step_limit",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "inactive_or_abort_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "late_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "stall_then_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "usb_error_then_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "late_inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "stall_inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "stale_ready_after_abort_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 154,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "already_failed_csw_state",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "state64_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 100,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 148,
+      "trace_max_sp": 148,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "data_in_complete_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 102,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "data_in_partial_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 123,
+        "state": 102,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00007b00000000",
+          "status": 0,
+          "residue": 123,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "phase_error_residue_is_ignored",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 13,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000002",
+          "status": 2,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 150,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "stock",
+      "case": "udma_unqualified_result384",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 152,
+      "trace_max_sp": 152,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "full_512_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "full_4096_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 4096,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000010000000",
+          "status": 0,
+          "residue": 4096,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "full_512_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "ata_abrt_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 4,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 4,
+        "ck_slot_header": "a504"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "ata_device_fault",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 38,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 38,
+        "ck_slot_header": "a526"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "ata_busy",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 50,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 50,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "no_d2h_yet",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "completion_bit21_clear",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 41,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 41,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "usb_short_or_pending_flag",
+      "native_result": {
+        "outcome": "native_handler_waited_until_fixture_step_limit",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "endpoint_stall_or_busy_flag",
+      "native_result": {
+        "outcome": "native_handler_waited_until_fixture_step_limit",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "inactive_or_abort_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "late_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "stall_then_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "usb_error_then_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "late_inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "stall_inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "stale_ready_after_abort_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "already_failed_csw_state",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "state64_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 100,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 169,
+      "trace_max_sp": 169,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "data_in_complete_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 102,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "data_in_partial_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 123,
+        "state": 102,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00007b00000000",
+          "status": 0,
+          "residue": 123,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "phase_error_residue_is_ignored",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 13,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000002",
+          "status": 2,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 169,
+      "trace_max_sp": 169,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "original_ckcond_v8",
+      "case": "udma_unqualified_result384",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    }
+  ],
+  "revised_ckcond_plus_trace_matrix": [
+    {
+      "base": "revised_ckcond",
+      "case": "full_512_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "full_4096_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 4096,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000010000000",
+          "status": 0,
+          "residue": 4096,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "full_512_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "ata_abrt_ck0",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 4,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 4,
+        "ck_slot_header": "a504"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "ata_device_fault",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 38,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 38,
+        "ck_slot_header": "a526"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "ata_busy",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 50,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 50,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "no_d2h_yet",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "completion_bit21_clear",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 41,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 41,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "usb_short_or_pending_flag",
+      "native_result": {
+        "outcome": "native_handler_waited_until_fixture_step_limit",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "endpoint_stall_or_busy_flag",
+      "native_result": {
+        "outcome": "native_handler_waited_until_fixture_step_limit",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x7308",
+        "csw": null,
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "inactive_or_abort_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "late_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "stall_then_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "usb_error_then_inactive_exit",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "late_inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "stall_inactive_exit_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "stale_ready_after_abort_ck1",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "already_failed_csw_state",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "state64_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 100,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": false,
+      "base_max_sp": 169,
+      "trace_max_sp": 169,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "data_in_complete_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 102,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "data_in_partial_control",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 123,
+        "state": 102,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00007b00000000",
+          "status": 0,
+          "residue": 123,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "phase_error_residue_is_ignored",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 13,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000002",
+          "status": 2,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 169,
+      "trace_max_sp": 169,
+      "physical_scenario_qualified": false
+    },
+    {
+      "base": "revised_ckcond",
+      "case": "udma_unqualified_result384",
+      "native_result": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": true,
+        "cbe3_inactive_return_reached": false,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_variant_equivalent": true,
+      "helper_entered": true,
+      "base_max_sp": 171,
+      "trace_max_sp": 171,
+      "physical_scenario_qualified": false
+    }
+  ],
+  "arithmetic_hypothesis": {
+    "classification": "CONSISTENT_ARITHMETIC_HYPOTHESIS__NOT_SILICON_PROOF",
+    "timer_clamp": [
+      {
+        "requested": 0,
+        "native_result": 600,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 0,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 2
+          }
+        ]
+      },
+      {
+        "requested": 1,
+        "native_result": 600,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 1,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 2
+          }
+        ]
+      },
+      {
+        "requested": 599,
+        "native_result": 600,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 599,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 2
+          }
+        ]
+      },
+      {
+        "requested": 600,
+        "native_result": 600,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 600,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 600,
+            "operand_b": 288000,
+            "result_before": 0,
+            "result_after": 2
+          }
+        ]
+      },
+      {
+        "requested": 601,
+        "native_result": 601,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 601,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 1
+          },
+          {
+            "command": "0x02",
+            "operand_a": 601,
+            "operand_b": 288000,
+            "result_before": 1,
+            "result_after": 2
+          }
+        ]
+      },
+      {
+        "requested": 1800,
+        "native_result": 1800,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 1800,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 1
+          },
+          {
+            "command": "0x02",
+            "operand_a": 1800,
+            "operand_b": 288000,
+            "result_before": 1,
+            "result_after": 2
+          }
+        ]
+      },
+      {
+        "requested": 287999,
+        "native_result": 287999,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 287999,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 1
+          },
+          {
+            "command": "0x02",
+            "operand_a": 287999,
+            "operand_b": 288000,
+            "result_before": 1,
+            "result_after": 2
+          }
+        ]
+      },
+      {
+        "requested": 288000,
+        "native_result": 288000,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 288000,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 1
+          },
+          {
+            "command": "0x02",
+            "operand_a": 288000,
+            "operand_b": 288000,
+            "result_before": 1,
+            "result_after": 0
+          }
+        ]
+      },
+      {
+        "requested": 288001,
+        "native_result": 288000,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 288001,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 1
+          },
+          {
+            "command": "0x02",
+            "operand_a": 288001,
+            "operand_b": 288000,
+            "result_before": 1,
+            "result_after": 1
+          }
+        ]
+      },
+      {
+        "requested": 4294967295,
+        "native_result": 288000,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x02",
+            "operand_a": 4294967295,
+            "operand_b": 600,
+            "result_before": 0,
+            "result_after": 1
+          },
+          {
+            "command": "0x02",
+            "operand_a": 4294967295,
+            "operand_b": 288000,
+            "result_before": 1,
+            "result_after": 1
+          }
+        ]
+      }
+    ],
+    "pio_accounting": [
+      {
+        "chunks": [
+          512
+        ],
+        "residue": 0,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x00",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 512
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x01",
+            "operand_a": 512,
+            "operand_b": 512,
+            "result_before": 512,
+            "result_after": 0
+          }
+        ]
+      },
+      {
+        "chunks": [
+          128,
+          384
+        ],
+        "residue": 0,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x00",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 512
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x01",
+            "operand_a": 512,
+            "operand_b": 128,
+            "result_before": 512,
+            "result_after": 384
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 128,
+            "result_before": 384,
+            "result_after": 384
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 384,
+            "result_after": 384
+          },
+          {
+            "command": "0x01",
+            "operand_a": 384,
+            "operand_b": 384,
+            "result_before": 384,
+            "result_after": 0
+          }
+        ]
+      },
+      {
+        "chunks": [
+          0,
+          256
+        ],
+        "residue": 256,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x00",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 512
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x01",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x01",
+            "operand_a": 512,
+            "operand_b": 256,
+            "result_before": 512,
+            "result_after": 256
+          }
+        ]
+      },
+      {
+        "chunks": [
+          255,
+          256
+        ],
+        "residue": 1,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x00",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 512
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x01",
+            "operand_a": 512,
+            "operand_b": 255,
+            "result_before": 512,
+            "result_after": 257
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 255,
+            "result_before": 257,
+            "result_after": 257
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 257,
+            "result_after": 257
+          },
+          {
+            "command": "0x01",
+            "operand_a": 257,
+            "operand_b": 256,
+            "result_before": 257,
+            "result_after": 1
+          }
+        ]
+      },
+      {
+        "chunks": [
+          0,
+          0
+        ],
+        "residue": 512,
+        "model_operations": [
+          {
+            "command": "0xC0",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 0
+          },
+          {
+            "command": "0x00",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 0,
+            "result_after": 512
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x01",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0xC0",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x10",
+            "operand_a": 0,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          },
+          {
+            "command": "0x01",
+            "operand_a": 512,
+            "operand_b": 0,
+            "result_before": 512,
+            "result_after": 512
+          }
+        ]
+      }
+    ]
+  },
+  "rejected_prototype_counterexamples": [
+    {
+      "base": "stock",
+      "ck_cond": false,
+      "hypothesis": "CBE3 exits with CY1 after 5052=0 and 9F.bit2=0; a later read sees5052=1 while arithmetic result is stale zero",
+      "rejected_prototype": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_only_candidate": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "established": "The old helper does not reject the native inactive/abort return and can erase nonzero residue",
+      "not_established": "That exact register timing has occurred on physical hardware"
+    },
+    {
+      "base": "stock",
+      "ck_cond": true,
+      "hypothesis": "CBE3 exits with CY1 after 5052=0 and 9F.bit2=0; a later read sees5052=1 while arithmetic result is stale zero",
+      "rejected_prototype": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_only_candidate": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "established": "The old helper does not reject the native inactive/abort return and can erase nonzero residue",
+      "not_established": "That exact register timing has occurred on physical hardware"
+    },
+    {
+      "base": "original_ckcond_v8",
+      "ck_cond": false,
+      "hypothesis": "CBE3 exits with CY1 after 5052=0 and 9F.bit2=0; a later read sees5052=1 while arithmetic result is stale zero",
+      "rejected_prototype": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000000",
+          "status": 0,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "trace_only_candidate": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000000",
+          "status": 0,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 0,
+        "ck_slot_header": "0000"
+      },
+      "established": "The old helper does not reject the native inactive/abort return and can erase nonzero residue",
+      "not_established": "That exact register timing has occurred on physical hardware"
+    },
+    {
+      "base": "original_ckcond_v8",
+      "ck_cond": true,
+      "hypothesis": "CBE3 exits with CY1 after 5052=0 and 9F.bit2=0; a later read sees5052=1 while arithmetic result is stale zero",
+      "rejected_prototype": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 0,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000000000001",
+          "status": 1,
+          "residue": 0,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "trace_only_candidate": {
+        "outcome": "native_handler_returned",
+        "residue_before_finalizer": 512,
+        "state": 103,
+        "sense_code": 0,
+        "scheduled_handler": "0x94F9",
+        "csw": {
+          "hex": "55534253fa0d00000002000001",
+          "status": 1,
+          "residue": 512,
+          "qualification": "Conditional native result if the scheduled finalizer is run; external recovery scheduler not modeled"
+        },
+        "cc07_normal_wait_return_reached": false,
+        "cbe3_inactive_return_reached": true,
+        "final_sense_code": 40,
+        "ck_slot_header": "a528"
+      },
+      "established": "The old helper does not reject the native inactive/abort return and can erase nonzero residue",
+      "not_established": "That exact register timing has occurred on physical hardware"
+    }
+  ],
+  "donors": [
+    {
+      "file": "JMS580_00.02.00.02_Blueendless_U23TC_UPDATE.BIN",
+      "sha256": "ee9024d1abe886af2878aa469618826e3f1c370c7f3477badb3cfa28a94e4cfc",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x61E6",
+      "branch_file_offset": "0x065E6",
+      "sfr_copy_cpu_offset": "0x9B74",
+      "sfr_copy_file_offset": "0x09F74",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "JMS580_BIWIN-Release-v162.03.00.01-20181204.BIN",
+      "sha256": "c6147a3ccdb34bbd3f24d25b544418eb305a6b22e49f318f66054452351fc670",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x692B",
+      "branch_file_offset": "0x06D2B",
+      "sfr_copy_cpu_offset": "0xAA4C",
+      "sfr_copy_file_offset": "0x0AE4C",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "JMS580_FW_194.01.00.01.BIN",
+      "sha256": "5571a697dc3284b51b9d054c297b623460dc04d2e3c9bfa6da3c4c2beb1260a3",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x5FC0",
+      "branch_file_offset": "0x063C0",
+      "sfr_copy_cpu_offset": "0x9E64",
+      "sfr_copy_file_offset": "0x0A264",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "JMS580_G-3501-A-10G-Release-v168.01.00.01-20220316.BIN",
+      "sha256": "ba0805c80658c0c12f47b27e316900c04fb61c83a2fb01e5e539062cc935091a",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x55D3",
+      "branch_file_offset": "0x059D3",
+      "sfr_copy_cpu_offset": "0xA2AD",
+      "sfr_copy_file_offset": "0x0A6AD",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "JMS580_HIKSEMI-PSSD-131.06.00.01.BIN",
+      "sha256": "40a4763ea54f19fdd8c89af78762f8d1828bf02372959272c63eda70e575c1b1",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x52CE",
+      "branch_file_offset": "0x056CE",
+      "sfr_copy_cpu_offset": "0xA414",
+      "sfr_copy_file_offset": "0x0A814",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "JMS580_STD_Release_v00.02.00.04_20181109_Bus Power.BIN",
+      "sha256": "4cd61e028d9a455b17f73b806022bbcff9de339efd6693c5f794ec11de2b383b",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x615C",
+      "branch_file_offset": "0x0655C",
+      "sfr_copy_cpu_offset": "0xA010",
+      "sfr_copy_file_offset": "0x0A410",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "JMS580_Sandbox-v255.01.00.02-20190701.BIN",
+      "sha256": "61a8b6b452e384690d9c2968a0449793bcd8cb4bb18423bfa357aae4289f7f9e",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x5303",
+      "branch_file_offset": "0x05703",
+      "sfr_copy_cpu_offset": "0xA472",
+      "sfr_copy_file_offset": "0x0A872",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "Orico 152D JMS580 M.2 SSD FW with NVRAM.BIN",
+      "sha256": "b9acde2388ed4e2b3ae0ebee15bf857988ad03d5b0a5bbf1bbf9e8b318c5faf8",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x5255",
+      "branch_file_offset": "0x05655",
+      "sfr_copy_cpu_offset": "0xA360",
+      "sfr_copy_file_offset": "0x0A760",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    },
+    {
+      "file": "backup.bin",
+      "sha256": "32dd2c643a52e85bf6fbf10f1ebbf134455c763e3cdcff207833810a0a6cfed9",
+      "container_bytes": 67072,
+      "code_file_offset": "0x00400",
+      "oem_file_offset": "0x10400",
+      "branch_cpu_offset": "0x758B",
+      "branch_file_offset": "0x0798B",
+      "sfr_copy_cpu_offset": "0xB09A",
+      "sfr_copy_file_offset": "0x0B49A",
+      "proof": "Explicit container layout and vector anchors, plus two matching instruction signatures; no physical donor testing"
+    }
+  ],
+  "coverage_boundaries": {
+    "native": "CBW parsing, SAT16 decoding, programmed launch, completion gates, arithmetic consumers, CSW assembly",
+    "modeled": "Explicit MMIO samples, 48-bit ALU hypothesis, dual-DPTR select convention, fixed LUN mapping",
+    "not_modeled": "USB/SATA payload movement, interrupts, physical reset, DMA, actual timers, real SRAM ownership, flash execution",
+    "function_stubs_in_new_native_replay": 0,
+    "new_device_io": false
+  },
+  "release_blocker": "No qualified, stable, per-command count of Data-Out bytes processed, including short/error/recovery semantics"
+}

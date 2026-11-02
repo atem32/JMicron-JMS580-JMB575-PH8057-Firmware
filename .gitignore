@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+build/
+results/
+test_results/
+*.bin
+*.BIN
+*.img
+*.pcap
+*.pcapng
+*.zip
+*.tar
+*.tar.gz
+private/
+audit_input/
+.venv/

@@ -1,0 +1,160 @@
+{
+  "groups": [
+    {
+      "name": "general_pio_labs",
+      "exit_code": 0,
+      "source": "canonical:replay_labs.py",
+      "entry_sha256": "117312d1a5e9fbaa2f315721038fb3d9afc61354b980c42c71e21a43fd1ffc26",
+      "log": "general_pio_labs.log",
+      "detail": "early_labs/summary.json",
+      "notes": "General14, PIOv2 12, PIOv3 15 original cases; v3 uses new binary-backed missing-dependency adapter; original missing source tests not claimed",
+      "classification": "historical offline replay with explicit supplied/reconstructed provenance"
+    },
+    {
+      "name": "v4_ownership",
+      "exit_code": 0,
+      "source": "3ae05787128a03db/PH8057_v4_ownership_audit.py",
+      "entry_sha256": "5615217289f0aa069de449b4297ee9d56f79446646f369e1edb61428c2f757d7",
+      "log": "v4_ownership.log",
+      "notes": "",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v5_v6_nine_groups",
+      "exit_code": 0,
+      "source": "7787098b62e65087/PH8057_v6_stock_checkpoint/ph8057_work/run_v6_audits.py",
+      "entry_sha256": "52d6ca1e7708a3543b60d7f1e6cf411548f4e527582e017b3aaf583b31838df7",
+      "log": "v5_v6_nine_groups.log",
+      "notes": "Includes four v5 groups, BOT sense, storage lifecycle, donor, CRC, SPI callback models and mocked collector tests",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "PH8057_v7_repacker_tests",
+      "exit_code": 0,
+      "source": "e694bc16bd7e8a13/ph8057_v7/PH8057_v7_repacker_tests.py",
+      "entry_sha256": "ce5e7a342ab4069efa0521b87843bf387cef88475ea8f61f75074817a288ee07",
+      "log": "PH8057_v7_repacker_tests.log",
+      "notes": "",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "PH8057_v7_negative_tests",
+      "exit_code": 0,
+      "source": "e694bc16bd7e8a13/ph8057_v7/PH8057_v7_negative_tests.py",
+      "entry_sha256": "53a294f443cacfdaca107815ec987f83d8592e5437f1aec2620bcd7e770f6b59",
+      "log": "PH8057_v7_negative_tests.log",
+      "notes": "",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v10_collector_offline",
+      "exit_code": 0,
+      "source": "3b6d2e8f6c9fd828/test_offline_v10.py",
+      "entry_sha256": "40559d548864595d2dcc784dc6217ef796950cf7d879d7bd903155109da2958e",
+      "log": "v10_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v11_collector_offline",
+      "exit_code": 0,
+      "source": "e8f7b86cd97d1e0d/test_offline_v11.py",
+      "entry_sha256": "99cdbee299b2b1410570f6b132f625538dd3e1283b96ff134b7a22be698e9fd0",
+      "log": "v11_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v11_1_collector_offline",
+      "exit_code": 0,
+      "source": "2075b11d7c2e3a6f/test_offline_v11_1.py",
+      "entry_sha256": "ec9a1a8a953dbd0046b41e1fc6e84d8b4663d37cd8fdda26e01e23cacd0f9e95",
+      "log": "v11_1_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v11_2_collector_offline",
+      "exit_code": 0,
+      "source": "14a0deee73d1b2b1/test_offline_v11_2.py",
+      "entry_sha256": "522868866c565f796bb35fe3ab005223fc9856df64efb9de2207a509f6360c3c",
+      "log": "v11_2_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v11_3_collector_offline",
+      "exit_code": 0,
+      "source": "099ccf51bb21a0eb/test_offline_v11_3.py",
+      "entry_sha256": "c51428059e4a0a8d6709d1abe0b034514e576e5aabd35cf19e6870aefda855ad",
+      "log": "v11_3_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v11_4_collector_offline",
+      "exit_code": 0,
+      "source": "d55cd3b6e282d226/test_offline_v11_4.py",
+      "entry_sha256": "a74be8663e061946f0686d36402f4cc18330e835bbee5138610546292a4e8540",
+      "log": "v11_4_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v12_collector_offline",
+      "exit_code": 0,
+      "source": "1ec26d90517c3337/PH8057_v12_offline_tests.py",
+      "entry_sha256": "a5f757c4d79af11ff7121c9b089ee8054f0e35407b55ab0d4d36285af2f5f686",
+      "log": "v12_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v13_collector_offline",
+      "exit_code": 0,
+      "source": "d9efe2b53d05d3fd/PH8057_v13_offline_tests.py",
+      "entry_sha256": "c083c044ba33b5039c595fa003d37dddff7dbd1f86124d74831e04fb977b0e5f",
+      "log": "v13_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    },
+    {
+      "name": "v14_collector_offline",
+      "exit_code": 0,
+      "source": "73fdb73f0bd878ab/PH8057_v14_offline_tests.py",
+      "entry_sha256": "a9b26893be278631580facf82d31497a2961683e19118f016ce95924b554a2ce",
+      "log": "v14_collector_offline.log",
+      "notes": "Collector implementation imported for constant/parser/mock tests; main not executed",
+      "classification": "historical offline replay; not hardware qualification"
+    }
+  ],
+  "passed": 14,
+  "total": 14,
+  "live_device_operations": 0,
+  "reviewed_history": {
+    "root": "<private_workspace>/audit_input",
+    "group": "early",
+    "archive_roots": [
+      "0766e3a6b43c6423",
+      "099ccf51bb21a0eb",
+      "14a0deee73d1b2b1",
+      "1ec26d90517c3337",
+      "2075b11d7c2e3a6f",
+      "3ae05787128a03db",
+      "3b6d2e8f6c9fd828",
+      "63fb1545420cb03d",
+      "73fdb73f0bd878ab",
+      "7787098b62e65087",
+      "d55cd3b6e282d226",
+      "d9efe2b53d05d3fd",
+      "e694bc16bd7e8a13",
+      "e8f7b86cd97d1e0d",
+      "f3b3148c740947cb"
+    ],
+    "verified_files": 546,
+    "verified_bytes": 14953389,
+    "manifest_sha256": "c009192ed5fac0b234773daaa190e7e4371b9f0f237aad32f5c4039b6b731e0f",
+    "source_inventory_sha256": "414819ff2aac70739ce5b4ebbf79a46a9cb16de3856e87526f3a2400ad08f4b7",
+    "scope": "Exact reviewed original files; no general execution sandbox guarantee"
+  }
+}

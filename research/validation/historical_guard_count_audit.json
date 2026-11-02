@@ -1,0 +1,84 @@
+{
+  "suites": {
+    "23": {
+      "assert_statements": 1583,
+      "boolean_guard_calls": 0,
+      "executed_validation_guards": 1583,
+      "reported_units": 1577,
+      "source_sha256": "6b54bad67f416e966084d6119ca7ff184c29f7f0c644b1f6add3e556604dc579"
+    },
+    "24": {
+      "assert_statements": 0,
+      "boolean_guard_calls": 3007,
+      "executed_validation_guards": 3007,
+      "reported_units": 2296,
+      "source_sha256": "abef35036dbd3acb7e4192fdf5ef1b0b9506e00cf782f0e10639fb6eae06d543"
+    },
+    "25": {
+      "assert_statements": 0,
+      "boolean_guard_calls": 10374,
+      "executed_validation_guards": 10374,
+      "reported_units": 1985,
+      "source_sha256": "cca12761f6d48ed08d89b8501ad283b8a9308319d950d61be61597664eced2c8"
+    },
+    "26": {
+      "assert_statements": 0,
+      "boolean_guard_calls": 9270,
+      "executed_validation_guards": 9270,
+      "reported_units": 7981,
+      "source_sha256": "580164a8f625a6d587d239c92ea454f4fdc479bf0f51e9b69c037a99af057ec2"
+    },
+    "27": {
+      "assert_statements": 0,
+      "boolean_guard_calls": 2164,
+      "executed_validation_guards": 2164,
+      "reported_units": 2164,
+      "source_sha256": "dd631db91c393c531a91f6ed4e3a63b7105e0f99fb7a4c0fed6e93610d162a1f"
+    },
+    "28": {
+      "assert_statements": 0,
+      "boolean_guard_calls": 5903,
+      "executed_validation_guards": 5903,
+      "reported_units": 5903,
+      "source_sha256": "2bb3b57e59fe377457dfb665120117f907473732b6858a5431bdd24554ba59f1"
+    },
+    "29": {
+      "assert_statements": 0,
+      "boolean_guard_calls": 10005,
+      "executed_validation_guards": 10005,
+      "reported_units": 10005,
+      "source_sha256": "f4ab810740ff1f66f91a6b450716cfc1374c600cad220d36ff79b93809f1c75a"
+    },
+    "final": {
+      "assert_statements": 0,
+      "boolean_guard_calls": 1905,
+      "executed_validation_guards": 1905,
+      "reported_units": 1905
+    }
+  },
+  "reviewed_history": {
+    "root": "<private_workspace>/audit_input",
+    "group": "count",
+    "archive_roots": [
+      "161fc88b00ce339a",
+      "210d3d9c4455d6ad",
+      "886ff4a08bd92f83",
+      "9d5bcb21b21b6032",
+      "cec2533eddfdd930",
+      "f3b3148c740947cb",
+      "faecfe634f107613",
+      "fe2708c6c5b50374"
+    ],
+    "verified_files": 155,
+    "verified_bytes": 4768364,
+    "manifest_sha256": "c009192ed5fac0b234773daaa190e7e4371b9f0f237aad32f5c4039b6b731e0f",
+    "source_inventory_sha256": "414819ff2aac70739ce5b4ebbf79a46a9cb16de3856e87526f3a2400ad08f4b7",
+    "scope": "Exact reviewed original files; no general execution sandbox guarantee"
+  },
+  "emulator_sha256": "c3ed1f54acc20564ab67b6e85e4bf26e22d6ef92ac25f5feeac9f7b5781446b7",
+  "reported_units": 33816,
+  "executed_validation_guards": 44211,
+  "expected_values_changed": false,
+  "method": "AST identity wrapper around Assert tests; counter at bool guard-helper entry; excludes emulator internals",
+  "qualification": "Neither count measures independent functionality or hardware coverage"
+}

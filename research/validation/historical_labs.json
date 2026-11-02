@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "classification": "Historical incomplete images and synthetic lab tests; not firmware qualification",
+  "reviewed_history": {
+    "root": "<private_workspace>/audit_input",
+    "group": "lab_general_pio",
+    "archive_roots": [
+      "0766e3a6b43c6423",
+      "63fb1545420cb03d"
+    ],
+    "verified_files": 316,
+    "verified_bytes": 9015878,
+    "manifest_sha256": "c009192ed5fac0b234773daaa190e7e4371b9f0f237aad32f5c4039b6b731e0f",
+    "source_inventory_sha256": "414819ff2aac70739ce5b4ebbf79a46a9cb16de3856e87526f3a2400ad08f4b7",
+    "scope": "Exact reviewed original files; no general execution sandbox guarantee"
+  },
+  "groups": [
+    {
+      "name": "general_original",
+      "exit_code": 0,
+      "source": "63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/archives/historical_lab_do_not_flash/PH8057_general_ckcond_lab.py",
+      "entry_sha256": "c7fcfced097ebddc52b568e258307b57357b5a50b15df913d46422a394e4f833",
+      "log": "general_original.log",
+      "original_source_modified": false,
+      "expectations_modified": false,
+      "classification": "Unchanged original source and embedded tests",
+      "pass_lines": 14,
+      "pio_cases": 0,
+      "general_cases": 14,
+      "rebuilt_image_name": "PH8057_GENERAL_CKCOND_LAB_DO_NOT_FLASH.img",
+      "rebuilt_image_sha256": "22d4ef8f7adaa679c2b11b0e634a84c0888d65104044269b9bd32aefe3bc3e53",
+      "byte_identical_to_supplied_image": true
+    },
+    {
+      "name": "pio_v2_original",
+      "exit_code": 0,
+      "source": "63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/archives/historical_lab_do_not_flash/PH8057_pio_completion_lab_v2.py",
+      "entry_sha256": "345d7e863564b73d34387d02c216beb003cd324cc2518a9ec0503ec9ec24f99a",
+      "log": "pio_v2_original.log",
+      "original_source_modified": false,
+      "expectations_modified": false,
+      "classification": "Unchanged original source and embedded tests",
+      "pass_lines": 26,
+      "pio_cases": 12,
+      "general_cases": 14,
+      "rebuilt_image_name": "PH8057_PIO_COMPLETION_LAB_V2_DO_NOT_FLASH.img",
+      "rebuilt_image_sha256": "0a9bc1e1c9ab90a8ad19e9d9f2df271549e5f6d509db62daf0b00dd4be70ba8f",
+      "byte_identical_to_supplied_image": true
+    },
+    {
+      "name": "pio_v3_binary_adapter",
+      "exit_code": 0,
+      "source": "63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/archives/historical_lab_do_not_flash/PH8057_pio_datain_lab_v3.py",
+      "entry_sha256": "8f76d17ebc68410be98936bd8eb5868fc0a71d3f43686a50c8ee1f7407e02ad3",
+      "log": "pio_v3_binary_adapter.log",
+      "original_source_modified": false,
+      "expectations_modified": false,
+      "classification": "Unchanged original PIOv3 wrapper tests with new binary-backed common dependency adapter",
+      "pass_lines": 15,
+      "pio_cases": 15,
+      "general_cases": 0,
+      "missing_original_common_tests_replayed": false,
+      "rebuilt_image_name": "PH8057_PIO_DATAIN_LAB_V3_DO_NOT_FLASH.img",
+      "rebuilt_image_sha256": "94b093ab7293bfe3f94587e8a4a4cbdd1692fc17e99663b72c5ee3529831c35f",
+      "byte_identical_to_supplied_image": true
+    }
+  ],
+  "passed_replay_groups": 3,
+  "total_replay_groups": 3,
+  "original_missing_dependency": {
+    "name": "pio_v3_original_missing_dependency",
+    "exit_code": 1,
+    "source": "63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/archives/historical_lab_do_not_flash/PH8057_pio_datain_lab_v3.py",
+    "entry_sha256": "8f76d17ebc68410be98936bd8eb5868fc0a71d3f43686a50c8ee1f7407e02ad3",
+    "log": "pio_v3_original_missing_dependency.log",
+    "original_source_modified": false,
+    "expectations_modified": false,
+    "classification": "Expected historical failure preserved before adaptation",
+    "exception": "FileNotFoundError",
+    "missing_dependency": "PH8057_general_ckcond_lab_v3_restricted.py",
+    "newly_executed_cases": 0,
+    "image_written": false
+  },
+  "missing_source_search": {
+    "expected_source_name": "PH8057_general_ckcond_lab_v3_restricted.py",
+    "recorded_source_sha256": "0c836343efeec7810e1d662b2b8727eb17cfeb4d51f229c590c1d8061ba77d48",
+    "recorded_source_bytes": 11275,
+    "named_source_matches": [],
+    "exact_file_hash_matches": [],
+    "exact_fenced_source_hash_matches": [],
+    "searched_files": 943,
+    "searched_markdown_files": 169,
+    "searched_fenced_blocks": 579,
+    "referencing_reports": [
+      {
+        "path": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/archives/firmware_history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+      },
+      {
+        "path": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/reports/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+      },
+      {
+        "path": "63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/archives/firmware_history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+      },
+      {
+        "path": "63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/reports/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+      },
+      {
+        "path": "99894761e17fa908/PH8057_v5_completion_audit/history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+      }
+    ],
+    "finding": "No original source file or complete source found in supplied Markdown; report references, assembly excerpts and recorded logs do not recreate the source",
+    "recorded_test_log": {
+      "file": "restricted_common_RECORDED_NOT_REEXECUTED.log",
+      "sha256": "656b94494d6d37a06edb97e28056b63465a4e21258e8d51afb1b441e3b95969d",
+      "bytes": 1724,
+      "source_report": "63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/reports/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "source_report_sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2",
+      "classification": "Recovered verbatim historical output; NOT newly executed tests",
+      "recorded_pass_lines": 15,
+      "newly_executed_common_cases": 0
+    }
+  },
+  "unique_available_original_cases_replayed": 41,
+  "printed_case_pass_events": 55,
+  "duplicate_case_events_note": "The 14 general cases run alone and again during PIOv2 import",
+  "restricted_common_original_cases_not_reexecuted": 15,
+  "binary_dependency_adapter": {
+    "sha256": "4266b2edb6d6cb3b78d18187b7db5c691f78ee022cdb0b744e4f2f40d6d7671b",
+    "classification": "New adapter source; NOT the absent historical Python source",
+    "supplied_image": "PH8057_PIO_DATAIN_LAB_V3_DO_NOT_FLASH.img",
+    "supplied_image_sha256": "94b093ab7293bfe3f94587e8a4a4cbdd1692fc17e99663b72c5ee3529831c35f",
+    "common_file_start": "0xF300",
+    "common_file_end_exclusive": "0xF47A",
+    "common_cpu_start": "0xE300",
+    "common_cpu_end_exclusive": "0xE47A",
+    "common_bytes": 378,
+    "common_sha256": "536658c8b6e03f069d61889bdb569fc1f47e788a77b659b8af69259bd13363d6"
+  },
+  "restricted_only_reconstruction": {
+    "sha256": "0a351e85149027ea63f16694cca15de594065396ea7a4759a08179411d8463ee",
+    "bytes": 65536,
+    "matches_recorded_historical_hash": true,
+    "supplied_as_standalone_file": false,
+    "changed_bytes_vs_prefix": 372,
+    "allowed_file_ranges_end_exclusive": [
+      [
+        "0xA982",
+        "0xA985"
+      ],
+      [
+        "0xF300",
+        "0xF47A"
+      ]
+    ],
+    "classification": "New binary reconstruction from supplied stock prefix and supplied PIOv3 image; no claim to recover missing source",
+    "persisted_image": false
+  },
+  "live_device_operations": 0,
+  "firmware_payloads_embedded_in_public_adapter": false
+}

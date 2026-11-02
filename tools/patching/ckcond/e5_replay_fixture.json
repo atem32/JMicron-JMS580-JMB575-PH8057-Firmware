@@ -1,0 +1,6 @@
+{
+  "registers_6300_6313_hex": "ff 00 e5 00 00 00 00 00 00 00 00 00 80 00 50 d0 18 00 02 34",
+  "getter_protocol15_hex": "09 0c 00 00 00 ff 00 00 00 00 00 00 00 50",
+  "source_document_sha256": "c8bd8d42b6ccd5da316162015720130c2b2cdad7ee83ca470c7f7ca8e1a11fe9",
+  "scope": "Previously captured stock bytes; replay is not hardware validation of modified code."
+}

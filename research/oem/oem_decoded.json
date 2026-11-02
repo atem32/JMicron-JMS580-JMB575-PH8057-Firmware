@@ -1,0 +1,329 @@
+{
+  "scope": "PH8057 layout only; CODE facts are not silicon qualification",
+  "image_sha256": "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09",
+  "exact_stock_image": true,
+  "oem_sha256": "9521e63007a1289846438195896ef2908a6ccd695c983f90b54fd501eb00e635",
+  "signatures": {
+    "JM": true,
+    "HD": true,
+    "BC": true
+  },
+  "signature_scopes": {
+    "JM": "outer initializer gate",
+    "HD": "E7/F3 and E7.5",
+    "BC": "F2,F4-F7,F8,FA,FB,FC"
+  },
+  "active_groups": {
+    "base_OEM": true,
+    "E7_F3": true,
+    "F2_timer_aux": true
+  },
+  "usb_vid": "152D",
+  "usb_pid": "A562",
+  "manufacturer": {
+    "offset": "00C",
+    "wire_length_hint": 26,
+    "type_byte": 3,
+    "type_checked_by_loader": false,
+    "computed_char_slots": 12,
+    "loader_requested_by_length": true,
+    "copied_ascii_capacity": 32,
+    "well_formed_length": true,
+    "text": "PANHONG-TECH"
+  },
+  "product": {
+    "offset": "030",
+    "wire_length_hint": 24,
+    "type_byte": 3,
+    "type_checked_by_loader": false,
+    "computed_char_slots": 11,
+    "loader_requested_by_length": true,
+    "copied_ascii_capacity": 32,
+    "well_formed_length": true,
+    "text": "USB3-SATAX5"
+  },
+  "serial": {
+    "offset": "054",
+    "wire_length_hint": 28,
+    "type_byte": 3,
+    "type_checked_by_loader": false,
+    "computed_char_slots": 13,
+    "loader_requested_by_length": true,
+    "copied_ascii_capacity": 30,
+    "well_formed_length": true,
+    "text": "[REDACTED]"
+  },
+  "serial_source_selector": {
+    "raw": 3,
+    "44E8": 2
+  },
+  "scsi_inquiry_marker_present": true,
+  "scsi_inquiry_enabled": true,
+  "scsi_vendor": "PHDK    ",
+  "scsi_product": "PH8057\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+  "flags": {
+    "E7": {
+      "raw": 0,
+      "bits": [
+        {
+          "bit": 0,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "USB configuration power reporting: 0 self-powered,1 bus-powered; does not switch power rails",
+          "cpu": "454B-457F"
+        },
+        {
+          "bit": 1,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Sets IRAM bit38 enabling special READ/WRITE(16) path; no 4Kn inference",
+          "cpu": "6F4C-6F56,5015"
+        },
+        {
+          "bit": 2,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Cleared at6F5D before same-path checks; physical purpose unknown",
+          "cpu": "6F57-6F82"
+        },
+        {
+          "bit": 3,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Enables writes7085=2F and508F=01; silicon semantics unknown",
+          "cpu": "D422-D435"
+        },
+        {
+          "bit": 4,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Advertises DPOFUA in MODE SENSE header; does not prove FUA execution",
+          "cpu": "364E-367E,379E,37C8,6F7C"
+        },
+        {
+          "bit": 5,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Sets4172; 3A2D consults7A04/7A05 and conditionally writes4575=3",
+          "cpu": "2129-2136,3A2D"
+        },
+        {
+          "bit": 6,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "UAS descriptor gate; cleared at6F57 and46ED; UASP NOT IMPLEMENTED",
+          "cpu": "44C4,6F57,46ED"
+        },
+        {
+          "bit": 7,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "5082 bits1/2 follow flag atD682; bit3 set in BOTH cases; independent cleanup clears bits1/2",
+          "cpu": "D682,5535,6631,7BED"
+        }
+      ]
+    },
+    "F2": {
+      "raw": 56,
+      "bits": [
+        {
+          "bit": 0,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No change in214A-2199 outputs; global/indirect consumers not excluded",
+          "cpu": "214A-2199"
+        },
+        {
+          "bit": 1,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No change in214A-2199 outputs; global/indirect consumers not excluded",
+          "cpu": "214A-2199"
+        },
+        {
+          "bit": 2,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Sets4588=1; clear occurs earlier1F7C-1F80, not the F2 slice",
+          "cpu": "2172-217F,1F7C,875A"
+        },
+        {
+          "bit": 3,
+          "value": 1,
+          "category": "CODE-CONFIRMED",
+          "effect": "Assigns44F3 from flag; enabled sets487D=1 and transforms timer; disabled preserves487D here",
+          "cpu": "214A-2160,2199-2200,6B04"
+        },
+        {
+          "bit": 4,
+          "value": 1,
+          "category": "CODE-CONFIRMED",
+          "effect": "Sets4583=1 when enabled, otherwise preserves; state-dependent7058.bit5 effects",
+          "cpu": "217F-218C,3F61"
+        },
+        {
+          "bit": 5,
+          "value": 1,
+          "category": "CODE-CONFIRMED",
+          "effect": "Sets4584=1 when enabled, otherwise preserves; state-dependent7058.bit4 effects",
+          "cpu": "218C-2199,3F61"
+        },
+        {
+          "bit": 6,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Sets IRAM bit39; initializer clears earlier; at64B7 false ORs7801 with10, true preserves",
+          "cpu": "1F78,2169-2172,64B7"
+        },
+        {
+          "bit": 7,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Sets IRAM bit3A (=byte27.bit2); whole byte saved/restored viaB008; independent functional reader unknown",
+          "cpu": "1F7A,2160-2169,81DC,832F"
+        }
+      ]
+    },
+    "F3": {
+      "raw": 64,
+      "bits": [
+        {
+          "bit": 0,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Event/topology paths; cleared by6F62; NOT a qualified hot-swap switch",
+          "cpu": "2804,6F62,8FD9"
+        },
+        {
+          "bit": 1,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "JM vendor response indicators;7059.bit1 status path; private protocol unknown",
+          "cpu": "272E,2D52,9CE1"
+        },
+        {
+          "bit": 2,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "If7086==0 arms4176/4177; JM report sets3506.bit0 and clears4177",
+          "cpu": "7321,9CC6,2210,385A"
+        },
+        {
+          "bit": 3,
+          "value": 0,
+          "category": "UNKNOWN",
+          "effect": "No individual direct decoder established; whole-byte and indirect consumers remain possible",
+          "cpu": "44F1 direct occurrence survey only"
+        },
+        {
+          "bit": 4,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Filters7993 high-nibble0 low2=0 event: off writes4BC9=2E,4AD8=1,4173=0; on skips",
+          "cpu": "5216-527B"
+        },
+        {
+          "bit": 5,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "USB2-only policy paths: state6, bcdUSB0200 and suppressed BOS; link operation untested",
+          "cpu": "32E1,DD28,B6AE"
+        },
+        {
+          "bit": 6,
+          "value": 1,
+          "category": "CODE-CONFIRMED",
+          "effect": "TRIM/DSM capability gate requires IDENTIFY and per-port capability; command success unproven",
+          "cpu": "16C2,1177,C98E"
+        },
+        {
+          "bit": 7,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "Additional NCQ enable in no-port-multiplier branch with IDENTIFY words75/76; not global NCQ control",
+          "cpu": "154E-156F"
+        }
+      ]
+    },
+    "F8": {
+      "raw": 0,
+      "bits": [
+        {
+          "bit": 0,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No individual dispatch inC4D3-C501; value may be carried in F8.7 block",
+          "cpu": "C4D3-C501"
+        },
+        {
+          "bit": 1,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No individual dispatch inC4D3-C501; value may be carried in F8.7 block",
+          "cpu": "C4D3-C501"
+        },
+        {
+          "bit": 2,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No individual dispatch inC4D3-C501; value may be carried in F8.7 block",
+          "cpu": "C4D3-C501"
+        },
+        {
+          "bit": 3,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No individual dispatch inC4D3-C501; value may be carried in F8.7 block",
+          "cpu": "C4D3-C501"
+        },
+        {
+          "bit": 4,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No individual dispatch inC4D3-C501; value may be carried in F8.7 block",
+          "cpu": "C4D3-C501"
+        },
+        {
+          "bit": 5,
+          "value": 0,
+          "category": "NOT USED IN VERIFIED PATH",
+          "effect": "No individual dispatch inC4D3-C501; value may be carried in F8.7 block",
+          "cpu": "C4D3-C501"
+        },
+        {
+          "bit": 6,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "71C4(04),7616(02),71C4(40): CODE1A18..1B17 ->XDATA7500..75FF; peripheral meaning unknown",
+          "cpu": "C4D3,7616,8026"
+        },
+        {
+          "bit": 7,
+          "value": 0,
+          "category": "CODE-CONFIRMED",
+          "effect": "71C4(08),77DA(7300),71C4(80): staging3900..39FF ->7300..73FF with compare; up to12 copies, sticky mismatch",
+          "cpu": "C4E9,77DA-786E,800A"
+        }
+      ]
+    }
+  },
+  "timer": {
+    "input_be32": 5,
+    "runtime_szct": 1800,
+    "scsi_seconds": 180.0,
+    "arithmetic_wraps": false,
+    "hardware_spindle_time": "UNKNOWN"
+  },
+  "timer_enabled_in_oem": true,
+  "timer_conversion_reached_in_initializer": true,
+  "auxiliary": {
+    "F9": 15,
+    "FA": 50,
+    "FB": 5,
+    "FC": 0,
+    "FD": 0
+  },
+  "fc_override": null,
+  "second_half_nonzero_bytes": 0,
+  "second_half_category": "UNKNOWN"
+}

@@ -1,0 +1,90 @@
+{
+  "original_v8_sha256": "4b7ac3e5bd124d8e44281e9aa79b7b65f7b62c54410ffd1abd8af4a586d74e11",
+  "revised_sha256": "2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b",
+  "changed_bytes_v8_to_revised": 68,
+  "ranges": [
+    {
+      "file_offset": "0x0000C",
+      "end_exclusive": "0x00010",
+      "cpu_address": null,
+      "old": "c52ef5e7",
+      "new": "faa494bf"
+    },
+    {
+      "file_offset": "0x001FC",
+      "end_exclusive": "0x00200",
+      "cpu_address": null,
+      "old": "19ff89c9",
+      "new": "2426f5e2"
+    },
+    {
+      "file_offset": "0x0DBF6",
+      "end_exclusive": "0x0DBF9",
+      "cpu_address": "0xCBF6",
+      "old": "50eb22",
+      "new": "02fd00"
+    },
+    {
+      "file_offset": "0x0DC04",
+      "end_exclusive": "0x0DC07",
+      "cpu_address": "0xCC04",
+      "old": "50f322",
+      "new": "02fd08"
+    },
+    {
+      "file_offset": "0x10D00",
+      "end_exclusive": "0x10D10",
+      "cpu_address": "0xFD00",
+      "old": "00000000000000000000000000000000",
+      "new": "400302cbe302fd20400302cbf902fd20"
+    },
+    {
+      "file_offset": "0x10D20",
+      "end_exclusive": "0x10D2A",
+      "cpu_address": "0xFD20",
+      "old": "00000000000000000000",
+      "new": "c0a8c2afc0e0c0867586"
+    },
+    {
+      "file_offset": "0x10D2B",
+      "end_exclusive": "0x10D3F",
+      "cpu_address": "0xFD2B",
+      "old": "0000000000000000000000000000000000000000",
+      "new": "c082c083904e07e4f0d083d082d086d0e0d0a822"
+    },
+    {
+      "file_offset": "0x10FF8",
+      "end_exclusive": "0x11000",
+      "cpu_address": "0xFFF8",
+      "old": "d042940ac52ef5e7",
+      "new": "46ffb024faa494bf"
+    }
+  ],
+  "new_patches": [
+    {
+      "cpu": 52214,
+      "old": "50eb22",
+      "new": "02fd00"
+    },
+    {
+      "cpu": 52228,
+      "old": "50f322",
+      "new": "02fd08"
+    },
+    {
+      "cpu": 64768,
+      "old": "0000000000000000",
+      "new": "400302cbe302fd20"
+    },
+    {
+      "cpu": 64776,
+      "old": "0000000000000000",
+      "new": "400302cbf902fd20"
+    },
+    {
+      "cpu": 64800,
+      "old": "00000000000000000000000000000000000000000000000000000000000000",
+      "new": "c0a8c2afc0e0c086758600c082c083904e07e4f0d083d082d086d0e0d0a822"
+    }
+  ]
+}

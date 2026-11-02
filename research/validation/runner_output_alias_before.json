@@ -1,0 +1,38 @@
+{
+  "issue": "IO-001 unified runner result-log alias without history mode",
+  "original_source_sha256": "c114c9c00451e8cd2d02409ae5eff46f0f392de221e7c3c55a591843b2af9200",
+  "scope": "Disposable non-firmware input; all subprocess execution mocked",
+  "before": [
+    {
+      "kind": "symlink",
+      "reported_exit_code": 0,
+      "archived_original_untouched": true,
+      "disposable_original_was_overwritten": true,
+      "subprocess_calls": 5
+    },
+    {
+      "kind": "hardlink",
+      "reported_exit_code": 0,
+      "archived_original_untouched": true,
+      "disposable_original_was_overwritten": true,
+      "subprocess_calls": 5
+    }
+  ],
+  "ck_runner_before": {
+    "source_sha256": "2797a689c7cab5feaf3c7c44f2e5e4fc8e4eb00fa5d728d84e52dfa76006f7aa",
+    "cases": [
+      {
+        "kind": "symlink",
+        "reported_exit_code": 0,
+        "disposable_original_was_overwritten": true,
+        "subprocess_calls": 2
+      },
+      {
+        "kind": "hardlink",
+        "reported_exit_code": 0,
+        "disposable_original_was_overwritten": true,
+        "subprocess_calls": 2
+      }
+    ]
+  }
+}

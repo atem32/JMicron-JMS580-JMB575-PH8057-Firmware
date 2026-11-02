@@ -1,0 +1,53 @@
+[
+  {
+    "id": "CK-001",
+    "status": "FIXED",
+    "summary": "Original v8 may publish an ATA snapshot after native CBE3 inactive/abort return",
+    "cause": "Capture at735F precedes AEF4/CBE3; bothCY1 exits return without invalidating4E07; conditional94F9 commits stale result",
+    "proof": "tests/test_independent.py::test_v8_pre_abort_snapshot_is_not_published_by_revised_candidate; test_abort_suppression_keeps_ata_error_and_non_ck_status_policy",
+    "fix": "abort_guard.py hooksCBF6/CC04, tailsFD00/FD08, leafFD20..FD3E clears4E07 only onCY1",
+    "regression_evidence": "research/validation/ckcond_abort_regression.json; research/validation/abort_status_preservation.json; research/validation/abort_helper_abi.json",
+    "limitations": [
+      "Conditional execution of scheduled94F9; external reset scheduler not modeled",
+      "Factory abortCSW policy and UDMAresidue unchanged",
+      "Hardware RAM/loader/timing not qualified"
+    ]
+  },
+  {
+    "id": "CK-TOOL-001",
+    "status": "FIXED",
+    "summary": "Python-O disables expected-hook,zero-cave,duplicate-label assertions in old capture generator",
+    "cause": "Use of assert for production validation",
+    "proof": "research/validation/optimized_guard_regression.json runs same probe against original and corrected modules withpython-O",
+    "fix": "capture_wrappers.py explicitValueError guards",
+    "regression": "test_expected_byte_and_duplicate_label_guards_survive_optimization; test_patch_generator_rejects_every_corrupted_hook_and_allocated_cave",
+    "limitations": [
+      "Historical top-levelstockSHA/repacker also guarded image; this is anAPIguarddefect,notprooforiginalv8BINmalformed"
+    ]
+  },
+  {
+    "id": "CK-TEST-001",
+    "status": "FIXED",
+    "summary": "Assertion-based historical scripts could run optimized and omit checks",
+    "cause": "Runner did not rejectoptimizedmode or removePYTHONOPTIMIZE",
+    "fix": "run_tests.py andtests/test_config.py fail closed whenassertionsdisabled; childenvremovesPYTHONOPTIMIZE",
+    "regression": "Explicit test-configfailure inoptimizedmode andoriginalguardwitness;root runner can exercise public mode",
+    "limitations": [
+      "NativeISA/devicecoverage still limited by declaredfixtures"
+    ]
+  },
+  {
+    "id": "CK-VAL-001",
+    "status": "FIXED",
+    "summary": "Direct launch-site fixtures alone do not establish natural CDB-to-launch reachability",
+    "cause": "Integration helper calledselectednativeLCALLsite withsynthetic context",
+    "fix": "Added actual7BF4CBWparse,4A97SCSIdispatch,3804scheduledSATparser+BOTdispatcher tests; preservedoriginalassertions",
+    "regression": "test_actual_sat_dispatch_and_bot_launch_both_cdb_lengths; test_native_dispatch_wrong_direction_retains_stock_rejection",
+    "evidence": "research/validation/native_dispatch_coverage.json",
+    "limitations": [
+      "Explicit70B7readinessfixture",
+      "Nondataasynchronouslower scheduler remains bounded",
+      "112pairedscenarios=224CPUexecutions,not224independentcases"
+    ]
+  }
+]

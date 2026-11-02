@@ -1,0 +1,174 @@
+[
+  {
+    "file": "ds500u3_README.md",
+    "url": "https://raw.githubusercontent.com/9500/ds500u3-jms567-uas/main/README.md",
+    "sha256": "e4a327163fb88e7f13c4ddbc30a25f498903a9758287d12e3bc8ebcda5370ddf",
+    "bytes": 11576
+  },
+  {
+    "file": "ds500u3_LICENSE",
+    "url": "https://raw.githubusercontent.com/9500/ds500u3-jms567-uas/main/LICENSE",
+    "sha256": "933e45fbb1db782759120ba868d4c77e2fdf16fe4c67d5b51db26517c0fb43ce",
+    "bytes": 1316
+  },
+  {
+    "file": "emu8051_opcodes.c",
+    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/opcodes.c",
+    "sha256": "76e33619b88d60042f5275f62af6599a2b5495186d43ad18be477543b2f34263",
+    "bytes": 49387
+  },
+  {
+    "file": "emu8051_core.c",
+    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/core.c",
+    "sha256": "8f11018c38f6bdd5754cb9cb420d9ed3f07c3c4c71e18c68a37965e544c432d6",
+    "bytes": 16789
+  },
+  {
+    "file": "emu8051.h",
+    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/emu8051.h",
+    "sha256": "3cf6f070b8cd51791aeb2555dcfdcb75220b3931f1617c7e2a6148c0628a7a63",
+    "bytes": 7932
+  },
+  {
+    "file": "emu8051_LICENSE",
+    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/LICENSE",
+    "sha256": "3c05d81f8d97faa7f8acc73af3e1a41491d9cea7f7ed01e5b03ec5c4e9566751",
+    "bytes": 1068
+  },
+  {
+    "file": "usbmassbulk_10.pdf",
+    "url": "https://www.usb.org/sites/default/files/usbmassbulk_10.pdf",
+    "sha256": "9137e8eefaf366ba32c7f081719a75a403c48004d47f4252ec36d711dda84a23",
+    "bytes": 103609
+  },
+  {
+    "file": "8051_microchip.pdf",
+    "url": "https://www.microchip.com/content/dam/mchp/documents/OTH/ProductDocuments/UserGuides/doc4316.pdf",
+    "sha256": "23199710a421be935a822c95b6b96fc1f974fbe1ed86806feb3aad6a1e711cb1",
+    "bytes": 1739068
+  },
+  {
+    "file": "ds500u3_analysis.md",
+    "url": "https://raw.githubusercontent.com/9500/ds500u3-jms567-uas/main/docs/firmware-analysis.md",
+    "sha256": "4692c902563d8d49f317658ec2a0f20869cdc34a0f450695ae5b00bcd51d71a6",
+    "bytes": 11537
+  },
+  {
+    "file": "ds500u3_tests.md",
+    "url": "https://raw.githubusercontent.com/9500/ds500u3-jms567-uas/main/docs/test-log.md",
+    "sha256": "ee93cd8af891d2f34d979dd49b8e1f6ec964e508cf030d0565fda9f827541c45",
+    "bytes": 7326
+  },
+  {
+    "file": "jms567ctl_LICENSE",
+    "url": "https://raw.githubusercontent.com/projectgus/jms567ctl/main/LICENSE",
+    "sha256": "d2dc80ad52c478f7f3b092e4cccad36b06abd2ea255eb72dcdb7e3d4bddda492",
+    "bytes": 1458
+  },
+  {
+    "file": "jms578flash_LICENSE",
+    "url": "https://raw.githubusercontent.com/BertoldVdb/jms578flash/master/LICENSE",
+    "sha256": "cd69e4b93b4b5874157318115870584d4a4583ece9be73617f43e7d96073e5a2",
+    "bytes": 1078
+  },
+  {
+    "file": "jms567settings_LICENSE",
+    "url": "https://raw.githubusercontent.com/xx25/jms567settings/main/LICENSE",
+    "sha256": "22be3f66b7e58d8125e781910a7a16ba7c025655885d01534344cd165590332d",
+    "bytes": 1792
+  },
+  {
+    "file": "JMS580_product_brief.pdf",
+    "url": "https://www.jmicron.com/file/download/1053/JMS580.pdf",
+    "sha256": "41528fb3534f40221d691fc8dd6d2f60b02c89f968e3702c5cb8ca6de1bb5de1",
+    "bytes": 585784
+  },
+  {
+    "file": "JMB575_product_brief.pdf",
+    "url": "https://www.jmicron.com/file/download/1058/JMB575.pdf",
+    "sha256": "405cba95fccdc8aafeecfc49341b217ab59752209159def25c11be32619275ca",
+    "bytes": 223971
+  },
+  {
+    "file": "sat_pass_through_06291r1.pdf",
+    "url": "https://www.t10.org/ftp/t10/document.06/06-291r1.pdf",
+    "sha256": "38c95714e9594d21e7d9bebaa0b01e1585d30092dee38c135885801c927f501d",
+    "bytes": 152274
+  },
+  {
+    "file": "libata-scsi.c",
+    "url": "https://raw.githubusercontent.com/torvalds/linux/master/drivers/ata/libata-scsi.c",
+    "sha256": "f5c5c9a6e66a4271f4e78bc27b3f1625d464192357bc6a75fa760ad787a3fce3",
+    "bytes": 146076
+  },
+  {
+    "file": "usb_ch9.h",
+    "url": "https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/usb/ch9.h",
+    "sha256": "56ac789006af0e76a0cdfc671540aabc8da3f1edcab0c034518e2314c3e72ff8",
+    "bytes": 41079
+  },
+  {
+    "file": "actions_checkout_v6.json",
+    "url": "https://api.github.com/repos/actions/checkout/git/ref/tags/v6",
+    "sha256": "0c8d764a2a127180586b43336b681fbab150dad597157ae1dca02190a04f19c5",
+    "bytes": 329
+  },
+  {
+    "file": "actions_setup_python_v6.json",
+    "url": "https://api.github.com/repos/actions/setup-python/git/ref/tags/v6",
+    "sha256": "4fcd447b0b01b24650571b26198adc8c53900a97702f70c850f47829fbe27e70",
+    "bytes": 337
+  },
+  {
+    "file": "infineon_usb_configurator.pdf",
+    "url": "https://www.infineon.com/assets/row/public/documents/30/44/infineon-modustoolbox-usb-configurator-user-guide-usermanual-en.pdf",
+    "sha256": "3aa468eed529bdcd164bc5b2f8010fcdf9e16ec81b68d385eaf671889d368088",
+    "bytes": 292110
+  },
+  {
+    "file": "seagate_scsi_revj.pdf",
+    "url": "https://www.seagate.com/files/staticfiles/support/docs/manual/Interface%20manuals/100293068j.pdf",
+    "sha256": "38034051d46f3116bd5385110959f5d8751533ff175ffe0ec7e44a8f78acd019",
+    "bytes": 4958199
+  },
+  {
+    "name": "emu8051 upstream inspected commit",
+    "commit": "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8",
+    "url": "https://github.com/jarikomppa/emu8051"
+  },
+  {
+    "name": "9500 UAS inspected commit",
+    "commit": "743529e7a29febf501cc187b96f3691905ed3245",
+    "url": "https://github.com/9500/ds500u3-jms567-uas"
+  },
+  {
+    "bundled": "tools/emulator/oracle/LICENSE",
+    "sha256": "3c05d81f8d97faa7f8acc73af3e1a41491d9cea7f7ed01e5b03ec5c4e9566751",
+    "bytes": 1068,
+    "license": "MIT; retained in oracle/LICENSE"
+  },
+  {
+    "bundled": "tools/emulator/oracle/decode_bridge.c",
+    "sha256": "e596037e03afbd34ad7419deacc50a406d5a0431d90d2c521995e2976389fe4f",
+    "bytes": 712,
+    "license": "MIT; retained in oracle/LICENSE"
+  },
+  {
+    "bundled": "tools/emulator/oracle/emu8051.h",
+    "sha256": "3cf6f070b8cd51791aeb2555dcfdcb75220b3931f1617c7e2a6148c0628a7a63",
+    "bytes": 7932,
+    "license": "MIT; retained in oracle/LICENSE"
+  },
+  {
+    "bundled": "tools/emulator/oracle/emu8051_disasm.c",
+    "sha256": "0ea5dddc11310d8f1fcff475ff3e3f177ce8b0163b71444c2b937ad55021601e",
+    "bytes": 33045,
+    "license": "MIT; retained in oracle/LICENSE"
+  },
+  {
+    "verification": "Bundled historical upstream disassembler matches freshly fetched pinned primary source exactly",
+    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8/disasm.c",
+    "sha256": "0ea5dddc11310d8f1fcff475ff3e3f177ce8b0163b71444c2b937ad55021601e",
+    "bytes": 33045
+  }
+]

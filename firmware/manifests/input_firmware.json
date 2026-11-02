@@ -1,0 +1,280 @@
+{
+  "files": [
+    {
+      "name": "JMS580_00.02.00.02_Blueendless_U23TC_UPDATE.BIN",
+      "sha256": "ee9024d1abe886af2878aa469618826e3f1c370c7f3477badb3cfa28a94e4cfc",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 2,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/JMS580_00.02.00.02_Blueendless_U23TC_UPDATE.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "JMS580_BIWIN-Release-v162.03.00.01-20181204.BIN",
+      "sha256": "c6147a3ccdb34bbd3f24d25b544418eb305a6b22e49f318f66054452351fc670",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 2,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/JMS580_BIWIN-Release-v162.03.00.01-20181204.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "JMS580_FW_194.01.00.01.BIN",
+      "sha256": "5571a697dc3284b51b9d054c297b623460dc04d2e3c9bfa6da3c4c2beb1260a3",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 2,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/JMS580_FW_194.01.00.01.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "JMS580_G-3501-A-10G-Release-v168.01.00.01-20220316.BIN",
+      "sha256": "ba0805c80658c0c12f47b27e316900c04fb61c83a2fb01e5e539062cc935091a",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 2,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/JMS580_G-3501-A-10G-Release-v168.01.00.01-20220316.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "JMS580_HIKSEMI-PSSD-131.06.00.01.BIN",
+      "sha256": "40a4763ea54f19fdd8c89af78762f8d1828bf02372959272c63eda70e575c1b1",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 3,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/JMS580_HIKSEMI-PSSD-131.06.00.01.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "JMS580_STD_Release_v00.02.00.04_20181109_Bus Power.BIN",
+      "sha256": "4cd61e028d9a455b17f73b806022bbcff9de339efd6693c5f794ec11de2b383b",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 2,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/JMS580_STD_Release_v00.02.00.04_20181109_Bus Power.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "JMS580_Sandbox-v255.01.00.02-20190701.BIN",
+      "sha256": "61a8b6b452e384690d9c2968a0449793bcd8cb4bb18423bfa357aae4289f7f9e",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 3,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/JMS580_Sandbox-v255.01.00.02-20190701.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "Orico 152D JMS580 M.2 SSD FW with NVRAM.BIN",
+      "sha256": "b9acde2388ed4e2b3ae0ebee15bf857988ad03d5b0a5bbf1bbf9e8b318c5faf8",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 2,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/Orico 152D JMS580 M.2 SSD FW with NVRAM.BIN",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "backup.bin",
+      "sha256": "32dd2c643a52e85bf6fbf10f1ebbf134455c763e3cdcff207833810a0a6cfed9",
+      "size": 67072,
+      "classification": "JMS580 donor update container",
+      "layout": {
+        "code_offset": "0x400",
+        "oem_offset": "0x10400"
+      },
+      "occurrences": 3,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/donor_JMS580/backup.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "PH8057_FACTORY_COMPLETE_READBACK_DO_NOT_FLASH.bin",
+      "sha256": "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09",
+      "size": 70144,
+      "classification": "PH8057 full factory",
+      "layout": {
+        "code_offset": "0x1000",
+        "oem_offset": "0x11000"
+      },
+      "occurrences": 7,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/firmware/PH8057_FACTORY_COMPLETE_READBACK_DO_NOT_FLASH.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "PH8057_v8_EXPERIMENTAL_DO_NOT_FLASH.bin",
+      "sha256": "4b7ac3e5bd124d8e44281e9aa79b7b65f7b62c54410ffd1abd8af4a586d74e11",
+      "size": 70144,
+      "classification": "PH8057 original experimental CK_COND v8",
+      "layout": {
+        "code_offset": "0x1000",
+        "oem_offset": "0x11000"
+      },
+      "occurrences": 5,
+      "source": "f3b3148c740947cb/PH8057_HANDOVER_V2-V29_2026-11-02/firmware/PH8057_v8_EXPERIMENTAL_DO_NOT_FLASH.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "ph8057-original.bin",
+      "sha256": "131bab19b558a25745c881c3c4193fd1f9fb541c0a6c89c7961bad31cecc60b2",
+      "size": 65536,
+      "classification": "PH8057 truncated SPI prefix",
+      "layout": {
+        "code_offset": "0x1000",
+        "complete_code": false,
+        "oem_present": false
+      },
+      "occurrences": 8,
+      "source": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/firmware/stock/ph8057-original.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "PH8057_GENERAL_CKCOND_LAB_DO_NOT_FLASH.img",
+      "sha256": "22d4ef8f7adaa679c2b11b0e634a84c0888d65104044269b9bd32aefe3bc3e53",
+      "size": 65536,
+      "classification": "obsolete experimental patch of truncated SPI prefix",
+      "layout": {
+        "code_offset": "0x1000",
+        "complete_code": false,
+        "oem_present": false
+      },
+      "occurrences": 2,
+      "source": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/archives/historical_lab_do_not_flash/PH8057_GENERAL_CKCOND_LAB_DO_NOT_FLASH.img",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "PH8057_PIO_COMPLETION_LAB_V2_DO_NOT_FLASH.img",
+      "sha256": "0a9bc1e1c9ab90a8ad19e9d9f2df271549e5f6d509db62daf0b00dd4be70ba8f",
+      "size": 65536,
+      "classification": "obsolete experimental patch of truncated SPI prefix",
+      "layout": {
+        "code_offset": "0x1000",
+        "complete_code": false,
+        "oem_present": false
+      },
+      "occurrences": 2,
+      "source": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/archives/historical_lab_do_not_flash/PH8057_PIO_COMPLETION_LAB_V2_DO_NOT_FLASH.img",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "PH8057_PIO_DATAIN_LAB_V3_DO_NOT_FLASH.img",
+      "sha256": "94b093ab7293bfe3f94587e8a4a4cbdd1692fc17e99663b72c5ee3529831c35f",
+      "size": 65536,
+      "classification": "obsolete experimental patch of truncated SPI prefix",
+      "layout": {
+        "code_offset": "0x1000",
+        "complete_code": false,
+        "oem_present": false
+      },
+      "occurrences": 2,
+      "source": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/archives/historical_lab_do_not_flash/PH8057_PIO_DATAIN_LAB_V3_DO_NOT_FLASH.img",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "ph8057-stock-10000-111ff.bin",
+      "sha256": "083e5851cbdc17e0d641a33c8027d6a8e68d023995a03b6186fa134b7122e190",
+      "size": 4608,
+      "classification": "factory capture tail at file0x10000",
+      "layout": {
+        "source_file_offset": "0x10000"
+      },
+      "occurrences": 5,
+      "source": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/working_v8/ph8057_v8/ph8057_v7/input/stock_flash_tail3/ph8057-stock-10000-111ff.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "PH8057_FACTORY_OEM_NVRAM_512.bin",
+      "sha256": "9521e63007a1289846438195896ef2908a6ccd695c983f90b54fd501eb00e635",
+      "size": 512,
+      "classification": "factory OEM block",
+      "layout": {
+        "source_file_offset": "0x11000"
+      },
+      "occurrences": 4,
+      "source": "0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/working_v8/ph8057_v8/ph8057_v7/PH8057_FACTORY_OEM_NVRAM_512.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "LUN2_pio_LBA010000_original_512.bin",
+      "sha256": "076a27c79e5ace2a3d47f9dd2e83e4ff6ea8872b3c2218f66c92b89b55f36560",
+      "size": 512,
+      "classification": "historical saved512-byte disk-sector payload, not firmware",
+      "layout": {},
+      "occurrences": 35,
+      "source": "ef5410009c7ba6b3/stock_v11_2_test/LUN2_pio_LBA010000_original_512.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "LUN1_pio_LBA010000_original_512.bin",
+      "sha256": "004186298ceae66bc25a864efa5265dad8de5a959f52c9d187ca9c27f8c8c050",
+      "size": 512,
+      "classification": "historical saved512-byte disk-sector payload, not firmware",
+      "layout": {},
+      "occurrences": 24,
+      "source": "ef5410009c7ba6b3/stock_v11_2_test/LUN1_pio_LBA010000_original_512.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "c1_sdd_lba010000_linux_block_buffered.bin",
+      "sha256": "1040d067bd35173a0dc20234420cff751a6d9b4b511872a74824d0fb0c309e4b",
+      "size": 512,
+      "classification": "historical saved512-byte disk-sector payload, not firmware",
+      "layout": {},
+      "occurrences": 23,
+      "source": "478c51bead8f5d2d/stock_v12_test/captures/c1_sdd_lba010000_linux_block_buffered.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "c1_sde_lba010000_scsi_read10.bin",
+      "sha256": "bade9706a34f608622b14b30121fea2be4d03972950a1a54bd7c69c559282aa4",
+      "size": 512,
+      "classification": "historical saved512-byte disk-sector payload, not firmware",
+      "layout": {},
+      "occurrences": 35,
+      "source": "478c51bead8f5d2d/stock_v12_test/captures/c1_sde_lba010000_scsi_read10.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    },
+    {
+      "name": "c1_sdc_lba010010_ata_pio_read.bin",
+      "sha256": "79843514db3ffac733cbccfff86721dd162b47768e971e70e40e0cc85ab39acc",
+      "size": 512,
+      "classification": "historical saved512-byte disk-sector payload, not firmware",
+      "layout": {},
+      "occurrences": 10,
+      "source": "478c51bead8f5d2d/stock_v12_test/captures/c1_sdc_lba010010_ata_pio_read.bin",
+      "public_binary_redistribution": "NOT_AUTHORIZED_OR_ESTABLISHED"
+    }
+  ],
+  "unique_bin_payloads": 19,
+  "unique_img_payloads": 3,
+  "vendor_rights": "UNKNOWN"
+}

@@ -1,0 +1,85 @@
+{
+  "variant": "udma-trace",
+  "filename": "PH8057_UDMA_TRACE_ONLY_DO_NOT_FLASH.bin",
+  "status": "EXPERIMENTAL / DO NOT FLASH",
+  "candidate_hardware_tests": 0,
+  "source_sha256": "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09",
+  "candidate_sha256": "a4bf69164548003a26efebcb3f5fd6e59d0dfc3321eeda2ffb97d6e36ba63712",
+  "image_size": 70144,
+  "crc": {
+    "header": "698135A8",
+    "metadata": "C8ABCF58",
+    "code": "278995AD",
+    "full": "95406CEB"
+  },
+  "changed_bytes_vs_stock": 27,
+  "oem_unchanged": true,
+  "udma_residue_fix": false,
+  "udma_trace_only": true,
+  "ckcond_abort_guard": false,
+  "patches": [
+    {
+      "cpu": "0x7377",
+      "file_offset": "0x08377",
+      "length": 5,
+      "old": "e4ff12aef4",
+      "new": "12e7000000"
+    },
+    {
+      "cpu": "0xE700",
+      "file_offset": "0x0F700",
+      "length": 8,
+      "old": "0000000000000000",
+      "new": "e4ff12aef4000022"
+    }
+  ],
+  "actual_byte_differences": [
+    {
+      "file_offset": "0x0000C",
+      "end_exclusive": "0x00010",
+      "cpu_address": null,
+      "old": "2fd3716f",
+      "new": "95406ceb"
+    },
+    {
+      "file_offset": "0x001FC",
+      "end_exclusive": "0x00200",
+      "cpu_address": null,
+      "old": "452bd627",
+      "new": "c8abcf58"
+    },
+    {
+      "file_offset": "0x08377",
+      "end_exclusive": "0x0837C",
+      "cpu_address": "0x7377",
+      "old": "e4ff12aef4",
+      "new": "12e7000000"
+    },
+    {
+      "file_offset": "0x0F700",
+      "end_exclusive": "0x0F705",
+      "cpu_address": "0xE700",
+      "old": "0000000000",
+      "new": "e4ff12aef4"
+    },
+    {
+      "file_offset": "0x0F707",
+      "end_exclusive": "0x0F708",
+      "cpu_address": "0xE707",
+      "old": "00",
+      "new": "22"
+    },
+    {
+      "file_offset": "0x10FF8",
+      "end_exclusive": "0x11000",
+      "cpu_address": "0xFFF8",
+      "old": "106000212fd3716f",
+      "new": "278995ad95406ceb"
+    }
+  ],
+  "symbols": {
+    "udma_observe_before": "0xE700",
+    "udma_observe_after": "0xE705"
+  },
+  "qualification": "Offline instructions and explicit fixtures only; no device, interrupts, SRAM ownership or SPI qualification"
+}

@@ -1,0 +1,514 @@
+{
+  "schema": 1,
+  "scope": "Every repository file except this self-describing manifest",
+  "files": {
+    ".github/workflows/offline.yml": {
+      "size": 698,
+      "sha256": "8e624c2dcbb6e4cc274632d3f0a4e9e4adc0d99e40867a37137c24bb5718fc5b"
+    },
+    ".gitignore": {
+      "size": 137,
+      "sha256": "d0403462352e43a707fc6f7df0f78dee381013fa1fcc887d8e80da5f76e0e25f"
+    },
+    "CHANGELOG.md": {
+      "size": 1985,
+      "sha256": "f41072bdbb443d6c5063f97eab4383a9b033bb8ea51396240aceec73bdc4259c"
+    },
+    "LICENSE": {
+      "size": 1473,
+      "sha256": "61c8ad0fcbf4b5325632553ab27fd7023675c86aed844b762cb7ade9b65ec40f"
+    },
+    "NOTICE.md": {
+      "size": 5066,
+      "sha256": "84803a063e0cbc781dcb64119e064a340d67c7bcac267c414a9e9e2545e40e8d"
+    },
+    "README.md": {
+      "size": 14856,
+      "sha256": "c74aeea62a81da000a3434cc0a398a2325e5a3e0832ca3a875e023f3a71af5ae"
+    },
+    "docs/architecture.md": {
+      "size": 5815,
+      "sha256": "1c3aaa037cef5e1843c47834d1d99b57c03bb34c252436d43346a4d811bdf7b9"
+    },
+    "docs/final-status.md": {
+      "size": 6726,
+      "sha256": "dd2fea6e108d04ccd33eb43716b1e7612efbc23e8b27c4bf91e1119b4d61de51"
+    },
+    "docs/firmware-layout.md": {
+      "size": 3927,
+      "sha256": "7b61bdbfd4357f8d679cf63baf676b86fda50e8de4edce60933c72f66bab8a75"
+    },
+    "docs/firmware-validation-report.md": {
+      "size": 8065,
+      "sha256": "7fb52d017efb7614da736775b4ded90c247f2531a72bf9ef13aafb342c7ba4e3"
+    },
+    "docs/historical-labs.md": {
+      "size": 3879,
+      "sha256": "9c6f5ceb342af67d6208062fdb685631f193379a8d55380efc969b030b79c049"
+    },
+    "docs/independent-audit-and-fix-report.md": {
+      "size": 28488,
+      "sha256": "7587c04f6c1b4ba0d59cf497e96fd5f4115be17f24a4e9a25df0af8793d52345"
+    },
+    "docs/limitations.md": {
+      "size": 5934,
+      "sha256": "7fccac09c82d3231072e11ce51abc409c8dad8106c3030ee191943f4f7113771"
+    },
+    "docs/oem-reference.md": {
+      "size": 98578,
+      "sha256": "2737b49f6f63de3f3d9049a13ec69c8412ad73d4579d44e1f30224d755537821"
+    },
+    "docs/postflash-hardware-check-2026-11-02.md": {
+      "size": 3407,
+      "sha256": "3db75b77c109f2f34dc509088b1230852cb92ff1b3cc41c4601c2d21f3a85a13"
+    },
+    "docs/references.md": {
+      "size": 5302,
+      "sha256": "9b9d6bed423e6cfd3578c2f2c75c5a5c384fff248dc26673e6e4c6b8932496b0"
+    },
+    "docs/smart-ckcond-fix.md": {
+      "size": 13483,
+      "sha256": "f37e7d516cb5ff76cc59d15c510550e4c70d1e59f402cd13d5dd4ccd9c2f8c11"
+    },
+    "docs/udma-csw-residue.md": {
+      "size": 18926,
+      "sha256": "16722a4501c99b89ad1288d7d1118e1155c6180deb875b9496a1d1c0f7a09238"
+    },
+    "docs/validation.md": {
+      "size": 9779,
+      "sha256": "66d5737807ff01694665334b9525f074f4e283448b985c711d7b7aab8e14c0c9"
+    },
+    "firmware/experimental/README.md": {
+      "size": 625,
+      "sha256": "f2b0b75b5db1c1ef771953a96b276f6525918f62b4634b8ef1a0cab112e06a05"
+    },
+    "firmware/manifests/ckcond-revised_manifest.json": {
+      "size": 38058,
+      "sha256": "4a232a07c2ed22b6d61936732480f8c037fbb24fb1c462b816060b11f094cf00"
+    },
+    "firmware/manifests/ckcond-v8_manifest.json": {
+      "size": 36206,
+      "sha256": "a71fda47350e8e2a99c9f8e1b36c7d6afd6617407edf611a2af8ad9eeaa7bc7d"
+    },
+    "firmware/manifests/combined-revised-trace_manifest.json": {
+      "size": 38919,
+      "sha256": "cf6a230bdfd819ac2b4acd5d5514a7073e44a3020948c7101b42317d2718ba24"
+    },
+    "firmware/manifests/historical_partial_image_diffs.json": {
+      "size": 12930,
+      "sha256": "604f5487e369dcf1c792f2f51bdf815c1be33aece14d30de6fe3630119ddd02c"
+    },
+    "firmware/manifests/input_firmware.json": {
+      "size": 11969,
+      "sha256": "2e8d795817a5fef69f57aa9378927ddf6369958b95563a3e069b88dce3236706"
+    },
+    "firmware/manifests/udma-trace_manifest.json": {
+      "size": 2150,
+      "sha256": "1a5da0fd5936e082595e4cd0d9c68ded87866a790fdaae4e62a9d66f74adb229"
+    },
+    "firmware/manifests/v8_to_revised_diff.json": {
+      "size": 2211,
+      "sha256": "e97dcc8337d0920dea0d38067fc3bb4a28bc991b5da09a0349d937913a6b54fd"
+    },
+    "firmware/original/README.md": {
+      "size": 568,
+      "sha256": "e11f778def4b874a23c5a7b566b087b79e2643dba873de8ebf70690747fe5d1f"
+    },
+    "firmware/ph8057-device/README.md": {
+      "size": 975,
+      "sha256": "4916959508767f10749c68fe331723f4b7b41ca4e1fc03179d8eb271bc732040"
+    },
+    "firmware/ph8057-device/modified/README.md": {
+      "size": 1747,
+      "sha256": "b227eeb724bb22e8f8f44c2eef167bd438e6ab1405497fb5769429ee9db3c587"
+    },
+    "firmware/ph8057-device/modified/build_from_1bin.py": {
+      "size": 5649,
+      "sha256": "886d9219b5bc2d7ad988ee02537749df2fe9b294c0448c520c0ce391685a1526"
+    },
+    "firmware/ph8057-device/modified/ckcond_revised_patch_records.json": {
+      "size": 12454,
+      "sha256": "1fc799cd1de473282f5524285ad5ab2e2aa5aea2bdd3020929c227573a92b2f6"
+    },
+    "firmware/ph8057-device/modified/verify_device_build.py": {
+      "size": 1354,
+      "sha256": "16ecccf98782d1dd97e62182fa4b4cf57083cfcde9f8e76f25bb0f2879214567"
+    },
+    "firmware/ph8057-device/original/README.md": {
+      "size": 943,
+      "sha256": "8226a6c054be943f1d3a8a25aa49f7baae4a6e5e54216fc423579eff4bffdf0f"
+    },
+    "ph8057.py": {
+      "size": 5181,
+      "sha256": "e0e5fa56212d6de9bb7435fd5159c62074175c0bd4a65edf5d1f20858b2d169d"
+    },
+    "research/external_sources.json": {
+      "size": 6652,
+      "sha256": "5682485939d54201c5c39cd016ecf5e2e7ecafcbcb1c0e5ca5880383102df091"
+    },
+    "research/findings/ckcond.json": {
+      "size": 3016,
+      "sha256": "f7ed5678ba4b7036beabe0d32de1f82e5e64aea9473b5266544a380a3ca4d020"
+    },
+    "research/findings/issues.json": {
+      "size": 23187,
+      "sha256": "ac8996c438a7cb005807376ad20d4e1117a90494c46276f68d2bbc8f59f6207e"
+    },
+    "research/findings/oem.json": {
+      "size": 9205,
+      "sha256": "df9862005a9576f23d1f915cf533026bc9f1614e22b43840b9fd67a7007abe2f"
+    },
+    "research/findings/udma.json": {
+      "size": 4984,
+      "sha256": "21be1bcebda19e025a2b60b96abc11ae1a231923cd880e096233973c4ec50a72"
+    },
+    "research/historical/README.md": {
+      "size": 5129,
+      "sha256": "649801511122a434e2d49ccaefa1a6535e62a5d837d10d8a018ab2bb47fe3bd8"
+    },
+    "research/historical/input_summary.json": {
+      "size": 791,
+      "sha256": "acab73fb06858caeebbb51a5cf5390d52375eb3a79e15a5a5096ea28a6ec620f"
+    },
+    "research/oem/mmio_dependencies.json": {
+      "size": 2963,
+      "sha256": "aa6f444053ac09c6402ee5d3727750190a14bc8ff04f658bb2eafc16bd59d7c1"
+    },
+    "research/oem/oem_32_bits.csv": {
+      "size": 3909,
+      "sha256": "bed95f9a8494b6b119fd2d82f69dbb122b099951647928c71a0dadadf909cb0b"
+    },
+    "research/oem/oem_512_bytes.csv": {
+      "size": 75885,
+      "sha256": "ebb126fa73284d76e9ad47a3b39a353d44f2898e558cf39b4798b2e3cd12bf0a"
+    },
+    "research/oem/oem_512_bytes.json": {
+      "size": 186702,
+      "sha256": "9e73a1d717358cc372da47f73fbd36a9da9f8620f2863fc085f6fd72dc470d22"
+    },
+    "research/oem/oem_decoded.json": {
+      "size": 10126,
+      "sha256": "7b07da601291d88c3cdaab21ad8d27fab41b53bdcbff47eb93350c46c0a2f84b"
+    },
+    "research/usb/supplied_bot_excerpt.json": {
+      "size": 971,
+      "sha256": "91f56544c01a1974d0aede80f3f92a1608a1e84818f26f7933ca4dfead4bd0d4"
+    },
+    "research/validation/README.md": {
+      "size": 1224,
+      "sha256": "a539bbbe88195ab508b3bf433004301e868476753c373f4d6708803310d95be8"
+    },
+    "research/validation/abort_helper_abi.json": {
+      "size": 394,
+      "sha256": "831f51cbdb5708af03ca143ce931a22899db5ad6e72fc4c0d21c9844e7735789"
+    },
+    "research/validation/abort_status_preservation.json": {
+      "size": 7417,
+      "sha256": "b949b5f93db560fddb8999a761421e92e8dc8c1b9ba4c0d48db91be6bd0d13d5"
+    },
+    "research/validation/ckcond_abort_regression.json": {
+      "size": 1331,
+      "sha256": "5bac89e5f9baeb6c4652ac96cd454f5cfc3d07127e23678a59ce9e3a2b4d8a98"
+    },
+    "research/validation/ckcond_status.json": {
+      "size": 2422,
+      "sha256": "c055dd71a33c8fd48cf67734c4c3977e8ae1f3351699a5d9d77b1eddbd62c610"
+    },
+    "research/validation/ckcond_suite_results.json": {
+      "size": 2454,
+      "sha256": "bfc653e79f2cecfc74e41aad995df0906a3cd73d77d2f3a3b0ebeebb5f6f1933"
+    },
+    "research/validation/full_suite_summary.json": {
+      "size": 9910,
+      "sha256": "fd5bb8c95f20f65941595e99cf0e29f9ecd90d01d4ddea04ebf34c7ca86a98c4"
+    },
+    "research/validation/historical_check_classification.json": {
+      "size": 28602,
+      "sha256": "d4dde186c9ee9d961b244e46f907942a9dd7f110427c6b4e972984aca53b0440"
+    },
+    "research/validation/historical_early_summary.json": {
+      "size": 7145,
+      "sha256": "44a31a5119851247f3c69ecaa213bd4ddc379bde9eec141b4b1606038233a03a"
+    },
+    "research/validation/historical_guard_count_audit.json": {
+      "size": 2978,
+      "sha256": "91a46acb536d72216cf20da7ce1fcd13281cf5f6813e8421ec8bd10c8728b8ac"
+    },
+    "research/validation/historical_labs.json": {
+      "size": 7914,
+      "sha256": "b01bd6fdce0a275c104d21396e24178337ceae2cc1323e567ab8c061722dd571"
+    },
+    "research/validation/input_integrity.json": {
+      "size": 209,
+      "sha256": "5e255713f54c94b6ada12d82fe47eceb0d77eeb91707722ff82f0d3e3f8978d8"
+    },
+    "research/validation/missing_v3_source_review.json": {
+      "size": 6851,
+      "sha256": "8c8e114140a1b76d271029c5bf4bd23b5cc5dbddf9885dd8158ec8c3282e8950"
+    },
+    "research/validation/native_dispatch_coverage.json": {
+      "size": 273,
+      "sha256": "248a51b3262d719dafe614dbc31a88b58c890b457543dbe3fc06dec2eb574fa0"
+    },
+    "research/validation/native_oem.json": {
+      "size": 5407,
+      "sha256": "aa531fdbfb025f14768d7cfc3c1a03970a61a36a4c1c22eb1674d631806d2783"
+    },
+    "research/validation/oem_appendix_review.json": {
+      "size": 546,
+      "sha256": "e95c40891f5765af05fc46b5c6377e1b1b667d0d34a6d0bdd4023a87278523f3"
+    },
+    "research/validation/optimized_guard_regression.json": {
+      "size": 438,
+      "sha256": "1bab17c20db7daba17eecfc5a1cd09276f228b96961059b62cbb1c5966f4e4ac"
+    },
+    "research/validation/public_suite_summary.json": {
+      "size": 8694,
+      "sha256": "5f06c9622fc3b7c289cb32ba9277a4ac65ce200102d0376021bb17b34e1d7c17"
+    },
+    "research/validation/runner_output_alias_before.json": {
+      "size": 1110,
+      "sha256": "f9cc08263b0321a6a8f1094f8da708c9e4ef945b4e15331573602f310b036dee"
+    },
+    "research/validation/udma_native_results.json": {
+      "size": 94578,
+      "sha256": "e03cbfe5d37e480a7079cde41b2b686854de1f8f92a533bf892a798c6e99dc0f"
+    },
+    "run_tests.py": {
+      "size": 9711,
+      "sha256": "aa1990d058e2294750f16fe2f5329c99b0d03d71cef71c45c653ba7bffd6eb6d"
+    },
+    "software/windows-flasher/README.md": {
+      "size": 1247,
+      "sha256": "3c2cc1bdcc1b9e52a4a531aba71c0c2338f2732b7ed093e3eb376c5420c101be"
+    },
+    "tests/hardware/QUALIFICATION_PLAN.md": {
+      "size": 5382,
+      "sha256": "6172e569b017c8dd5c3ac49f57f9f77c6a5abb16c94c4b067c2f1deb7e3a187e"
+    },
+    "tests/integration/test_history.py": {
+      "size": 12836,
+      "sha256": "c90824da8c6ef94879f1a51fba812c3c2f88d5aace8a01669407edaf85680f28"
+    },
+    "tests/integration/test_release.py": {
+      "size": 10040,
+      "sha256": "ebbed3f88ce4771b2dd2fadb885ca05ce1866e8babf8c7eecd2d8498df9b88b5"
+    },
+    "tests/regression/test_oem.py": {
+      "size": 7067,
+      "sha256": "69e7168d20630d7f0aacf7cbcd6db8b3ff850e5c80d163b58c2791b2d34dbf20"
+    },
+    "tools/analysis/firmware_inspect.py": {
+      "size": 3317,
+      "sha256": "7d1f1c1e10a31b4cbff6d28d2d491e07a18fd2139bc8ba382bed993a9312c95c"
+    },
+    "tools/analysis/native_oem.py": {
+      "size": 31852,
+      "sha256": "b76e9bb074174c8dc0453f7a8c9ba9ccea3d365e90ed5ed12c983123fd29acf0"
+    },
+    "tools/analysis/oem.py": {
+      "size": 21392,
+      "sha256": "52254ba6508f84c5544f561c628b2e4c17fe9895390ceb06171cfccd2e45783d"
+    },
+    "tools/emulator/mcs51.py": {
+      "size": 24681,
+      "sha256": "c3ed1f54acc20564ab67b6e85e4bf26e22d6ef92ac25f5feeac9f7b5781446b7"
+    },
+    "tools/emulator/oracle/LICENSE": {
+      "size": 1068,
+      "sha256": "3c05d81f8d97faa7f8acc73af3e1a41491d9cea7f7ed01e5b03ec5c4e9566751"
+    },
+    "tools/emulator/oracle/decode_bridge.c": {
+      "size": 712,
+      "sha256": "e596037e03afbd34ad7419deacc50a406d5a0431d90d2c521995e2976389fe4f"
+    },
+    "tools/emulator/oracle/emu8051.h": {
+      "size": 7932,
+      "sha256": "3cf6f070b8cd51791aeb2555dcfdcb75220b3931f1617c7e2a6148c0628a7a63"
+    },
+    "tools/emulator/oracle/emu8051_disasm.c": {
+      "size": 33045,
+      "sha256": "0ea5dddc11310d8f1fcff475ff3e3f177ce8b0163b71444c2b937ad55021601e"
+    },
+    "tools/emulator/ph8057_fixtures.py": {
+      "size": 927,
+      "sha256": "4eb0751a05c330f5db66c3019c4c6c00ee4bb8d5a8efd7dca2313c0d03e4c290"
+    },
+    "tools/emulator/tests/test_decoder_oracle.py": {
+      "size": 4230,
+      "sha256": "480e3a1a0542757a4cd69656dbf7295c1556dbe81c2c604e0702edf0fdb1d115"
+    },
+    "tools/emulator/tests/test_mcs51_audit.py": {
+      "size": 8196,
+      "sha256": "fc475942bf620b7d1f4af637850d6595e1c50a85c427f0897122af2cd9c63f58"
+    },
+    "tools/emulator/tests/test_mcs51_legacy.py": {
+      "size": 6269,
+      "sha256": "f7416fd348bca3bd5bfedbbe07533cdbdd5a317fe0348f71f74c2ddb3105f387"
+    },
+    "tools/history/count_legacy_assertions.py": {
+      "size": 5487,
+      "sha256": "ffe0dad395dcd57b0274bd95d40c43acd7bc38a887f99a8df7075f04bfa53f49"
+    },
+    "tools/history/extract_history.py": {
+      "size": 6307,
+      "sha256": "7ed569f98838dc1574ebe59a83e81d05ab35b0287c7af737746583bf2c5ed34b"
+    },
+    "tools/history/provenance.py": {
+      "size": 7407,
+      "sha256": "7831dd5ec0a98ea33d36fa61b462bd1d9006036b518977da4db004115e7afc44"
+    },
+    "tools/history/replay_early.py": {
+      "size": 7451,
+      "sha256": "695ecf004fb1032fa643e76dbc541d741e8f0ed6ed988b506713e2ed753bc91d"
+    },
+    "tools/history/replay_labs.py": {
+      "size": 15734,
+      "sha256": "117312d1a5e9fbaa2f315721038fb3d9afc61354b980c42c71e21a43fd1ffc26"
+    },
+    "tools/history/replay_legacy_early.py": {
+      "size": 7975,
+      "sha256": "1d084d26ea2ea8d09e67117d0232c5733ae890aa7612ffb441204b670d2018e9"
+    },
+    "tools/history/replay_legacy_oem.py": {
+      "size": 5722,
+      "sha256": "0505e4576936aa1a4c6bbde8abcce73f985420589f46e968618df73b8383d368"
+    },
+    "tools/history/replay_original_v8.py": {
+      "size": 2511,
+      "sha256": "672d6a50335a97d5f431424261429ef1f8caa6765a416894f57474485fea88c0"
+    },
+    "tools/history/reviewed_history_manifest.json": {
+      "size": 156752,
+      "sha256": "c009192ed5fac0b234773daaa190e7e4371b9f0f237aad32f5c4039b6b731e0f"
+    },
+    "tools/history/supplied_files.json": {
+      "size": 296321,
+      "sha256": "63886391bf4306e966196c61f50b0203f8bfe1d61c2c9c71c746ddb68837f792"
+    },
+    "tools/history/verify_supplied.py": {
+      "size": 2185,
+      "sha256": "04c3cfa46566fece798e977201d9bfeb0aca38d4463331cd03b88dafd99c7b73"
+    },
+    "tools/patching/ckcond/abort_guard.py": {
+      "size": 2343,
+      "sha256": "dc17fc58fc82dc85cc0c80651fd06e308b2056d74f1ce05c7203290f29c13753"
+    },
+    "tools/patching/ckcond/asm51.py": {
+      "size": 4954,
+      "sha256": "07b418c14cdaaff4cda3007ed3bd74e87d4f53db59504234807c0705530c2f89"
+    },
+    "tools/patching/ckcond/build_ckcond.py": {
+      "size": 4764,
+      "sha256": "a769323f25c25b8dd55cdf195e67761f770c5f88a08e442c17eaba469811620b"
+    },
+    "tools/patching/ckcond/capture_wrappers.py": {
+      "size": 6406,
+      "sha256": "d7d1848c36cf9a11c8460ba17b905f2bd4e45b85954b3bd256599d55e7ebe49f"
+    },
+    "tools/patching/ckcond/core_patch.py": {
+      "size": 12793,
+      "sha256": "94ae4bbadf1c3e8b10e3e92c6b31955016d0707c8be13067e623ff34ad7968ed"
+    },
+    "tools/patching/ckcond/e5_replay_fixture.json": {
+      "size": 362,
+      "sha256": "1372c9ab3aae72896ceed578ddf1d75e9f3bce3f5d2fd19ad97b8718b14135b2"
+    },
+    "tools/patching/ckcond/image.py": {
+      "size": 7914,
+      "sha256": "4e9b11b1eaa79cfd9ac4cc38972b3c66056aee8cbaf06ea40aa5029861009425"
+    },
+    "tools/patching/ckcond/run_tests.py": {
+      "size": 3702,
+      "sha256": "113514815fb0859762cf63d80aca2043aa0e002dffc90a7490ff547d0683f895"
+    },
+    "tools/patching/ckcond/sense_patch.py": {
+      "size": 9636,
+      "sha256": "9dc6dbd5d68f3377ac8a19ca34f277943cf18f9cfb46c6bf945b0356a7ebf75d"
+    },
+    "tools/patching/ckcond/tests/dis51.py": {
+      "size": 3625,
+      "sha256": "d1b24dd7a603834290f0ad55ee0041c03037703e6b424a2bfc0c895b206f8edc"
+    },
+    "tools/patching/ckcond/tests/test_asm51.py": {
+      "size": 2430,
+      "sha256": "d3fbf73202a0efeed0da76f10027ee4575602fd9679247bc87c2d126271048c7"
+    },
+    "tools/patching/ckcond/tests/test_build_and_capture_replay.py": {
+      "size": 3652,
+      "sha256": "6061ce4900f60cf631541fe2f3b23ca47fe171597ed1cb404a404b8ed84d9bfd"
+    },
+    "tools/patching/ckcond/tests/test_capture_wrappers.py": {
+      "size": 7591,
+      "sha256": "e0337542a9d566f78099fe69371805e7665ad39ae4630831d27b19cf0e6e56ab"
+    },
+    "tools/patching/ckcond/tests/test_config.py": {
+      "size": 955,
+      "sha256": "fb0f5291830b8fc62e4790fa01ff4bb6f3e897727a692ff4dae091cc0214ffb0"
+    },
+    "tools/patching/ckcond/tests/test_independent.py": {
+      "size": 19517,
+      "sha256": "becb95385163ed259b62e60e086aa52adaa4e9302ec14690a6c7a193f8af6f16"
+    },
+    "tools/patching/ckcond/tests/test_integrated_patch.py": {
+      "size": 17034,
+      "sha256": "1847fe605c8327783a2c0464cd773b372e69dcc73c5559261bfc415442a25acb"
+    },
+    "tools/patching/ckcond/tests/test_port_ownership.py": {
+      "size": 2599,
+      "sha256": "fda3b395c844f5f80f44a4a67e7760be8c58837e490428f2c22d2a9b9d0ce581"
+    },
+    "tools/patching/ckcond/tests/test_sat12_path.py": {
+      "size": 4636,
+      "sha256": "5eb6dc10e97a488b236b8d1f7c0debbdda0821a6af5f85ce9974ae89f0aa77e7"
+    },
+    "tools/patching/ckcond/tests/test_sense_contract.py": {
+      "size": 5940,
+      "sha256": "6670d3008d2c8cd68702d6ae763778c00580f08ed254c156d31632d6a1902c47"
+    },
+    "tools/patching/ckcond/tests/test_sense_patch.py": {
+      "size": 11748,
+      "sha256": "04f3a9850e42dd339fabf7d408518abcb8045925a837353fdddb9837cfc9288d"
+    },
+    "tools/patching/ckcond/tests/test_terminal_edge_paths.py": {
+      "size": 6604,
+      "sha256": "62f9de78c6091eca2ef3b8afc0e52e4b1cfcf5ef4823de2078fa01a1207b8db4"
+    },
+    "tools/patching/udma/accounting_contract.py": {
+      "size": 2644,
+      "sha256": "47b4fb3ed101c84b50e3ff8e9f723fd205ac06ca2f8cdcac7d08cc9f6c793e04"
+    },
+    "tools/patching/udma/audit.py": {
+      "size": 10755,
+      "sha256": "b6f0b58630478320b8ad9dcb12f3caead2d3de5c7ea6e1f4b2e3df3997df221d"
+    },
+    "tools/patching/udma/bot_evidence.py": {
+      "size": 4337,
+      "sha256": "98bb933bee8b2e20e68816f5bf4377467e94d8787d6ba4cdc028c27273bcb5bf"
+    },
+    "tools/patching/udma/build_trace.py": {
+      "size": 2085,
+      "sha256": "2aeeb1d5b2010cc37ec6d0cf064833b6bfd616b1bb6580bb29e7ac16442cd569"
+    },
+    "tools/patching/udma/fixtures.py": {
+      "size": 12303,
+      "sha256": "eea2cb7821b93b490ad8195a4a390006626d716c415a396994dc087cce5e9499"
+    },
+    "tools/patching/udma/run_audit.py": {
+      "size": 6871,
+      "sha256": "3a9b8748271c586af54af976fb6151c03dfba76da84c85af85129190349ce040"
+    },
+    "tools/patching/udma/tests/test_udma.py": {
+      "size": 12770,
+      "sha256": "827f7a1ef151d0c52b71036703bcdd140d679e5eef1239fd145ede5d23662b71"
+    },
+    "tools/patching/udma/trace_patch.py": {
+      "size": 3589,
+      "sha256": "108a6557d1c6b399e672d13b66ff27cc18dc97c1b93f8f310e34dc7ee0152176"
+    },
+    "tools/patching/udma/unsafe_prototype_fixture.py": {
+      "size": 1163,
+      "sha256": "c269bd9b7a34881a32787a6a5fc43765bfafb634a157115310aacf7a27055228"
+    }
+  }
+}

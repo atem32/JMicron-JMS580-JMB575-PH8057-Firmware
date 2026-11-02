@@ -1,0 +1,135 @@
+{
+  "verdict": "EXACT_ORIGINAL_SOURCE_NOT_RECOVERED; EXACT_HISTORICAL_TEST_OUTPUT_RECOVERABLE",
+  "original_files_modified": false,
+  "scope": "Independent search of all extracted Markdown/text material, literal fenced blocks, source/hash references and payload inventory; no reconstructed code is represented as original source.",
+  "markdown_text_file_occurrences": 246,
+  "markdown_text_unique_hashes": 130,
+  "fenced_block_occurrences": 580,
+  "python_looking_fenced_blocks": [
+    {
+      "path": "audit_input/0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/working_v8/ph8057_v8/work_v8/tooling/README.md",
+      "opening_line": 33,
+      "language": "python",
+      "bytes": 407,
+      "sha256": "efa501ddf998e7c1de00289542dd2292f66a222d633afaa90b5171846a5d7e2e"
+    },
+    {
+      "path": "audit_input/63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/working_v8/ph8057_v8/work_v8/tooling/README.md",
+      "opening_line": 33,
+      "language": "python",
+      "bytes": 407,
+      "sha256": "efa501ddf998e7c1de00289542dd2292f66a222d633afaa90b5171846a5d7e2e"
+    },
+    {
+      "path": "audit_input/6d36298a2afad5e4/ph8057_v8/work_v8/tooling/README.md",
+      "opening_line": 33,
+      "language": "python",
+      "bytes": 407,
+      "sha256": "efa501ddf998e7c1de00289542dd2292f66a222d633afaa90b5171846a5d7e2e"
+    }
+  ],
+  "missing_source": {
+    "name": "PH8057_general_ckcond_lab_v3_restricted.py",
+    "recorded_bytes": 11275,
+    "recorded_sha256": "0c836343efeec7810e1d662b2b8727eb17cfeb4d51f229c590c1d8061ba77d48",
+    "inventory_matches": [],
+    "exact_embedded_block_matches": [],
+    "recorded_at": {
+      "path": "audit_input/99894761e17fa908/PH8057_v5_completion_audit/history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "section": "Appendix D",
+      "line": 1326
+    }
+  },
+  "restricted_only_image": {
+    "name": "PH8057_GENERAL_CKCOND_LAB_V3_RESTRICTED_DO_NOT_FLASH.img",
+    "recorded_bytes": 65536,
+    "recorded_sha256": "0a351e85149027ea63f16694cca15de594065396ea7a4759a08179411d8463ee",
+    "inventory_matches": [],
+    "recorded_at": {
+      "path": "audit_input/99894761e17fa908/PH8057_v5_completion_audit/history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "section": "Appendix D",
+      "line": 1344
+    },
+    "scope": "Recorded historical identity, not an original supplied payload; any matching adapter-generated image is a labeled reconstruction."
+  },
+  "source_document": {
+    "path": "audit_input/99894761e17fa908/PH8057_v5_completion_audit/history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+    "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2",
+    "description_sections": [
+      "6.1: change description at line458",
+      "6.2: image SHA at line479",
+      "6.3: test categories at line483",
+      "Appendix A3: original restricted-wrapper log",
+      "Appendix D: source/log/image manifest"
+    ]
+  },
+  "identical_reference_document_copies": [
+    {
+      "path": "audit_input/0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/archives/firmware_history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+    },
+    {
+      "path": "audit_input/0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/reports/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+    },
+    {
+      "path": "audit_input/63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/archives/firmware_history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+    },
+    {
+      "path": "audit_input/63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/reports/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+    },
+    {
+      "path": "audit_input/99894761e17fa908/PH8057_v5_completion_audit/history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+      "sha256": "4bdff10a660b13d08a646e9dd21c4eadefe3b00361db3738407405258598a9c2"
+    }
+  ],
+  "recoverable_test_log": {
+    "name": "PH8057_general_ckcond_lab_v3_restricted_testlog.txt",
+    "bytes": 1724,
+    "sha256": "656b94494d6d37a06edb97e28056b63465a4e21258e8d51afb1b441e3b95969d",
+    "recorded_cases": 15,
+    "exact_literal_blocks": [
+      {
+        "path": "audit_input/0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/archives/firmware_history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "opening_line": 890,
+        "language": "text",
+        "bytes": 1724,
+        "sha256": "656b94494d6d37a06edb97e28056b63465a4e21258e8d51afb1b441e3b95969d"
+      },
+      {
+        "path": "audit_input/0766e3a6b43c6423/PH8057_JMS580_GITHUB_REPOSITORY_2026-11-02/history/v2-v14/reports/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "opening_line": 890,
+        "language": "text",
+        "bytes": 1724,
+        "sha256": "656b94494d6d37a06edb97e28056b63465a4e21258e8d51afb1b441e3b95969d"
+      },
+      {
+        "path": "audit_input/63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/archives/firmware_history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "opening_line": 890,
+        "language": "text",
+        "bytes": 1724,
+        "sha256": "656b94494d6d37a06edb97e28056b63465a4e21258e8d51afb1b441e3b95969d"
+      },
+      {
+        "path": "audit_input/63fb1545420cb03d/PH8057_COMPLETE_HANDOVER_2026-11-02/reports/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "opening_line": 890,
+        "language": "text",
+        "bytes": 1724,
+        "sha256": "656b94494d6d37a06edb97e28056b63465a4e21258e8d51afb1b441e3b95969d"
+      },
+      {
+        "path": "audit_input/99894761e17fa908/PH8057_v5_completion_audit/history/PH8057_CKCOND_v2_v3_v4_FULL_HANDOVER_2026-11-02.md",
+        "opening_line": 890,
+        "language": "text",
+        "bytes": 1724,
+        "sha256": "656b94494d6d37a06edb97e28056b63465a4e21258e8d51afb1b441e3b95969d"
+      }
+    ],
+    "recovery_method": "Take the UTF-8 fenced text body after the opening fence at line890, preserving its trailing LF; its hash and size equal the historical manifest.",
+    "original_tests_reexecuted": false,
+    "evidence_limit": "This is original recorded test output, not executable original tests or new verification. Missing source/test definitions remain unavailable."
+  },
+  "conclusion": "The report retains filenames, hashes, behavior descriptions and complete logs, but no full restricted-wrapper Python source. The binary-backed adapter recovers executable behavior from supplied V3 IMG bytes, not the absent original Python file."
+}
