@@ -18,7 +18,17 @@
 
 *Product photo supplied by the project owner, originally shown in an Ozon listing. The image is now stored in this repository; see [image attribution](NOTICE.md#image-attribution).*
 
-### Scope
+## AIM
+
+This project began with a simple, practical problem: **the PH8057 USB-to-SATA bridge did not correctly report whether a hard drive was spinning or in standby**. ATA `CHECK POWER MODE` returned incomplete ATA register information, so tools such as `smartctl` could not reliably determine the drive's power state. `SMART STATUS` had a related return-register problem.
+
+That mattered because the owner wanted the HDDs to **stay asleep when they were not needed**, rather than have routine SMART monitoring repeatedly wake them up. Correct power-state reporting allows standby-aware checks such as `smartctl -n standby` to skip further SMART queries when a drive is sleeping. The goal was ordinary, reliable SMART data **without sacrificing automatic disk standby**.
+
+**That was the actual goal, and it was achieved for SMART STATUS and CHECK POWER MODE on one physical drive after installing the experimental CK_COND fix.** The standby timeout itself is a separate configurable setting (`sdparm`), not a new firmware feature. Other drives, failure paths, and long-term behavior have not been fully qualified.
+
+Everything else here—the 8051 disassembly, OEM register mapping, USB BOT/CSW residue investigation, UDMA research, UASP and hot-swap analysis, and assorted firmware archaeology—grew out of trying to solve that original problem. **These are side investigations, not necessarily related to the AIM and not required to accomplish it.** Some are still unresolved; in particular, the UDMA residue defect has **not** been fixed.
+
+## Scope
 
 This project consolidates the supplied PH8057 research into reproducible offline analysis, a corrected OEM decoder, a strict 8051 executor, regression tests, and guarded firmware patch builders. PH8057 is the four-drive enclosure examined in the supplied evidence: a **JMicron JMS580 USB-to-SATA bridge** communicates with a **JMB575 SATA port multiplier**. This repository applies to the exact captured firmware identified below; it is not a general JMS580 firmware distribution.
 
