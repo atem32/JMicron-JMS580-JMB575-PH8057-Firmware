@@ -7,9 +7,9 @@ import sys
 import tempfile
 import unittest
 
-from ph8057 import ROOT, NAMES, construct
+from ph8057 import ROOT, NAMES, UPDATER_NAME, construct, read_factory
 from image import STOCK_FULL_SHA, read_stock
-from firmware_inspect import DONORS
+from firmware_inspect import DONORS, identify
 
 DEVICE = ROOT / "firmware/ph8057-device/modified"
 sys.path.insert(0, str(DEVICE))
@@ -24,14 +24,15 @@ class PublicUpdaterBoundaries(unittest.TestCase):
         images = manifest["images"]
         self.assertEqual(images["factory-spi"]["sha256"], STOCK_FULL_SHA)
         self.assertEqual(images["factory-updater"]["sha256"], STOCK_SHA)
-        self.assertEqual(images["ckcond-revised-updater"]["sha256"], EXPECTED_OUT_SHA)
-        self.assertEqual(images["ckcond-v8"]["role"], "regression_baseline")
-        self.assertNotIn("ckcond-v8", NAMES)
+        self.assertEqual(images["ckcond-updater"]["sha256"], EXPECTED_OUT_SHA)
+        self.assertEqual(set(manifest["firmware_variants"]), {"factory", "ckcond"})
+        self.assertEqual(set(NAMES), {"ckcond"})
+        self.assertEqual(images["ckcond-updater"]["filename"], UPDATER_NAME)
         self.assertEqual({row["sha256"] for row in manifest["donors"]}, DONORS)
         for variant, filename in NAMES.items():
             self.assertEqual(images[variant]["filename"], filename)
         for row in images.values():
-            for key in ("cpu_patch_records", "trace_source", "hardware_evidence"):
+            for key in ("cpu_patch_records", "hardware_evidence"):
                 if key in row:
                     self.assertTrue((ROOT / row[key]).is_file(), row[key])
         for layout in manifest["layouts"].values():
@@ -61,12 +62,12 @@ class DeviceImageIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.stock = read_stock_package(Path(os.environ["PH8057_DEVICE_STOCK"]))
-        cls.records = json.loads((DEVICE / "ckcond_revised_patch_records.json").read_text())
+        cls.records = json.loads((DEVICE / "ckcond_patch_records.json").read_text())
         cls.candidate = build(cls.stock, cls.records)
 
     def test_exact_candidate_hash_crcs_and_preserved_regions(self):
         identity = json.loads((ROOT / "firmware/manifests/images.json").read_text())["images"]
-        expected = identity["ckcond-revised-updater"]
+        expected = identity["ckcond-updater"]
         self.assertEqual(sha(self.stock), STOCK_SHA)
         self.assertEqual(sha(self.candidate), expected["sha256"])
         self.assertEqual(len(self.candidate), BIN_SIZE)
@@ -76,6 +77,23 @@ class DeviceImageIntegration(unittest.TestCase):
         self.assertEqual(sha(self.candidate[CODE_OFF:OEM_OFF]), expected["code_sha256"])
         self.assertEqual(sum(a != b for a, b in zip(self.stock, self.candidate)),
                          expected["changed_bytes_vs_base"])
+
+    def test_inspector_recognizes_exact_factory_and_ckcond_updater_containers(self):
+        for data, variant in ((self.stock, "factory"), (self.candidate, "ckcond")):
+            with self.subTest(variant=variant):
+                report = identify(data)
+                self.assertEqual(report["layout"], "PH8057_UPDATER")
+                self.assertEqual(report["image_format"], "updater")
+                self.assertEqual(report["firmware_variant"], variant)
+                self.assertEqual(int(report["code_file_offset"], 16), CODE_OFF)
+                self.assertEqual(int(report["oem_file_offset"], 16), OEM_OFF)
+                self.assertEqual(report["exact_factory"], variant == "factory")
+                self.assertEqual(report["exact_ckcond"], variant == "ckcond")
+                self.assertEqual(report["crc"], check_record(data, allow_blank_header_crc=variant == "factory"))
+        self.assertEqual(identify(self.stock)["stored_metadata_header_crc"], "00000000")
+        altered = bytearray(self.candidate)
+        altered[CODE_OFF] ^= 1
+        self.assertEqual(identify(bytes(altered))["layout"], "UNKNOWN")
 
     def test_only_the_pinned_original_allows_a_blank_metadata_crc(self):
         self.assertEqual(self.stock[0x3FC:0x400], bytes(4))
@@ -128,10 +146,46 @@ class DeviceImageIntegration(unittest.TestCase):
                 self.assertEqual(stock.read_bytes(), self.stock)
                 self.assertEqual(records.read_bytes(), old_records)
 
+    def test_canonical_build_supports_updater_without_format_conversion(self):
+        candidate, report = construct(self.stock, "ckcond")
+        self.assertEqual(candidate, self.candidate)
+        self.assertEqual(report["variant"], "ckcond")
+        self.assertEqual(report["image_format"], "updater")
+        self.assertEqual(report["filename"], UPDATER_NAME)
+        self.assertEqual(report["crc"], check_record(candidate))
+        self.assertEqual(read_factory(os.environ["PH8057_DEVICE_STOCK"]), self.stock)
+        # CPU offsets in updater metadata must use its own 0x400 CODE base.
+        for row in report["patches"]:
+            self.assertEqual(int(row["file_offset"], 16), CODE_OFF + row["cpu"])
+
+    def test_canonical_cli_emits_exact_updater_and_preserves_colliding_source(self):
+        with tempfile.TemporaryDirectory() as td:
+            output = Path(td)
+            subprocess.run([sys.executable, str(ROOT / "ph8057.py"), "build", "ckcond",
+                            "--stock", os.environ["PH8057_DEVICE_STOCK"], "--out", str(output)],
+                           capture_output=True, text=True, check=True)
+            self.assertEqual((output / UPDATER_NAME).read_bytes(), self.candidate)
+            report = json.loads((output / "ckcond_manifest.json").read_text())
+            self.assertEqual(report["image_format"], "updater")
+            self.assertEqual(report["candidate_sha256"], EXPECTED_OUT_SHA)
+            self.assertEqual(build(self.stock, json.loads((output / "ckcond_patch_records.json").read_text())), self.candidate)
+        for filename in (UPDATER_NAME, "ckcond_manifest.json", "ckcond_patch_records.json"):
+            with self.subTest(filename=filename), tempfile.TemporaryDirectory() as td:
+                output = Path(td)
+                source = output / filename
+                source.write_bytes(self.stock)
+                cp = subprocess.run([sys.executable, str(ROOT / "ph8057.py"), "build", "ckcond",
+                                     "--stock", str(source), "--out", str(output)],
+                                    capture_output=True, text=True)
+                self.assertNotEqual(cp.returncode, 0)
+                self.assertIn("immutable source", cp.stderr)
+                self.assertEqual(source.read_bytes(), self.stock)
+                self.assertEqual(len(list(output.iterdir())), 1)
+
     @unittest.skipUnless(os.environ.get("PH8057_STOCK"), "Factory SPI input also required")
     def test_code_matches_spi_candidate_while_containers_remain_distinct(self):
         stock = read_stock(os.environ["PH8057_STOCK"])
-        candidate, _ = construct(stock, "ckcond-revised")
+        candidate, _ = construct(stock, "ckcond")
         self.assertEqual(self.stock[CODE_OFF:OEM_OFF], stock[0x1000:0x11000])
         self.assertEqual(self.candidate[CODE_OFF:OEM_OFF], candidate[0x1000:0x11000])
         self.assertEqual(self.candidate[OEM_OFF:], candidate[0x11000:])

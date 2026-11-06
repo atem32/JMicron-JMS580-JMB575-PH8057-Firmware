@@ -9,6 +9,6 @@ The owner obtained `1.bin` from the PH8057 using Windows. This vendor-derived fi
 | CODE | File `0x400..0x103FF`, 64 KiB |
 | OEM | File `0x10400..0x105FF`, 512 bytes |
 
-The exact source's CODE and OEM equal the full factory capture; its wrapper/metadata arrangement differs. The original metadata CRC at `0x3FC..0x3FF` is zero. The builder accepts that exception only for this exact source hash and fills the field in the candidate.
+The exact source's CODE and OEM equal the full factory capture; its wrapper/metadata arrangement differs. The original metadata CRC at `0x3FC..0x3FF` is zero. The builder accepts that exception only for this exact source hash and fills the field in the CK_COND output.
 
 Check the local input with `sha256sum 1.bin`. A matching filename or size alone is insufficient. [Firmware layout](../../../docs/firmware-layout.md) defines the separate SPI/updater checksums and identities.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CK_COND command state and capture code shared by revised and baseline builds.
+"""CK_COND command state, command association and ATA result capture.
 
 This is experimental code with explicit, unqualified XDATA and peripheral
 assumptions. The builder is intentionally separate from any flash writer.

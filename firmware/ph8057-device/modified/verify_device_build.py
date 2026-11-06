@@ -16,7 +16,7 @@ def main():
     check_record(c)
     if args.stock:
         raw=read_stock_package(args.stock)
-        records=json.loads(Path(__file__).with_name('ckcond_revised_patch_records.json').read_text())
+        records=json.loads(Path(__file__).with_name('ckcond_patch_records.json').read_text())
         if build(raw,records)!=c:
             raise ValueError('Candidate does not match deterministic rebuild')
         if c[0x10400:] != raw[0x10400:]:

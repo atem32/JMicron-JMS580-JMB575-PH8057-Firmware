@@ -12,7 +12,8 @@ import sys
 import unittest
 
 import capture_wrappers
-from image import changed_ranges, ORIGINAL_V8_SHA
+from image import changed_ranges, CKCOND_SHA
+import abort_guard
 
 
 GUARD_PROBE = r'''
@@ -183,29 +184,39 @@ class NativePathTests(unittest.TestCase):
                     self.assertEqual(pair[1].iram[0x3A+lun], 2)
                     self.assertEqual(pair[1].xdata[0x4E06], 0)
 
-    def test_exact_original_candidate_hash_and_all_changed_offsets(self):
+    def test_exact_ckcond_hash_and_all_changed_offsets(self):
         from build_ckcond import build
-        candidate = build(self.stock_raw, variant="v8")[0]
-        self.assertEqual(hashlib.sha256(candidate).hexdigest(), ORIGINAL_V8_SHA)
+        candidate = build(self.stock_raw)[0]
+        self.assertEqual(hashlib.sha256(candidate).hexdigest(), CKCOND_SHA)
         changed = changed_ranges(self.stock_raw, candidate)
-        self.assertEqual(sum(len(bytes.fromhex(r["new"])) for r in changed), 2555)
+        self.assertEqual(sum(len(bytes.fromhex(r["new"])) for r in changed), 2607)
         self.assertTrue(all(int(r["end_exclusive"], 16) <= 0x11000 for r in changed))
         self.assertEqual(candidate[0x11000:], self.stock_raw[0x11000:])
 
-    def test_v8_pre_abort_snapshot_is_not_published_by_revised_candidate(self):
-        """Original v8 fails this command-association requirement at both exits."""
-        from build_ckcond import build
-        original = build(self.stock_raw, variant="v8")[0][0x1000:0x11000]
-        revised = build(self.stock_raw, variant="revised")[0][0x1000:0x11000]
+    def unguarded_wait_fixture(self):
+        """Test-local fault injection: restore the two native USB-wait exits.
+
+        Only CPU CODE is returned to the emulator. No firmware container or
+        checksums are produced, and there is no alternative firmware builder.
+        """
+        code = bytearray(self.t.PATCHED)
+        for at, expected, _, _ in abort_guard.HOOKS:
+            original = bytes.fromhex(expected)
+            self.assertEqual(self.t.STOCK[at:at + len(original)], original)
+            code[at:at + len(original)] = original
+        return bytes(code)
+
+    def test_pre_abort_snapshot_is_not_published_after_native_usb_abort(self):
+        unguarded = self.unguarded_wait_fixture()
         records = []
-        for exit_name, usb_ready, endpoint_busy, original_return in (
+        for exit_name, usb_ready, endpoint_busy, native_return in (
             ("waiting_for_5052", 0, 0, 0xCBF8),
             ("waiting_for_A3", 1, 0x80, 0xCC06),
         ):
             pair = []
-            for label, code in (("original_v8", original), ("revised", revised)):
+            for label, code in (("unguarded_wait_fixture", unguarded), ("ckcond", self.t.PATCHED)):
                 c = self.native_setup(code, 1, 0x85, 11, True)
-                bank = self.t.result_bank(c, 1, status=0x50)
+                self.t.result_bank(c, 1, status=0x50)
                 c.write_bit(0x02, 1)
                 c.write_bit(0x21, 1)
                 c.write_direct(0x9F, 0)  # E140's explicit inactive/abort fixture
@@ -218,28 +229,29 @@ class NativePathTests(unittest.TestCase):
                 self.assertEqual(c.cy, 1)
                 self.assertEqual(int.from_bytes(c.iram[0x32:0x34], "big"), 0x94F9)
                 self.assertEqual(c.xdata[0x4D10], 0)
-                if label == "original_v8":
-                    self.assertIn(original_return, c.trace)
+                if label == "unguarded_wait_fixture":
+                    self.assertIn(native_return, c.trace)
                 # Conditional continuation: real reset recovery is not modeled.
                 self.t.finalize(c)
                 pair.append(c)
-                records.append({"exit": exit_name, "candidate": label,
+                records.append({"exit": exit_name, "code": label,
                                 "unpublished_valid_after_abort": unpublished,
                                 "published_per_lun_valid": c.xdata[0x4D10],
                                 "csw_status": c.xdata[0x400C],
                                 "residue": int.from_bytes(c.xdata[0x4008:0x400C], "little"),
                                 "pending_sense": c.iram[0x3B],
                                 "max_sp": c.max_sp})
-            old, new = pair
-            self.assertEqual(old.xdata[0x4D10], 0xA5)  # actual failing v8 witness
-            self.assertEqual(old.iram[0x3B], 0x28)
-            self.assertEqual(new.xdata[0x4D10], 0)
-            self.assertEqual(new.iram[0x3B], 0)
-            self.assertEqual(new.xdata[0x4E07], 0)
-            self.assertEqual(old.xdata[0x4008:0x400C], new.xdata[0x4008:0x400C])
-            self.assertFalse(any(event[0] == "hook" for event in new.events))
+            unsafe, fixed = pair
+            self.assertEqual(unsafe.xdata[0x4D10], 0xA5)
+            self.assertEqual(unsafe.iram[0x3B], 0x28)
+            self.assertEqual(fixed.xdata[0x4D10], 0)
+            self.assertEqual(fixed.iram[0x3B], 0)
+            self.assertEqual(fixed.xdata[0x4E07], 0)
+            self.assertEqual(unsafe.xdata[0x4008:0x400C], fixed.xdata[0x4008:0x400C])
+            self.assertFalse(any(event[0] == "hook" for event in fixed.events))
         (RESULTS / "ckcond_abort_regression.json").write_text(json.dumps({
-            "status": "PASS: original v8 defect reproduced; revised candidate prevents publication",
+            "status": "PASS: CK_COND prevents stale publication at both native USB-wait exits",
+            "negative_control": "The same CPU code with native unguarded wait exits restored in memory",
             "scope": "Native 7308 -> AEF4 -> CBE3 -> E140, then conditional 94F9",
             "results": records,
             "not_fixed": ["Stock conditional GOOD status on USB-wait abort",
@@ -247,16 +259,12 @@ class NativePathTests(unittest.TestCase):
         }, indent=2) + "\n")
 
     def test_abort_suppression_keeps_ata_error_and_non_ck_status_policy(self):
-        from build_ckcond import build
-        original = build(self.stock_raw, variant="v8")[0][0x1000:0x11000]
         records = []
         for usb_ready, endpoint_busy in ((0, 0), (1, 0x80)):
             for ck in (False, True):
                 for status, error in ((0x50, 0), (0x51, 4), (0x70, 0)):
                     cases = []
-                    for label, code in (("stock", self.t.STOCK),
-                                        ("original_v8", original),
-                                        ("revised", self.t.PATCHED)):
+                    for label, code in (("factory", self.t.STOCK), ("ckcond", self.t.PATCHED)):
                         c = self.native_setup(code, 1, 0x85, 11, ck)
                         self.t.result_bank(c, 1, status=status, error=error)
                         c.write_bit(0x02, 1)
@@ -268,28 +276,23 @@ class NativePathTests(unittest.TestCase):
                         c.call(0x7308)
                         self.t.finalize(c)
                         cases.append(c)
-                        records.append({"candidate": label, "usb_ready": usb_ready,
+                        records.append({"firmware": label, "usb_ready": usb_ready,
                                         "ck": ck, "ata_status": status, "ata_error": error,
                                         "csw_status": c.xdata[0x400C], "sense": c.iram[0x3B],
                                         "descriptor_valid": c.xdata[0x4D10]})
-                    stock, old, revised = cases
-                    self.assertEqual(revised.xdata[0x4D10], 0)
-                    self.assertEqual(revised.xdata[0x4004:0x400D], stock.xdata[0x4004:0x400D])
-                    self.assertEqual(revised.iram[0x3B], stock.iram[0x3B])
-                    if ck or status != 0x50:
-                        self.assertEqual(old.xdata[0x4D10], 0xA5)
+                    stock, fixed = cases
+                    self.assertEqual(fixed.xdata[0x4D10], 0)
+                    self.assertEqual(fixed.xdata[0x4004:0x400D], stock.xdata[0x4004:0x400D])
+                    self.assertEqual(fixed.iram[0x3B], stock.iram[0x3B])
                     if status != 0x50:
-                        self.assertEqual(revised.xdata[0x400C], 1)
-                        self.assertNotEqual(revised.iram[0x3B], 0)
+                        self.assertEqual(fixed.xdata[0x400C], 1)
+                        self.assertNotEqual(fixed.iram[0x3B], 0)
         (RESULTS / "abort_status_preservation.json").write_text(json.dumps({
             "status": "PASS", "scenarios": len(records), "results": records,
-            "interpretation": "Revised candidate preserves stock CSW/native sense and does not attach an ATA descriptor after native USB-wait abort",
+            "interpretation": "CK_COND preserves native CSW/sense and does not attach an ATA descriptor after native USB-wait abort",
         }, indent=2) + "\n")
 
-    def test_abort_helper_matches_original_wait_abi_all_register_banks(self):
-        from build_ckcond import build
-        original = build(self.stock_raw, variant="v8")[0][0x1000:0x11000]
-        revised = self.t.PATCHED
+    def test_abort_helper_matches_native_wait_abi_all_register_banks(self):
         cases = 0
         for entry, retry in ((0xCBF6, 0xCBE3), (0xCC04, 0xCBF9)):
             for carry in (0, 1):
@@ -297,7 +300,7 @@ class NativePathTests(unittest.TestCase):
                     for dps in (0, 1, 0xFE, 0xFF):
                         for interrupts in (0, 1):
                             cpus = []
-                            for code in (original, revised):
+                            for code in (self.t.STOCK, self.t.PATCHED):
                                 c = self.t.new_cpu(code)
                                 c.sp = 0x90
                                 c.a = 0xA6
@@ -316,15 +319,15 @@ class NativePathTests(unittest.TestCase):
                                 else:
                                     c.run(entry, stop={retry})
                                 cpus.append(c)
-                            old, new = cpus
-                            self.assertEqual(old.iram[:128], new.iram[:128])
-                            self.assertEqual(old.sfr, new.sfr)
-                            self.assertEqual(old.sp, new.sp)
-                            expected = bytearray(old.xdata)
+                            native, fixed = cpus
+                            self.assertEqual(native.iram[:128], fixed.iram[:128])
+                            self.assertEqual(native.sfr, fixed.sfr)
+                            self.assertEqual(native.sp, fixed.sp)
+                            expected = bytearray(native.xdata)
                             if carry:
                                 expected[0x4E07] = 0
-                            self.assertEqual(new.xdata, expected)
-                            self.assertEqual(new.max_sp-old.max_sp, 5 if carry else 0)
+                            self.assertEqual(fixed.xdata, expected)
+                            self.assertEqual(fixed.max_sp-native.max_sp, 5 if carry else 0)
                             cases += 1
         (RESULTS / "abort_helper_abi.json").write_text(json.dumps({
             "status": "PASS", "cases": cases, "additional_stack_bytes_on_abort": 5,

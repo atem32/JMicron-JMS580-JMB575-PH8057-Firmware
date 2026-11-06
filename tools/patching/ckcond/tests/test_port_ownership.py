@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stock port-ownership observations replayed through revised CK_COND code.
+"""Stock port-ownership observations replayed through CK_COND code.
 
 This is intentionally an offline unit test. Device=21/31/41 decoding by native
 CPU 2426 is NOT executed here: selected ports are provided as hardware fixtures.

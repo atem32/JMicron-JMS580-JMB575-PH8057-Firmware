@@ -6,10 +6,15 @@ Do not import it into a production firmware builder.
 """
 from __future__ import annotations
 
-try:
-    from .trace_patch import collect_patches, ORIGINAL, CODE_OFFSET, HOOK, CAVE
-except ImportError:
-    from trace_patch import collect_patches, ORIGINAL, CODE_OFFSET, HOOK, CAVE
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "ckcond"))
+from image import CODE_OFFSET, IMAGE_SIZE, STOCK_FULL_SHA, CKCOND_SHA, check_crc, sha
+
+HOOK = 0x7377
+CAVE = 0xE700
+ORIGINAL = bytes.fromhex("e4 ff 12 ae f4")
 
 HELPER_HEX = (
     "e4ff12aef4e559b46735201232e55ab4012d905052e030e0269050e2e07020"
@@ -18,7 +23,13 @@ HELPER_HEX = (
 
 
 def rejected_overlay_for_test(raw: bytes) -> bytes:
-    collect_patches(raw)  # same exact source validation; no generic patching
+    if len(raw) != IMAGE_SIZE or sha(raw) not in (STOCK_FULL_SHA, CKCOND_SHA):
+        raise ValueError("Counterexample requires an exact factory or CK_COND image")
+    check_crc(raw)
+    if raw[CODE_OFFSET + HOOK:CODE_OFFSET + HOOK + len(ORIGINAL)] != ORIGINAL:
+        raise ValueError("Native completion instructions differ")
+    if raw[CODE_OFFSET + 0x737C:CODE_OFFSET + 0x737E] != bytes.fromhex("8012"):
+        raise ValueError("Native continuation differs")
     helper = bytes.fromhex(HELPER_HEX)
     start = CODE_OFFSET + CAVE
     if raw[start:start + len(helper)] != bytes(len(helper)):

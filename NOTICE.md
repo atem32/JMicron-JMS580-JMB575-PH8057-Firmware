@@ -38,7 +38,7 @@ Product-level VID/PID and model strings identify the researched product.
 notices and the [bundled MIT license](tools/emulator/oracle/LICENSE) are retained.
 The reference upstream revision is
 `5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8`.
-Historical copyright years in source headers and the upstream license differ;
+Copyright years in source headers and the upstream license differ;
 both notices are preserved. `decode_bridge.c` is this project's test adapter.
 
 The bundled code is a disassembly oracle, not an execution core or authoritative

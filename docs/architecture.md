@@ -28,12 +28,12 @@ The CK_COND implementation retains one active command and per-LUN pending sense:
 | State | Address / role | Constraint |
 |---|---|---|
 | Active command | XDATA `4E00h..4E1Fh` | One global owner; stores LUN, protocol, command, EXTEND, tag equality, launch type/port and ATA result. |
-| Unpublished result validity | `4E07h`; valid marker `A5h` | Cleared before another launch and on either revised USB-wait abort exit. |
+| Unpublished result validity | `4E07h`; valid marker `A5h` | Cleared before another launch and on either USB-wait abort exit. |
 | Pending descriptors | XDATA `4D00h..4DFFh`, 16-byte slots | Valid marker, native sense selector and 14-byte ATA Return Descriptor; slot capacity does not prove that 16 physical disks are supported. |
 
 Admission invalidates the previous active context and the selected LUN's old descriptor, except for REQUEST SENSE. Capture checks software ownership and selected port before and after reading registers. Finalization publishes only an eligible result; REQUEST SENSE consumes a matching saved descriptor with native allocation-length clamping. A CBW tag is equality metadata, **not a command-generation counter**. Interrupt masking serializes CPU instructions but does not establish coherent autonomous hardware access or exclusive SRAM ownership. These assumptions prohibit treating the current state as a concurrent UAS command table.
 
-The existing CK wrappers save 17 context bytes. The revised abort leaf adds five temporary bytes on its path; the trace trampoline adds a two-byte call frame that can remain live during that leaf. Seven is the combined **increment over the corresponding v8 abort path**, not total stack usage. Native frames and interrupt nesting still require measurement.
+The CK_COND capture wrappers save 17 context bytes. The abort-invalidation leaf saves five temporary bytes and introduces no nested call. These are local stack costs, not a total stack budget: native frames and interrupt nesting still require measurement.
 
 ## Port discovery and LUN mapping
 

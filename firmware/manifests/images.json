@@ -30,7 +30,8 @@
         "metadata": "452BD627",
         "code": "10600021",
         "full": "2FD3716F"
-      }
+      },
+      "firmware_variant": "factory"
     },
     "factory-updater": {
       "filename": "1.bin",
@@ -46,11 +47,12 @@
         "full_crc": "2fd3716f"
       },
       "stored_metadata_header_crc": "00000000",
-      "note": "The exact original package has a zero metadata-header CRC; the computed CRC is recorded above. Only this pinned original is accepted with a blank field."
+      "note": "The exact original package has a zero metadata-header CRC; the computed CRC is recorded above. Only this pinned original is accepted with a blank field.",
+      "firmware_variant": "factory"
     },
-    "ckcond-revised": {
-      "filename": "PH8057_CKCOND_REVISED_DO_NOT_FLASH.bin",
-      "role": "candidate",
+    "ckcond": {
+      "filename": "PH8057_CKCOND_SPI.bin",
+      "role": "smart_fixed",
       "layout": "full_spi",
       "base": "factory-spi",
       "sha256": "2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b",
@@ -67,77 +69,13 @@
       "udma_residue_fix": false,
       "validation_status": "OFFLINE VALIDATED",
       "hardware_status": "NOT TESTED",
-      "cpu_patch_records": "firmware/ph8057-device/modified/ckcond_revised_patch_records.json",
-      "hardware_scope": "Limited observations apply to ckcond-revised-updater; this SPI-container artifact has not been physically qualified."
+      "cpu_patch_records": "firmware/ph8057-device/modified/ckcond_patch_records.json",
+      "hardware_scope": "The SPI and updater containers carry the same CK_COND code. Physical observations concern the updater format; SPI execution and recovery are not qualified.",
+      "firmware_variant": "ckcond"
     },
-    "udma-trace": {
-      "filename": "PH8057_UDMA_TRACE_ONLY_DO_NOT_FLASH.bin",
-      "role": "candidate",
-      "layout": "full_spi",
-      "base": "factory-spi",
-      "sha256": "a4bf69164548003a26efebcb3f5fd6e59d0dfc3321eeda2ffb97d6e36ba63712",
-      "code_sha256": "81e93efbdf7e4ee5046482dcc0bce4cd41f2fc54e69ee43e53439b8d97b5e72e",
-      "crc": {
-        "header": "698135A8",
-        "metadata": "C8ABCF58",
-        "code": "278995AD",
-        "full": "95406CEB"
-      },
-      "patch_record_count": 2,
-      "changed_bytes_vs_base": 27,
-      "oem_unchanged": true,
-      "udma_residue_fix": false,
-      "validation_status": "OFFLINE VALIDATED",
-      "hardware_status": "NOT TESTED",
-      "trace_source": "tools/patching/udma/trace_patch.py",
-      "hardware_scope": "Observation trampoline only; no physical debugger or logging channel is supplied or qualified."
-    },
-    "combined-revised-trace": {
-      "filename": "PH8057_CKCOND_REVISED_UDMA_TRACE_ONLY_DO_NOT_FLASH.bin",
-      "role": "candidate",
-      "layout": "full_spi",
-      "base": "factory-spi",
-      "sha256": "825660ce89e77f9fe827d0a34f7c527d155e1726795d093671c9aff38a844163",
-      "code_sha256": "ef3f3eb68ef8763bfe4e19d6628d78eb036d7576df70fcefc7c87170db0d6886",
-      "crc": {
-        "header": "698135A8",
-        "metadata": "A9A6EC9D",
-        "code": "711625A8",
-        "full": "4037893B"
-      },
-      "patch_record_count": 34,
-      "changed_bytes_vs_base": 2618,
-      "oem_unchanged": true,
-      "udma_residue_fix": false,
-      "validation_status": "OFFLINE VALIDATED",
-      "hardware_status": "NOT TESTED",
-      "trace_source": "tools/patching/udma/trace_patch.py",
-      "hardware_scope": "Observation trampoline only; no physical debugger or logging channel is supplied or qualified."
-    },
-    "ckcond-v8": {
-      "filename": "PH8057_CKCOND_V8_REGRESSION_BASELINE_DO_NOT_FLASH.bin",
-      "role": "regression_baseline",
-      "layout": "full_spi",
-      "base": "factory-spi",
-      "sha256": "4b7ac3e5bd124d8e44281e9aa79b7b65f7b62c54410ffd1abd8af4a586d74e11",
-      "code_sha256": "937db3d08f7b67ade3710b01b38ac7c882c8604106a20ac4a8c2ed5abc6bd062",
-      "crc": {
-        "header": "698135A8",
-        "metadata": "19FF89C9",
-        "code": "D042940A",
-        "full": "C52EF5E7"
-      },
-      "patch_record_count": 27,
-      "changed_bytes_vs_base": 2555,
-      "oem_unchanged": true,
-      "udma_residue_fix": false,
-      "validation_status": "OFFLINE VALIDATED",
-      "hardware_status": "NOT TESTED",
-      "purpose": "Differential regression baseline for stale ATA snapshot publication on native USB-wait abort; not a current patch option."
-    },
-    "ckcond-revised-updater": {
-      "filename": "PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin",
-      "role": "candidate",
+    "ckcond-updater": {
+      "filename": "PH8057_CKCOND_UPDATER.bin",
+      "role": "smart_fixed",
       "layout": "updater",
       "base": "factory-updater",
       "sha256": "f8406e8b83e9f97695ce4ae395a90b29e28d8210bc40c09087f3f6b43f33fd5b",
@@ -156,8 +94,9 @@
       "hardware_status": "HARDWARE OBSERVED",
       "hardware_evidence": "docs/testing.md",
       "post_flash_readback_available": false,
-      "hardware_scope": "Owner-reported installation and limited SMART STATUS/CHECK POWER MODE observations; later two-disk BOT summaries lack raw logs and per-run readback/hash attestation in this repository. Not all paths or ports are qualified.",
-      "cpu_patch_records": "firmware/ph8057-device/modified/ckcond_revised_patch_records.json"
+      "hardware_scope": "SMART STATUS and CHECK POWER MODE observed after installing this updater; two-HDD BOT I/O, protocol and combined stress results are documented in docs/testing.md. No all-port, UASP, hot-swap or targeted UDMA-residue qualification.",
+      "cpu_patch_records": "firmware/ph8057-device/modified/ckcond_patch_records.json",
+      "firmware_variant": "ckcond"
     },
     "truncated-spi-prefix": {
       "filename": "ph8057-original.bin",
@@ -226,5 +165,21 @@
       "size_bytes": 67072
     }
   ],
-  "donor_scope": "Static instruction-signature comparisons only. No donor image is an authorized PH8057 replacement."
+  "donor_scope": "Static instruction-signature comparisons only. No donor image is an authorized PH8057 replacement.",
+  "firmware_variants": {
+    "factory": {
+      "name": "Factory / Original",
+      "formats": {
+        "full_spi": "factory-spi",
+        "updater": "factory-updater"
+      }
+    },
+    "ckcond": {
+      "name": "SMART Fixed / CK_COND",
+      "formats": {
+        "full_spi": "ckcond",
+        "updater": "ckcond-updater"
+      }
+    }
+  }
 }

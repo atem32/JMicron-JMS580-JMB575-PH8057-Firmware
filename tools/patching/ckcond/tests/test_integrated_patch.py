@@ -1,4 +1,4 @@
-"""Execution contracts for the integrated revised CK_COND candidate.
+"""Execution contracts for the integrated CK_COND patch.
 
 Runs original and patched CPU bytes. The XDATA/SFR arrays are explicit static
 fixtures; completion-bank updates between phases are injected observations,

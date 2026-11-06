@@ -57,14 +57,14 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     env.pop("PYTHONOPTIMIZE", None)
-    for key in ("PH8057_STOCK", "PH8057_DEVICE_STOCK", "PH8057_V8", "PH8057_REVISED_CKCOND"):
+    for key in ("PH8057_STOCK", "PH8057_DEVICE_STOCK", "PH8057_CKCOND"):
         env.pop(key, None)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     env["PH8057_COMMON"] = str(ROOT / "tools/emulator")
     env["PH8057_TEST_RESULTS"] = str(out / "ckcond")
     paths = [ROOT, *(ROOT / rel for rel in
              ("tools/emulator", "tools/analysis", "tools/patching/ckcond", "tools/patching/udma",
-              "firmware/ph8057-device/modified"))]
+              "firmware/ph8057-device/modified", "tests/hardware"))]
     env["PYTHONPATH"] = os.pathsep.join(map(str, paths))
     sys.path[:0] = list(map(str, paths))
     if args.device_stock:
@@ -118,11 +118,10 @@ def main():
             from ph8057 import construct
             raw = read_stock(stock)
             env["PH8057_STOCK"] = str(stock)
-            for variant, key in (("ckcond-v8", "PH8057_V8"), ("ckcond-revised", "PH8057_REVISED_CKCOND")):
-                candidate, _ = construct(raw, variant)
-                path = Path(td) / (variant + ".bin")
-                path.write_bytes(candidate)
-                env[key] = str(path)
+            candidate, _ = construct(raw, "ckcond")
+            path = Path(td) / "ckcond.bin"
+            path.write_bytes(candidate)
+            env["PH8057_CKCOND"] = str(path)
         run("emulator", ["-m", "unittest", "discover", "-s", ROOT / "tools/emulator/tests", "-v"])
         run("oem", ["-m", "unittest", "discover", "-s", ROOT / "tests/regression", "-p", "test_oem.py", "-v"])
         run("integration", ["-m", "unittest", "discover", "-s", ROOT / "tests/integration", "-v"])
@@ -131,10 +130,11 @@ def main():
             ck_args += ["--stock", stock]
         run("ckcond", ck_args)
         run("udma", ["-m", "unittest", "discover", "-s", ROOT / "tools/patching/udma/tests", "-v"])
+        run("hardware_suite", ["-m", "unittest", "discover", "-s", ROOT / "tests/hardware/tests", "-v"])
         if stock:
             run("native_oem", [ROOT / "tools/analysis/native_oem.py", stock, "--out", out / "native_oem.json"])
             udma_args = [ROOT / "tools/patching/udma/run_audit.py", "--stock", stock,
-                         "--v8", env["PH8057_V8"], "--revised-ckcond", env["PH8057_REVISED_CKCOND"],
+                         "--ckcond", env["PH8057_CKCOND"],
                          "--out", out / "udma_native"]
             if args.donors:
                 udma_args += ["--donors", args.donors.resolve()]
@@ -148,12 +148,12 @@ def main():
     source_hashes = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
                      for folder in (ROOT / "tools", ROOT / "tests")
                      for path in sorted(folder.rglob("*"))
-                     if path.is_file() and path.suffix in (".py", ".c", ".h", ".json")
+                     if path.is_file() and path.suffix in (".py", ".c", ".h", ".json", ".txt", ".sh")
                      and not any(part in ("test_results", "__pycache__") for part in path.parts)}
     for name in ("run_tests.py", "ph8057.py", "research/oem/registers.json", "firmware/manifests/images.json",
                  "firmware/ph8057-device/modified/build_from_1bin.py",
                  "firmware/ph8057-device/modified/verify_device_build.py",
-                 "firmware/ph8057-device/modified/ckcond_revised_patch_records.json"):
+                 "firmware/ph8057-device/modified/ckcond_patch_records.json"):
         source_hashes[name] = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
     skipped = any(row["status"] in ("SKIPPED", "PASS_WITH_SKIPS") for row in records)
     report = {"status": "FAIL" if failed else "PASS_WITH_EXPLICIT_SKIPS" if skipped else "PASS_OFFLINE",

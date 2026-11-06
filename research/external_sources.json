@@ -112,7 +112,7 @@
     "license": "MIT; retained in oracle/LICENSE"
   },
   {
-    "verification": "Bundled historical upstream disassembler matches freshly fetched pinned primary source exactly",
+    "verification": "Bundled upstream disassembler matches freshly fetched pinned primary source exactly",
     "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8/disasm.c",
     "sha256": "0ea5dddc11310d8f1fcff475ff3e3f177ce8b0163b71444c2b937ad55021601e",
     "bytes": 33045

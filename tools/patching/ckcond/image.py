@@ -1,7 +1,7 @@
 """Strict offline PH8057 image integrity and patch application.
 
 The input is the complete 70,144-byte SPI capture. A 65,536-byte file is not
-accepted: the historical ph8057-original.bin is a truncated SPI prefix, not
+accepted: ph8057-original.bin is a truncated SPI prefix, not
 a full CPU CODE image. This module never opens devices.
 """
 import hashlib
@@ -11,8 +11,7 @@ import stat
 import zlib
 
 STOCK_FULL_SHA = "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09"
-ORIGINAL_V8_SHA = "4b7ac3e5bd124d8e44281e9aa79b7b65f7b62c54410ffd1abd8af4a586d74e11"
-REVISED_CKCOND_SHA = "2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b"
+CKCOND_SHA = "2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b"
 IMAGE_SIZE = 0x11200
 CODE_OFFSET = 0x1000
 CODE_END = 0x11000
@@ -166,7 +165,7 @@ def repackage(stock, changes):
     return result
 
 
-def changed_ranges(before, after):
+def changed_ranges(before, after, *, code_offset=CODE_OFFSET, code_end=CODE_END):
     require(len(before) == len(after), "Diff requires equal-size images")
     ranges, start = [], None
     for i in range(len(before) + 1):
@@ -176,8 +175,8 @@ def changed_ranges(before, after):
         elif not different and start is not None:
             ranges.append({"file_offset": f"0x{start:05X}",
                            "end_exclusive": f"0x{i:05X}",
-                           "cpu_address": (f"0x{start-CODE_OFFSET:04X}"
-                                           if CODE_OFFSET <= start < CODE_END else None),
+                           "cpu_address": (f"0x{start-code_offset:04X}"
+                                           if code_offset <= start < code_end else None),
                            "old": before[start:i].hex(), "new": after[start:i].hex()})
             start = None
     return ranges

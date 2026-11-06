@@ -179,11 +179,11 @@ class NativeRegressionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify_atlas_evidence(altered)
 
-    @unittest.skipUnless(os.environ.get("PH8057_REVISED_CKCOND"),
-                         "Generated candidate evidence requires PH8057_REVISED_CKCOND")
-    def test_atlas_instructions_match_generated_revised_candidate(self):
-        result = verify_atlas_evidence(Path(os.environ["PH8057_REVISED_CKCOND"]).read_bytes())
-        self.assertEqual(result["image"], "ckcond-revised")
+    @unittest.skipUnless(os.environ.get("PH8057_CKCOND"),
+                         "Generated candidate evidence requires PH8057_CKCOND")
+    def test_atlas_instructions_match_generated_ckcond(self):
+        result = verify_atlas_evidence(Path(os.environ["PH8057_CKCOND"]).read_bytes())
+        self.assertEqual(result["image"], "ckcond")
         self.assertGreater(result["instructions_checked"], 0)
 
 
