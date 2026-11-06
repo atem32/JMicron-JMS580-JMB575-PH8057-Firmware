@@ -16,6 +16,7 @@ from unittest.mock import patch
 from ph8057_qualify import (Abort, GIB, MIB, Guard, Recorder, expected_fio_sizes,
                             fio_jobfile, main, validate_fio_results)
 from test_offline import fake_targets
+from hardware_fixtures import mock_root_and_lock
 
 
 class TwoDiskTests(unittest.TestCase):
@@ -112,7 +113,8 @@ class TwoDiskTests(unittest.TestCase):
                     '--excluded-device','/dev/sdb', '--excluded-serial','TEST-SERIAL-EXCLUDED',
                     '--mode','diagnose','--run','--output-dir',out,
                     '--diagnose-mib','256','--diagnose-timeout-sec','120']
-            with patch('ph8057_qualify.sys.argv', args), \
+            with mock_root_and_lock(), \
+                 patch('ph8057_qualify.sys.argv', args), \
                  patch('ph8057_qualify.require_tools'), \
                  patch('ph8057_qualify.Guard', FakeGuard), \
                  patch('ph8057_qualify.Background', FakeBackground), \
@@ -144,7 +146,8 @@ class TwoDiskTests(unittest.TestCase):
                 self.usb_parent = '/sys/fake-usb'
         argv=['test','--devices','/dev/sdc','/dev/sdd','--expected-serials',
               'TEST-SERIAL-A','TEST-SERIAL-B','--preflight']
-        with patch('ph8057_qualify.sys.argv', argv), \
+        with mock_root_and_lock(), \
+             patch('ph8057_qualify.sys.argv', argv), \
              patch('ph8057_qualify.require_tools'), \
              patch('ph8057_qualify.Guard', FakeGuard):
             with self.assertRaisesRegex(Abort, 'Target ATA serial mismatch'):

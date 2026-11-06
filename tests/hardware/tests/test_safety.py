@@ -84,6 +84,23 @@ class DiskChecks(unittest.TestCase):
         command.assert_not_called()
 
 
+class PrivilegeChecks(unittest.TestCase):
+    def test_nonroot_is_refused_before_hardware_or_lock_access(self):
+        args = ['test', '--devices', '/dev/sdc', '/dev/sdd', '/dev/sde', '--run']
+        with patch('ph8057_qualify.sys.argv', args), \
+             patch('ph8057_qualify.os.geteuid', return_value=1000), \
+             patch('ph8057_qualify.require_tools') as tools, \
+             patch('ph8057_qualify.Guard') as guard, \
+             patch('ph8057_qualify.run') as command, \
+             patch('ph8057_qualify.Path.open') as open_file, \
+             patch('ph8057_qualify.Recorder') as recorder, \
+             patch('ph8057_qualify.run_fio_phase') as fio:
+            with self.assertRaisesRegex(Abort, 'Run as root'):
+                main()
+            for operation in (tools, guard, command, open_file, recorder, fio):
+                operation.assert_not_called()
+
+
 class ExplicitConfirmation(unittest.TestCase):
     def check_refusal(self, tty, answer='incorrect'):
         targets = fake_targets()

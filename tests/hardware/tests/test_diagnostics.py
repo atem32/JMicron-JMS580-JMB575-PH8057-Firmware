@@ -17,6 +17,7 @@ from ph8057_qualify import (
     make_diagnostic_result, main, Recorder,
 )
 from test_offline import fake_targets
+from hardware_fixtures import mock_root_and_lock
 
 
 class DiagnosticTests(unittest.TestCase):
@@ -129,7 +130,8 @@ class DiagnosticTests(unittest.TestCase):
             argv = ['prog', '--devices', '/dev/sdc', '/dev/sdd', '/dev/sde',
                     '--run', '--mode', 'diagnose', '--diagnose-mib', '256',
                     '--diagnose-timeout-sec', '123', '--output-dir', out]
-            with patch('ph8057_qualify.sys.argv', argv), \
+            with mock_root_and_lock(), \
+                 patch('ph8057_qualify.sys.argv', argv), \
                  patch('ph8057_qualify.require_tools'), \
                  patch('ph8057_qualify.Guard', FakeGuard), \
                  patch('ph8057_qualify.Background', FakeBackground), \

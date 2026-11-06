@@ -191,6 +191,7 @@ class MainSmokeTests(unittest.TestCase):
         import threading
         from types import SimpleNamespace
         from ph8057_qualify import main
+        from hardware_fixtures import mock_root_and_lock
         targets = fake_targets()
 
         class StubGuard:
@@ -230,7 +231,8 @@ class MainSmokeTests(unittest.TestCase):
                     time.sleep(0.1)  # Avoid infinitely fast cycles during the smoke test.
 
                 fake_delta = ([{'disk': n, 'parse_complete': True, 'acquisition_complete': True} for n in (1, 2, 3)], False)
-                with patch('ph8057_qualify.sys.argv', argv), \
+                with mock_root_and_lock(), \
+                     patch('ph8057_qualify.sys.argv', argv), \
                      patch('ph8057_qualify.require_tools'), \
                      patch('ph8057_qualify.Guard', StubGuard), \
                      patch('ph8057_qualify.Background', StubBackground), \

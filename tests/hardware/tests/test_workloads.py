@@ -17,6 +17,7 @@ from ph8057_qualify import (Abort, Background, Recorder, GIB, MIB,
                             fio_jobfile, expected_fio_sizes, validate_fio_results,
                             main)
 from test_offline import fake_targets
+from hardware_fixtures import mock_root_and_lock
 
 
 class FioTests(unittest.TestCase):
@@ -125,7 +126,8 @@ class ModeTests(unittest.TestCase):
             out = str(Path(d) / 'out')
             args = ['test', '--devices', '/dev/sdc', '/dev/sdd', '/dev/sde',
                     '--run', '--mode', mode, '--output-dir', out] + extra_args
-            with patch('ph8057_qualify.sys.argv', args), \
+            with mock_root_and_lock(), \
+                 patch('ph8057_qualify.sys.argv', args), \
                  patch('ph8057_qualify.require_tools'), \
                  patch('ph8057_qualify.Guard', FakeGuard), \
                  patch('ph8057_qualify.Background', FakeBackground), \
