@@ -22,6 +22,33 @@ If only an unknown, truncated or encrypted file is available, finish identificat
 
 Do not publish vendor firmware, proprietary flash utilities, serial numbers or private dumps in this public repository.
 
+### Firmware readback and update over USB (no external SPI programmer)
+
+**An external SPI programmer was not required for the PH8057 work recorded here.**
+The bridge exposes vendor-specific firmware access over USB, but this is *device/firmware-dependent* and is not a universal JMS580 recovery guarantee.
+
+**Linux — firmware readback used in this project:**
+
+- Reader: [projectgus/jms567ctl](https://github.com/projectgus/jms567ctl), an unofficial JMS567 utility whose §read_flash§ operation was also used successfully with this PH8057/JMS580.
+- Linux SCSI helper used with it: [§py3_sg.py§ from 9500/ds500u3-jms567-uas](https://github.com/9500/ds500u3-jms567-uas/blob/main/tools/py3_sg.py). Place the helper where Python can import it, and use the script from the reader repository.
+- Example of the **read-only** command recorded for the PH8057 (replace §/dev/sdb§ with the verified bridge disk node):
+
+  ~~~bash
+  python3 jms567ctl.py -d /dev/sdb read_flash ph8057-original.bin
+  sha256sum ph8057-original.bin
+  ~~~
+
+- The recorded read returned **65,536 bytes**, SHA256 §131bab19b558a25745c881c3c4193fd1f9fb541c0a6c89c7961bad31cecc60b2§. **This is a truncated SPI prefix, not the complete 70,144-byte PH8057 image and not a standalone patchable factory source.** It does not include the complete CODE trailer and OEM block. The separate original 67,072-byte updater-format §1.bin§ was backed up using the Windows vendor tool; see [original updater readback](../firmware/ph8057-device/original/README.md) and [container layouts](firmware-layout.md).
+- The reader repository also contains erase/write/reset operations. **Their safe use on JMS580/PH8057 was not demonstrated here; do not infer write compatibility from a successful read.**
+
+**Windows — firmware installation used in this project:**
+
+- Tool: **JMicron FwUpdateTool version 1.19.16.48**, using the appropriate **67,072-byte updater-format CK_COND image** over USB.
+- The owner reported a successful update, power cycle, USB enumeration, and the expected SMART RETURN STATUS and CHECK POWER MODE results. No external SPI flasher was used.
+- The utility reported an **unknown SPI flash type** and no independently verified post-flash dump was captured. A successful software update does not prove that recovery from a bad flash will be possible over USB.
+
+**For another device:** first identify the original firmware and compatible transport/container format. Acquire and preserve its factory backup, verify actual read length and hashes, and establish a credible recovery procedure. Prefer read-only firmware acquisition first; do not treat the reference Windows writer or Linux reader as automatically compatible with another JMS580 board. Neither third-party tool nor vendor flashing binary is bundled with this project.
+
 ## 2. Decide which case applies
 
 | Target input | Required approach |
