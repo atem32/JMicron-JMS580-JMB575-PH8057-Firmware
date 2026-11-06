@@ -1,6 +1,7 @@
 """Integration checks for container boundaries and actual candidate composition."""
 import os
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -81,7 +82,7 @@ class PublicBoundaryTests(unittest.TestCase):
     def test_oem_sidecar_cannot_overwrite_input(self):
         from oem import write_outputs
         with tempfile.TemporaryDirectory() as td:
-            directory = Path(td); source = directory / "oem_decoded.json"
+            directory = Path(td); source = directory / "oem_atlas.json"
             source.write_bytes(b"\0" * 512)
             with self.assertRaises(ValueError):
                 write_outputs(source.read_bytes(), directory, source_path=source)
@@ -120,13 +121,18 @@ class CandidateIntegration(unittest.TestCase):
         self.assertEqual(sha(self.built["ckcond-revised"][0]), REVISED_CKCOND_SHA)
         self.assertEqual(sha(self.built["udma-trace"][0]),
                          "a4bf69164548003a26efebcb3f5fd6e59d0dfc3321eeda2ffb97d6e36ba63712")
+        identities = json.loads((ROOT / "firmware/manifests/images.json").read_text())["images"]
         for raw, report in self.built.values():
             with self.subTest(variant=report["variant"]):
+                expected = identities[report["variant"]]
+                self.assertEqual(sha(raw), expected["sha256"])
+                self.assertEqual(sha(raw[0x1000:0x11000]), expected["code_sha256"])
+                self.assertEqual(report["crc"], expected["crc"])
                 self.assertEqual(len(raw), 70144)
                 self.assertEqual(raw[0x11000:], self.stock[0x11000:])
                 self.assertEqual(check_crc(raw), report["crc"])
                 self.assertFalse(report["udma_residue_fix"])
-                self.assertEqual(report["candidate_hardware_tests"], 0)
+                self.assertEqual(report["artifact_hardware_status"], "NOT TESTED")
 
     def test_all_builder_sidecars_preserve_source_on_filename_collision(self):
         scripts = [
@@ -157,6 +163,12 @@ class CandidateIntegration(unittest.TestCase):
         self.assertNotEqual(combined, revised)
         self.assertEqual(len(self.built["combined-revised-trace"][1]["patches"]),
                          len(self.built["ckcond-revised"][1]["patches"]) + 2)
+
+    def test_updater_records_equal_the_current_cpu_patch_plan(self):
+        records = json.loads((ROOT / "firmware/ph8057-device/modified/ckcond_revised_patch_records.json").read_text())
+        normalize = lambda rows: [{"cpu": int(row["cpu"], 16) if isinstance(row["cpu"], str) else row["cpu"],
+                                   "old": row["old"], "new": row["new"]} for row in rows]
+        self.assertEqual(normalize(records), normalize(self.built["ckcond-revised"][1]["patches"]))
 
     def test_combined_disjoint_guards_and_invalid_crc_rejected(self):
         with self.assertRaisesRegex(ValueError, "overlap"):

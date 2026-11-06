@@ -6,7 +6,6 @@ register specification. UNKNOWN is deliberately different from unused.
 from __future__ import annotations
 
 import argparse
-import csv
 import hashlib
 import json
 from pathlib import Path
@@ -17,109 +16,79 @@ OEM_BASE = 0x11000
 OEM_SIZE = 512
 STOCK_SHA256 = "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09"
 OEM_SHA256 = "9521e63007a1289846438195896ef2908a6ccd695c983f90b54fd501eb00e635"
-CATEGORIES = {"CONFIRMED", "CODE-CONFIRMED", "HYPOTHESIS", "UNKNOWN", "NOT USED IN VERIFIED PATH"}
+CATEGORIES = {"CONFIRMED", "INFERRED", "HYPOTHESIS", "UNKNOWN"}
+ATLAS_PATH = Path(__file__).resolve().parents[2] / "research/oem/registers.json"
+REGISTER_ATLAS = json.loads(ATLAS_PATH.read_text())
 
-# Inclusive OEM ranges, effect, evidence category, aligned CPU entry points.
-REGIONS = [
-    (0x000, 0x001, "USB VID, little-endian; reordered into 44EC/44ED", "CODE-CONFIRMED", "1FBB,1FC3"),
-    (0x002, 0x003, "USB PID, little-endian; reordered into 44EE/44EF", "CODE-CONFIRMED", "1FCB,1FD3"),
-    (0x004, 0x005, "No verified OEM boot consumer; 3904 comparison at 98E9 is a different staging-buffer context", "UNKNOWN", "98E9 is not established OEM provenance"),
-    (0x006, 0x006, "Copied from 3906 to 44E6; physical/protocol meaning unassigned", "CODE-CONFIRMED", "1FAB"),
-    (0x007, 0x007, "Copied from 3907 to 44E7; physical/protocol meaning unassigned", "CODE-CONFIRMED", "1FB3"),
-    (0x008, 0x008, "Serial source selector: 5 -> 44E8=0, 7 -> 44E8=1; otherwise nonempty OEM serial -> 44E8=2", "CODE-CONFIRMED", "2061-20E6"),
-    (0x009, 0x009, "No individual OEM consumer established", "UNKNOWN", ""),
-    (0x00A, 0x00A, "0A enables custom SCSI INQUIRY vendor/product block copies", "CODE-CONFIRMED", "20E6-210D"),
-    (0x00B, 0x00B, "No individual OEM consumer established", "UNKNOWN", ""),
-    (0x00C, 0x00C, "Manufacturer packed-string wire-length hint; ASCII storage, not UTF-16LE", "CODE-CONFIRMED", "1FDB-201E,E1EB"),
-    (0x00D, 0x00D, "Value 03 resembles USB STRING type; this OEM loader does not read/validate it", "NOT USED IN VERIFIED PATH", "1FDB-201E"),
-    (0x00E, 0x02D, "Manufacturer ASCII storage; 32 bytes copied to 4511..4530", "CODE-CONFIRMED", "2011-201B"),
-    (0x02E, 0x02F, "String-slot tail outside verified 32-byte manufacturer copy", "UNKNOWN", ""),
-    (0x030, 0x030, "Product packed-string wire-length hint; ASCII storage, not UTF-16LE", "CODE-CONFIRMED", "201E-2061,E1EB"),
-    (0x031, 0x031, "Value 03 resembles USB STRING type; this OEM loader does not read/validate it", "NOT USED IN VERIFIED PATH", "201E-2061"),
-    (0x032, 0x051, "Product ASCII storage; 32 bytes copied to 4531..4550", "CODE-CONFIRMED", "2054-205E"),
-    (0x052, 0x053, "String-slot tail outside verified 32-byte product copy", "UNKNOWN", ""),
-    (0x054, 0x054, "Serial wire-length hint; (length-2)/2 stored in 480A, later clamped to >=12", "CODE-CONFIRMED", "207C-20E6,E1EB"),
-    (0x055, 0x055, "Value 03 resembles USB STRING type; this OEM loader does not read/validate it", "NOT USED IN VERIFIED PATH", "207C-20E6"),
-    (0x056, 0x073, "Unit-specific serial ASCII storage; 30-byte copy to 4551,480D,48C5", "CODE-CONFIRMED", "20AD-20D1"),
-    (0x074, 0x077, "Serial-slot tail outside verified 30-byte serial copy", "UNKNOWN", ""),
-    (0x078, 0x0C7, "Zero in stock; individual role unknown; may participate in F8.7 block transfer", "UNKNOWN", "77DA-786E"),
-    (0x0C8, 0x0CF, "SCSI INQUIRY vendor ASCII, gated by OEM[00A]==0A", "CODE-CONFIRMED", "20F3-20FD"),
-    (0x0D0, 0x0DF, "SCSI INQUIRY product ASCII, gated by OEM[00A]==0A", "CODE-CONFIRMED", "2100-210A"),
-    (0x0E0, 0x0E1, "HD signature gates E7/F3 copies and E7.5 initialization", "CODE-CONFIRMED", "210D-2136"),
-    (0x0E2, 0x0E6, "Individual role unknown; do not call reserved", "UNKNOWN", ""),
-    (0x0E7, 0x0E7, "E7 flags; see all eight bit records", "CODE-CONFIRMED", "2119,44C4,454B,6F4C"),
-    (0x0E8, 0x0EF, "Individual role unknown; do not call reserved", "UNKNOWN", ""),
-    (0x0F0, 0x0F1, "BC signature gates F2, timer, F8, FA, FB and FC; does NOT gate E7/F3", "CODE-CONFIRMED", "2136-222A"),
-    (0x0F2, 0x0F2, "F2 flags; 487D/4583/4584 and IRAM flag updates have set-only paths", "CODE-CONFIRMED", "214A-2199"),
-    (0x0F3, 0x0F3, "F3 flags; HD signature controls copy to 44F1", "CODE-CONFIRMED", "210D-2128"),
-    (0x0F4, 0x0F7, "Big-endian OEM timer input; 10*max(180,value) modulo 2^32 ->44F4 and4881", "CODE-CONFIRMED", "2199-2200"),
-    (0x0F8, 0x0F8, "F8 dispatch flags; BC-gated copy to4589; transfers require separate execution", "CODE-CONFIRMED", "2200,C4D3-C501"),
-    (0x0F9, 0x0F9, "No individual decoder established; included in F8.7 staging block", "UNKNOWN", "77DA-786E"),
-    (0x0FA, 0x0FA, "39FA ->4174 ->7E18 in USB SET_ADDRESS path; units unknown", "CODE-CONFIRMED", "2208,6232,279B"),
-    (0x0FB, 0x0FB, "39FB ->4175 ->7086; F3.2 may report zero-state event; units unknown", "CODE-CONFIRMED", "2210,385A,7321,9CC6"),
-    (0x0FC, 0x0FC, "Strictly >0x20 overrides4AD6; 028C copies4A18; counter decremented if7075>100", "CODE-CONFIRMED", "2218,028C,003E"),
-    (0x0FD, 0x0FD, "No individual decoder established; included in F8.7 staging block", "UNKNOWN", "77DA-786E"),
-    (0x0FE, 0x0FF, "JM signature gates OEM initializer; invalid takes default-data handler9D1C", "CODE-CONFIRMED", "1F87-1F9B,2227"),
-    (0x100, 0x1FF, "Second OEM half: zero in this stock image; not transferred by verified256-byte paths; role unknown", "UNKNOWN", "1F49,77DA"),
-]
-
-# Each physical interpretation is scoped separately from the CODE effect.
+# One metadata source; these tuple views preserve the decoder's public API.
+REGIONS = [(row["start"], row["end"], row["purpose"], row["confidence"], row["cpu_paths"])
+           for row in REGISTER_ATLAS["oem_regions"]]
 BIT_FIELDS = {
-    "E7": [
-        ("CODE-CONFIRMED", "USB configuration power reporting: 0 self-powered,1 bus-powered; does not switch power rails", "454B-457F"),
-        ("CODE-CONFIRMED", "Sets IRAM bit38 enabling special READ/WRITE(16) path; no 4Kn inference", "6F4C-6F56,5015"),
-        ("CODE-CONFIRMED", "Cleared at6F5D before same-path checks; physical purpose unknown", "6F57-6F82"),
-        ("CODE-CONFIRMED", "Enables writes7085=2F and508F=01; silicon semantics unknown", "D422-D435"),
-        ("CODE-CONFIRMED", "Advertises DPOFUA in MODE SENSE header; does not prove FUA execution", "364E-367E,379E,37C8,6F7C"),
-        ("CODE-CONFIRMED", "Sets4172; 3A2D consults7A04/7A05 and conditionally writes4575=3", "2129-2136,3A2D"),
-        ("CODE-CONFIRMED", "UAS descriptor gate; cleared at6F57 and46ED; UASP NOT IMPLEMENTED", "44C4,6F57,46ED"),
-        ("CODE-CONFIRMED", "5082 bits1/2 follow flag atD682; bit3 set in BOTH cases; independent cleanup clears bits1/2", "D682,5535,6631,7BED"),
-    ],
-    "F2": [
-        ("NOT USED IN VERIFIED PATH", "No change in214A-2199 outputs; global/indirect consumers not excluded", "214A-2199"),
-        ("NOT USED IN VERIFIED PATH", "No change in214A-2199 outputs; global/indirect consumers not excluded", "214A-2199"),
-        ("CODE-CONFIRMED", "Sets4588=1; clear occurs earlier1F7C-1F80, not the F2 slice", "2172-217F,1F7C,875A"),
-        ("CODE-CONFIRMED", "Assigns44F3 from flag; enabled sets487D=1 and transforms timer; disabled preserves487D here", "214A-2160,2199-2200,6B04"),
-        ("CODE-CONFIRMED", "Sets4583=1 when enabled, otherwise preserves; state-dependent7058.bit5 effects", "217F-218C,3F61"),
-        ("CODE-CONFIRMED", "Sets4584=1 when enabled, otherwise preserves; state-dependent7058.bit4 effects", "218C-2199,3F61"),
-        ("CODE-CONFIRMED", "Sets IRAM bit39; initializer clears earlier; at64B7 false ORs7801 with10, true preserves", "1F78,2169-2172,64B7"),
-        ("CODE-CONFIRMED", "Sets IRAM bit3A (=byte27.bit2); whole byte saved/restored viaB008; independent functional reader unknown", "1F7A,2160-2169,81DC,832F"),
-    ],
-    "F3": [
-        ("CODE-CONFIRMED", "Event/topology paths; cleared by6F62; NOT a qualified hot-swap switch", "2804,6F62,8FD9"),
-        ("CODE-CONFIRMED", "JM vendor response indicators;7059.bit1 status path; private protocol unknown", "272E,2D52,9CE1"),
-        ("CODE-CONFIRMED", "If7086==0 arms4176/4177; JM report sets3506.bit0 and clears4177", "7321,9CC6,2210,385A"),
-        ("UNKNOWN", "No individual direct decoder established; whole-byte and indirect consumers remain possible", "44F1 direct occurrence survey only"),
-        ("CODE-CONFIRMED", "Filters7993 high-nibble0 low2=0 event: off writes4BC9=2E,4AD8=1,4173=0; on skips", "5216-527B"),
-        ("CODE-CONFIRMED", "USB2-only policy paths: state6, bcdUSB0200 and suppressed BOS; link operation untested", "32E1,DD28,B6AE"),
-        ("CODE-CONFIRMED", "TRIM/DSM capability gate requires IDENTIFY and per-port capability; command success unproven", "16C2,1177,C98E"),
-        ("CODE-CONFIRMED", "Additional NCQ enable in no-port-multiplier branch with IDENTIFY words75/76; not global NCQ control", "154E-156F"),
-    ],
-    "F8": [
-        *[("NOT USED IN VERIFIED PATH", "No individual dispatch inC4D3-C501; value may be carried in F8.7 block", "C4D3-C501") for _ in range(6)],
-        ("CODE-CONFIRMED", "71C4(04),7616(02),71C4(40): CODE1A18..1B17 ->XDATA7500..75FF; peripheral meaning unknown", "C4D3,7616,8026"),
-        ("CODE-CONFIRMED", "71C4(08),77DA(7300),71C4(80): staging3900..39FF ->7300..73FF with compare; up to12 copies, sticky mismatch", "C4E9,77DA-786E,800A"),
-    ],
+    field: [(row["confidence"], row["purpose"], row["cpu_paths"])
+            for row in REGISTER_ATLAS["oem_bits"] if row["field"] == field]
+    for field in ("E7", "F2", "F3", "F8")
 }
 
-MMIO = [
-    ("7801", "F2.6", "64B7 ORs bit4 only if IRAM bit39 is zero; usual preceding write is41", "Physical bit meaning unknown"),
-    ("7058", "F2.4,F2.5", "Dispatcher3F61 controls bits5/4 by state", "Not a globally fixed register value"),
-    ("5082", "E7.7", "D682 sets bit3 always and assigns bits1/2; cleanup clears1/2", "Peripheral meaning unknown"),
-    ("7085,508F", "E7.3", "D422 conditional writes2F and01", "Peripheral meaning unknown"),
-    ("7086", "FB,F3.2", "385A copies4175;7321 tests zero and arms event", "No time unit or hotplug interpretation proven"),
-    ("7E18", "FA", "6232 writes4174 after validated SET_ADDRESS;279B reads when415E enabled", "Raw value, not established milliseconds"),
-    ("70B0-70B3", "F2.3,F4-F7,MODE SELECT", "9185 path submits runtime4881 four bytes throughB409", "Byte-transfer relation confirmed; peripheral timebase unknown"),
-    ("70B4-70B5,70B7", "UNKNOWN", "No OEM-specific meaning established", "Do not interpolate adjacent-register meanings"),
-    ("70B6", "MODE SELECT", "9711/B409 path uses command/mode value2", "Context-dependent command interface"),
-    ("70B8", "MODE SELECT", "9185 path writes64", "Physical meaning unknown"),
-    ("70C0", "MODE SELECT", "9711 interprets synthetic result1/2 with alternate SZCT values", "NOT a universally valid byte-count register"),
-    ("70C1-70C7", "UNKNOWN", "No universal OEM role established", "UDMA counter roles require separate context and hardware evidence"),
-    ("70C8", "MODE SELECT", "Related completion/status path", "Physical bit semantics not proven"),
-    ("7075", "FC", "003E: threshold>100 decrements4A18, increments4A9B, clears7075", "Tick source and unit unknown"),
-    ("7300-73FF", "F8.7", "256-byte staging copy and comparison", "Not proven SPI/NVRAM storage"),
-    ("7500-75FF", "F8.6", "256-byte CODE table copy", "Peripheral table function unknown"),
-]
+
+def validate_atlas_metadata():
+    """Validate namespace coverage, confidence and evidence references."""
+    if REGISTER_ATLAS["schema_version"] != 1:
+        raise ValueError("Unsupported register-atlas schema")
+    coverage = [0] * OEM_SIZE
+    for row in REGISTER_ATLAS["oem_regions"]:
+        if not 0 <= row["start"] <= row["end"] < OEM_SIZE:
+            raise ValueError("OEM range outside the 512-byte block")
+        for offset in range(row["start"], row["end"] + 1):
+            coverage[offset] += 1
+    if coverage != [1] * OEM_SIZE:
+        raise ValueError("OEM ranges must cover every byte exactly once")
+    for field in BIT_FIELDS:
+        bits = [row["bit"] for row in REGISTER_ATLAS["oem_bits"] if row["field"] == field]
+        if bits != list(range(8)):
+            raise ValueError("Every option byte must define bits 0 through 7 once")
+    if len(REGISTER_ATLAS["oem_bits"]) != 32:
+        raise ValueError("Unexpected OEM option byte")
+    for group in ("oem_regions", "oem_bits", "registers"):
+        for row in REGISTER_ATLAS[group]:
+            if row["confidence"] not in CATEGORIES:
+                raise ValueError("Unknown confidence category")
+            if not all(row.get(key) for key in ("address", "purpose", "read_write", "unknowns")):
+                raise ValueError("Incomplete atlas entry")
+            if any(ref not in REGISTER_ATLAS["evidence"] for ref in row["evidence"]):
+                raise ValueError("Missing instruction evidence")
+            if row["confidence"] == "CONFIRMED" and not row["evidence"] and not row.get("reference"):
+                raise ValueError("Confirmed entry has no instruction or source reference")
+    return True
+
+
+def verify_atlas_evidence(raw):
+    """Check cited instruction bytes and decoding against an exact local image.
+
+    This checks static evidence, not instruction reachability or physical MMIO
+    behavior. Native path regressions establish the bounded data-flow claims.
+    """
+    from mcs51 import decode
+    digest = hashlib.sha256(raw).hexdigest()
+    identities = REGISTER_ATLAS["images"]
+    matches = [name for name, item in identities.items()
+               if digest == item["sha256"] and len(raw) == item["size"]]
+    if len(matches) != 1:
+        raise ValueError("Atlas evidence requires an exact declared firmware image")
+    name = matches[0]
+    offset = int(identities[name]["code_offset"], 16)
+    code = raw[offset:offset + 65536]
+    checked = 0
+    for item in REGISTER_ATLAS["evidence"].values():
+        if item["image"] != name:
+            continue
+        for address, expected, assembly in item["instructions"]:
+            pc = int(address, 16)
+            expected = bytes.fromhex(expected)
+            instruction = decode(code, pc)
+            if instruction.raw != expected or f"{instruction.mnemonic} {instruction.operands}".rstrip() != assembly:
+                raise ValueError(f"Atlas instruction differs at CPU {pc:04X}")
+            checked += 1
+    return {"image": name, "sha256": digest, "instructions_checked": checked}
 
 
 def extract_oem(raw: bytes) -> bytes:
@@ -143,8 +112,8 @@ def timer_value(value: int) -> dict:
 def f2_slice_effect(value: int, prior: dict | None = None) -> dict:
     """Exact state transition at214A-2199, including set-only outputs.
 
-    Unlike historical zero-memory projections, this accepts a prior state and
-    preserves values when the actual instructions do not write the location.
+    A prior state distinguishes preserved values from explicit zero writes.
+    Values remain unchanged when the actual instructions do not write them.
     """
     if not 0 <= value <= 255:
         raise ValueError("F2 must fit one byte")
@@ -199,8 +168,8 @@ def setup_iram(bm_request_type: int, request: int, value: int, index: int, lengt
     """USB setup fields in the firmware's internal big-endian IRAM layout.
 
     USB wire wValue/wIndex/wLength are little-endian. This decoded internal
-    representation uses high-byte/low-byte pairs1A:B,1C:D,1E:F. Historical v16
-    interchanged the named wValue and wIndex fixtures; both-zero cases hid it.
+    representation uses high-byte/low-byte pairs 1A:B, 1C:D, 1E:F. Asymmetric
+    value/index tests are needed because both-zero fixtures cannot distinguish them.
     """
     if not (0 <= bm_request_type < 256 and 0 <= request < 256):
         raise ValueError("Request header fields must fit one byte")
@@ -273,20 +242,66 @@ def build_atlas(raw: bytes, *, include_sensitive: bool = False) -> list[dict]:
         if len(region) != 1:
             raise AssertionError(f"OEM region coverage {off:03X}: {len(region)}")
         _, _, effect, category, cpu = region[0]
+        metadata = next(row for row in REGISTER_ATLAS["oem_regions"]
+                        if row["start"] <= off <= row["end"])
         secret = 0x056 <= off <= 0x077 and not include_sensitive
         atlas.append({"oem_offset": f"{off:03X}", "file_offset": f"{OEM_BASE + off:05X}",
                       "stock_byte": "REDACTED" if secret else f"{o[off]:02X}",
                       "category": category, "effect": effect, "cpu_evidence": cpu,
+                      "read_write": metadata["read_write"], "evidence": metadata["evidence"],
+                      "unknowns": metadata["unknowns"],
                       "boot_stage_xdata": f"{0x3900 + off:04X}" if off < 256 else "NO VERIFIED BOOT-STAGING MAPPING",
                       "included_in_F8_bit7_copy": off < 256,
                       "global_unused_claim": False})
     return atlas
 
 
+def register_map_markdown():
+    """Render the complete six-column table from the canonical metadata."""
+    def cell(value):
+        return str(value).replace("|", "\\|").replace("\n", " ")
+
+    lines = ["# PH8057 register and OEM atlas", "", REGISTER_ATLAS["scope"], "",
+             "Generated from `research/oem/registers.json`. CPU addresses name CODE;",
+             "the full SPI file offset is CPU + `0x1000`. Confidence describes the",
+             "stated software fact, not hardware qualification.", ""]
+    groups = [("OEM byte ranges", REGISTER_ATLAS["oem_regions"]),
+              ("OEM flag bits", REGISTER_ATLAS["oem_bits"])]
+    for space in REGISTER_ATLAS["address_namespaces"]:
+        rows = [row for row in REGISTER_ATLAS["registers"] if row["space"] == space]
+        if rows:
+            groups.append((space, rows))
+    for title, rows in groups:
+        lines += [f"## {title}", "", "| Address | Name / purpose | Read/write | Evidence | Confidence | Unknowns |",
+                  "|---|---|---|---|---|---|"]
+        for row in rows:
+            references = ", ".join(f"[{ref}](#{ref.lower()})" for ref in row["evidence"])
+            if row.get("reference"):
+                references += ("; " if references else "") + f"`{row['reference']}`"
+            if not references:
+                references = "No individual consumer established"
+            lines.append("| " + " | ".join(cell(value) for value in
+                         (row["address"], row["purpose"], row["read_write"], references,
+                          row["confidence"], row["unknowns"])) + " |")
+        lines.append("")
+    lines += ["## Instruction evidence", "",
+              "Excerpts retain exact image identity, CPU address, bytes and assembly.",
+              "A byte match checks the excerpt; it does not prove whole-program reachability.", ""]
+    for name, item in REGISTER_ATLAS["evidence"].items():
+        lines += [f"### {name}", "", f"Image: `{item['image']}`. Reference: `{item.get('reference', 'see atlas entry')}`.", ""]
+        if item.get("scope"):
+            lines += [item["scope"], ""]
+        lines += ["```text", *[f"{address}: {raw:<20} {assembly}"
+                                for address, raw, assembly in item["instructions"]], "```", ""]
+    return "\n".join(lines)
+
+
 def write_outputs(raw: bytes, directory: Path, *, include_sensitive=False, source_path=None) -> None:
-    names = ("oem_decoded.json", "oem_512_bytes.json", "oem_512_bytes.csv", "oem_32_bits.csv", "mmio_dependencies.json")
-    # This decoder stays dependency-free. Validate all destinations before
-    # writing any table, including hard links and symlinks to the input BIN.
+    names = ("oem_atlas.json", "register-map.md")
+    directory = Path(directory)
+    # Validate every destination before writing either view.
+    if directory.is_symlink():
+        raise ValueError("OEM output directory must not be a symbolic link")
     for name in names:
         path = directory / name
         if path.is_symlink() or (path.exists() and not path.is_file()):
@@ -295,22 +310,15 @@ def write_outputs(raw: bytes, directory: Path, *, include_sensitive=False, sourc
             source = Path(source_path)
             if path.resolve() == source.resolve() or (path.exists() and path.samefile(source)):
                 raise ValueError("OEM output aliases the immutable source file")
-    directory.mkdir(parents=True, exist_ok=True)
+    validate_atlas_metadata()
     decoded = decode_oem(raw, include_sensitive=include_sensitive)
     atlas = build_atlas(raw, include_sensitive=include_sensitive)
-    (directory / "oem_decoded.json").write_text(json.dumps(decoded, indent=2) + "\n")
-    (directory / "oem_512_bytes.json").write_text(json.dumps(atlas, indent=2) + "\n")
-    with (directory / "oem_512_bytes.csv").open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(atlas[0]))
-        writer.writeheader()
-        writer.writerows(atlas)
-    bits = [{"field": field, **row} for field, value in decoded["flags"].items() for row in value["bits"]]
-    with (directory / "oem_32_bits.csv").open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(bits[0]))
-        writer.writeheader()
-        writer.writerows(bits)
-    dependencies = [{"address": a, "source": s, "code_effect": e, "limitation": l} for a, s, e, l in MMIO]
-    (directory / "mmio_dependencies.json").write_text(json.dumps(dependencies, indent=2) + "\n")
+    output = {"schema_version": 1, "metadata": "research/oem/registers.json",
+              "metadata_sha256": hashlib.sha256(ATLAS_PATH.read_bytes()).hexdigest(),
+              "decoded": decoded, "oem_bytes": atlas}
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / "oem_atlas.json").write_text(json.dumps(output, indent=2) + "\n")
+    (directory / "register-map.md").write_text(register_map_markdown())
 
 
 def main():
@@ -325,7 +333,7 @@ def main():
     if len(raw) != IMAGE_SIZE or hashlib.sha256(raw).hexdigest() != STOCK_SHA256:
         parser.error("Native OEM atlas applies only to the exact factory image")
     write_outputs(raw, args.out, include_sensitive=args.include_sensitive, source_path=args.image)
-    print("Wrote 512 OEM rows and 32 bit records; no hardware access")
+    print("Wrote oem_atlas.json and register-map.md; no hardware access")
 
 
 if __name__ == "__main__":

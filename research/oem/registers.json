@@ -1,0 +1,4835 @@
+{
+  "schema_version": 1,
+  "instruction_columns": [
+    "cpu",
+    "bytes",
+    "assembly"
+  ],
+  "scope": "PH8057 firmware-specific software facts and bounded reverse-engineering hypotheses. This is not a JMicron register specification.",
+  "images": {
+    "factory": {
+      "sha256": "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09",
+      "size": 70144,
+      "code_offset": "0x1000",
+      "oem_offset": "0x11000",
+      "oem_size": 512,
+      "oem_sha256": "9521e63007a1289846438195896ef2908a6ccd695c983f90b54fd501eb00e635"
+    },
+    "ckcond-revised": {
+      "sha256": "2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b",
+      "size": 70144,
+      "code_offset": "0x1000"
+    }
+  },
+  "confidence_definitions": {
+    "CONFIRMED": "The stated software data flow or generated patch layout is established by exact instructions and scoped regressions; this does not certify physical hardware semantics.",
+    "INFERRED": "A semantic interpretation is supported by multiple code consumers but the hardware contract is not documented.",
+    "HYPOTHESIS": "An explicit model consistent with selected tests; it must not authorize a functional firmware change.",
+    "UNKNOWN": "No individual meaning or complete contract is established; unknown never means unused or reserved."
+  },
+  "address_namespaces": {
+    "OEM": "Offset within the512-byte block. Full SPI file offset=0x11000+offset;first256 bytes staged atXDATA3900.",
+    "MMIO": "XDATA-addressed peripheral use in cited paths; physical naming is inferred only where marked.",
+    "XDATA": "Software buffers/state in cited contexts; exact silicon RAM ownership remains unqualified.",
+    "IRAM": "Direct internal byte address below80h.",
+    "IRAM bit": "8051 bit address, distinct from an IRAM byte address.",
+    "SFR": "Direct special-function register address;bit addresses are explicitly named separately.",
+    "PATCH XDATA": "Generated candidate allocation;known schema does not establish available physical SRAM."
+  },
+  "oem_regions": [
+    {
+      "address": "0x000-0x001",
+      "start": 0,
+      "end": 1,
+      "purpose": "USB VID, little-endian; reordered into 44EC/44ED",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-1FBB",
+        "cpu-1FC3"
+      ],
+      "cpu_paths": "1FBB,1FC3",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other consumers and live hardware ownership are outside this bounded loader analysis."
+    },
+    {
+      "address": "0x002-0x003",
+      "start": 2,
+      "end": 3,
+      "purpose": "USB PID, little-endian; reordered into 44EE/44EF",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-1FCB",
+        "cpu-1FD3"
+      ],
+      "cpu_paths": "1FCB,1FD3",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other consumers and live hardware ownership are outside this bounded loader analysis."
+    },
+    {
+      "address": "0x004-0x005",
+      "start": 4,
+      "end": 5,
+      "purpose": "No verified OEM boot consumer; 3904 comparison at 98E9 is a different staging-buffer context",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [
+        "cpu-98B6",
+        "cpu-98E9"
+      ],
+      "cpu_paths": "98E9 is not established OEM provenance",
+      "confidence": "UNKNOWN",
+      "unknowns": "3900 is reused: 98B6 first stages another controller buffer; 98E9 does not prove an OEM[004] consumer."
+    },
+    {
+      "address": "0x006",
+      "start": 6,
+      "end": 6,
+      "purpose": "Copied from 3906 to 44E6; physical/protocol meaning unassigned",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-1FAB"
+      ],
+      "cpu_paths": "1FAB",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x007",
+      "start": 7,
+      "end": 7,
+      "purpose": "Copied from 3907 to 44E7; physical/protocol meaning unassigned",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-1FB3"
+      ],
+      "cpu_paths": "1FB3",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x008",
+      "start": 8,
+      "end": 8,
+      "purpose": "Serial source selector: 5 -> 44E8=0, 7 -> 44E8=1; otherwise nonempty OEM serial -> 44E8=2",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2061"
+      ],
+      "cpu_paths": "2061-20E6",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x009",
+      "start": 9,
+      "end": 9,
+      "purpose": "No individual OEM consumer established",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded."
+    },
+    {
+      "address": "0x00A",
+      "start": 10,
+      "end": 10,
+      "purpose": "0A enables custom SCSI INQUIRY vendor/product block copies",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-20E6"
+      ],
+      "cpu_paths": "20E6-210D",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x00B",
+      "start": 11,
+      "end": 11,
+      "purpose": "No individual OEM consumer established",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded."
+    },
+    {
+      "address": "0x00C",
+      "start": 12,
+      "end": 12,
+      "purpose": "Manufacturer packed-string wire-length hint; ASCII storage, not UTF-16LE",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-1FDB",
+        "cpu-E1EB"
+      ],
+      "cpu_paths": "1FDB-201E,E1EB",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x00D",
+      "start": 13,
+      "end": 13,
+      "purpose": "Value 03 resembles USB STRING type; this OEM loader does not read/validate it",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [
+        "cpu-1FDB"
+      ],
+      "cpu_paths": "1FDB-201E",
+      "confidence": "UNKNOWN",
+      "unknowns": "Not read by this loader; whole-block and other consumers remain possible."
+    },
+    {
+      "address": "0x00E-0x02D",
+      "start": 14,
+      "end": 45,
+      "purpose": "Manufacturer ASCII storage; 32 bytes copied to 4511..4530",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2011"
+      ],
+      "cpu_paths": "2011-201B",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other consumers and live hardware ownership are outside this bounded loader analysis."
+    },
+    {
+      "address": "0x02E-0x02F",
+      "start": 46,
+      "end": 47,
+      "purpose": "String-slot tail outside verified 32-byte manufacturer copy",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded."
+    },
+    {
+      "address": "0x030",
+      "start": 48,
+      "end": 48,
+      "purpose": "Product packed-string wire-length hint; ASCII storage, not UTF-16LE",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-201E",
+        "cpu-E1EB"
+      ],
+      "cpu_paths": "201E-2061,E1EB",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x031",
+      "start": 49,
+      "end": 49,
+      "purpose": "Value 03 resembles USB STRING type; this OEM loader does not read/validate it",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [
+        "cpu-201E"
+      ],
+      "cpu_paths": "201E-2061",
+      "confidence": "UNKNOWN",
+      "unknowns": "Not read by this loader; whole-block and other consumers remain possible."
+    },
+    {
+      "address": "0x032-0x051",
+      "start": 50,
+      "end": 81,
+      "purpose": "Product ASCII storage; 32 bytes copied to 4531..4550",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2054"
+      ],
+      "cpu_paths": "2054-205E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other consumers and live hardware ownership are outside this bounded loader analysis."
+    },
+    {
+      "address": "0x052-0x053",
+      "start": 82,
+      "end": 83,
+      "purpose": "String-slot tail outside verified 32-byte product copy",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded."
+    },
+    {
+      "address": "0x054",
+      "start": 84,
+      "end": 84,
+      "purpose": "Serial wire-length hint; (length-2)/2 stored in 480A, later clamped to >=12",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-207C",
+        "cpu-E1EB"
+      ],
+      "cpu_paths": "207C-20E6,E1EB",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x055",
+      "start": 85,
+      "end": 85,
+      "purpose": "Value 03 resembles USB STRING type; this OEM loader does not read/validate it",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [
+        "cpu-207C"
+      ],
+      "cpu_paths": "207C-20E6",
+      "confidence": "UNKNOWN",
+      "unknowns": "Not read by this loader; whole-block and other consumers remain possible."
+    },
+    {
+      "address": "0x056-0x073",
+      "start": 86,
+      "end": 115,
+      "purpose": "Unit-specific serial ASCII storage; 30-byte copy to 4551, 480D, 48C5",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-20AD"
+      ],
+      "cpu_paths": "20AD-20D1",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other consumers and live hardware ownership are outside this bounded loader analysis.",
+      "sensitive": true
+    },
+    {
+      "address": "0x074-0x077",
+      "start": 116,
+      "end": 119,
+      "purpose": "Serial-slot tail outside verified 30-byte serial copy",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded.",
+      "sensitive": true
+    },
+    {
+      "address": "0x078-0x0C7",
+      "start": 120,
+      "end": 199,
+      "purpose": "Zero in stock; individual role unknown; may participate in F8.7 block transfer",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [
+        "cpu-77DA"
+      ],
+      "cpu_paths": "77DA-786E",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded."
+    },
+    {
+      "address": "0x0C8-0x0CF",
+      "start": 200,
+      "end": 207,
+      "purpose": "SCSI INQUIRY vendor ASCII, gated by OEM[00A]==0A",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-20F3"
+      ],
+      "cpu_paths": "20F3-20FD",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other consumers and live hardware ownership are outside this bounded loader analysis."
+    },
+    {
+      "address": "0x0D0-0x0DF",
+      "start": 208,
+      "end": 223,
+      "purpose": "SCSI INQUIRY product ASCII, gated by OEM[00A]==0A",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2100"
+      ],
+      "cpu_paths": "2100-210A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other consumers and live hardware ownership are outside this bounded loader analysis."
+    },
+    {
+      "address": "0x0E0-0x0E1",
+      "start": 224,
+      "end": 225,
+      "purpose": "HD signature gates E7/F3 copies and E7.5 initialization",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-210D"
+      ],
+      "cpu_paths": "210D-2136",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x0E2-0x0E6",
+      "start": 226,
+      "end": 230,
+      "purpose": "Individual role unknown; do not call reserved",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded."
+    },
+    {
+      "address": "0x0E7",
+      "start": 231,
+      "end": 231,
+      "purpose": "E7 flags; see all eight bit records",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2119",
+        "cpu-44C4",
+        "cpu-454B",
+        "cpu-6F4C"
+      ],
+      "cpu_paths": "2119,44C4,454B,6F4C",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": "0x00"
+    },
+    {
+      "address": "0x0E8-0x0EF",
+      "start": 232,
+      "end": 239,
+      "purpose": "Individual role unknown; do not call reserved",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded."
+    },
+    {
+      "address": "0x0F0-0x0F1",
+      "start": 240,
+      "end": 241,
+      "purpose": "BC signature gates F2, timer, F8, FA, FB and FC; does NOT gate E7/F3",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2136"
+      ],
+      "cpu_paths": "2136-222A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x0F2",
+      "start": 242,
+      "end": 242,
+      "purpose": "F2 flags; 487D/4583/4584 and IRAM flag updates have set-only paths",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-214A"
+      ],
+      "cpu_paths": "214A-2199",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": "0x38"
+    },
+    {
+      "address": "0x0F3",
+      "start": 243,
+      "end": 243,
+      "purpose": "F3 flags; HD signature controls copy to 44F1",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-210D"
+      ],
+      "cpu_paths": "210D-2128",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": "0x40"
+    },
+    {
+      "address": "0x0F4-0x0F7",
+      "start": 244,
+      "end": 247,
+      "purpose": "Big-endian OEM timer input; 10*max(180,value) modulo 2^32 ->44F4 and 4881",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2199"
+      ],
+      "cpu_paths": "2199-2200",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": 5
+    },
+    {
+      "address": "0x0F8",
+      "start": 248,
+      "end": 248,
+      "purpose": "F8 dispatch flags; BC-gated copy to 4589; transfers require separate execution",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2200",
+        "cpu-C4D3"
+      ],
+      "cpu_paths": "2200,C4D3-C501",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": "0x00"
+    },
+    {
+      "address": "0x0F9",
+      "start": 249,
+      "end": 249,
+      "purpose": "No individual decoder established; included in F8.7 staging block",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [
+        "cpu-77DA"
+      ],
+      "cpu_paths": "77DA-786E",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded.",
+      "factory_value": "0x0F"
+    },
+    {
+      "address": "0x0FA",
+      "start": 250,
+      "end": 250,
+      "purpose": "39FA ->4174 ->7E18 in USB SET_ADDRESS path; units unknown",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2208",
+        "cpu-6232",
+        "cpu-279B"
+      ],
+      "cpu_paths": "2208,6232,279B",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": "0x32"
+    },
+    {
+      "address": "0x0FB",
+      "start": 251,
+      "end": 251,
+      "purpose": "39FB ->4175 ->7086; F3.2 may report zero-state event; units unknown",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2210",
+        "cpu-385A",
+        "cpu-7321",
+        "cpu-9CC6"
+      ],
+      "cpu_paths": "2210,385A,7321,9CC6",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": "0x05"
+    },
+    {
+      "address": "0x0FC",
+      "start": 252,
+      "end": 252,
+      "purpose": "Strictly >0x 20 overrides 4AD6; 028C copies 4A18; counter decremented if 7075>100",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-2218",
+        "cpu-028C",
+        "cpu-003E"
+      ],
+      "cpu_paths": "2218,028C,003E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established.",
+      "factory_value": "0x00"
+    },
+    {
+      "address": "0x0FD",
+      "start": 253,
+      "end": 253,
+      "purpose": "No individual decoder established; included in F8.7 staging block",
+      "read_write": "R (optional block copy only); individual access UNKNOWN",
+      "evidence": [
+        "cpu-77DA"
+      ],
+      "cpu_paths": "77DA-786E",
+      "confidence": "UNKNOWN",
+      "unknowns": "No individual consumer established; whole-block or untraced use is not excluded.",
+      "factory_value": "0x00"
+    },
+    {
+      "address": "0x0FE-0x0FF",
+      "start": 254,
+      "end": 255,
+      "purpose": "JM signature gates OEM initializer; invalid takes default-data handler 9D1C",
+      "read_write": "R (individual loader and optional block copy)",
+      "evidence": [
+        "cpu-1F87",
+        "cpu-2227"
+      ],
+      "cpu_paths": "1F87-1F9B,2227",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical meaning beyond the cited software effect is not established."
+    },
+    {
+      "address": "0x100-0x1FF",
+      "start": 256,
+      "end": 511,
+      "purpose": "Second OEM half: zero in this stock image; not transferred by verified 256-byte paths; role unknown",
+      "read_write": "UNKNOWN",
+      "evidence": [
+        "cpu-1F49",
+        "cpu-77DA"
+      ],
+      "cpu_paths": "1F49,77DA",
+      "confidence": "UNKNOWN",
+      "unknowns": "Not reserved: a BIWIN donor has nonzero data here; no PH8057 consumer or format is established."
+    }
+  ],
+  "oem_bits": [
+    {
+      "address": "E7.0",
+      "field": "E7",
+      "bit": 0,
+      "purpose": "USB configuration power reporting: 0 self-powered, 1 bus-powered; does not switch power rails",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-454B"
+      ],
+      "cpu_paths": "454B-457F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "E7.1",
+      "field": "E7",
+      "bit": 1,
+      "purpose": "Sets IRAM bit 38 enabling special READ/WRITE(16) path; no 4Kn inference",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-6F4C",
+        "cpu-5015",
+        "e7-masks"
+      ],
+      "cpu_paths": "6F4C-6F56,5015",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "E7.2",
+      "field": "E7",
+      "bit": 2,
+      "purpose": "Cleared at 6F5D before same-path checks; physical purpose unknown",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-6F57",
+        "e7-masks"
+      ],
+      "cpu_paths": "6F57-6F82",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "E7.3",
+      "field": "E7",
+      "bit": 3,
+      "purpose": "Enables writes 7085=2F and 508F=01; silicon semantics unknown",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-D422"
+      ],
+      "cpu_paths": "D422-D435",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "E7.4",
+      "field": "E7",
+      "bit": 4,
+      "purpose": "Advertises DPOFUA in MODE SENSE header; does not prove FUA execution",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-364E",
+        "cpu-379E",
+        "cpu-37C8",
+        "cpu-6F7C",
+        "e7-masks"
+      ],
+      "cpu_paths": "364E-367E,379E,37C8,6F7C",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "E7.5",
+      "field": "E7",
+      "bit": 5,
+      "purpose": "Sets 4172; 3A2D consults 7A04/7A05 and conditionally writes 4575=3",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-2129",
+        "cpu-3A2D"
+      ],
+      "cpu_paths": "2129-2136,3A2D",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "E7.6",
+      "field": "E7",
+      "bit": 6,
+      "purpose": "UAS descriptor gate; cleared at 6F57 and 46ED; UASP NOT IMPLEMENTED",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-44C4",
+        "cpu-6F57",
+        "cpu-46ED",
+        "e7-masks"
+      ],
+      "cpu_paths": "44C4,6F57,46ED",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "E7.7",
+      "field": "E7",
+      "bit": 7,
+      "purpose": "5082 bits1/2 follow flag at D682; bit 3 set in BOTH cases; independent cleanup clears bits1/2",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-D682",
+        "cpu-5535",
+        "cpu-6631",
+        "cpu-7BED",
+        "e7-5082",
+        "e7-5082-cleanup"
+      ],
+      "cpu_paths": "D682,5535,6631,7BED",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F2.0",
+      "field": "F2",
+      "bit": 0,
+      "purpose": "No change in 214A-2199 outputs; global/indirect consumers not excluded",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-214A"
+      ],
+      "cpu_paths": "214A-2199",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F2.1",
+      "field": "F2",
+      "bit": 1,
+      "purpose": "No change in 214A-2199 outputs; global/indirect consumers not excluded",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-214A"
+      ],
+      "cpu_paths": "214A-2199",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F2.2",
+      "field": "F2",
+      "bit": 2,
+      "purpose": "Sets 4588=1; clear occurs earlier 1F7C-1F80, not the F2 slice",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-2172",
+        "cpu-1F7C",
+        "cpu-875A",
+        "f2-stateful"
+      ],
+      "cpu_paths": "2172-217F,1F7C,875A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F2.3",
+      "field": "F2",
+      "bit": 3,
+      "purpose": "Assigns 44F3 from flag; enabled sets 487D=1 and transforms timer; disabled preserves 487D here",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-214A",
+        "cpu-2199",
+        "cpu-6B04",
+        "f2-stateful"
+      ],
+      "cpu_paths": "214A-2160,2199-2200,6B04",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 1
+    },
+    {
+      "address": "F2.4",
+      "field": "F2",
+      "bit": 4,
+      "purpose": "Sets 4583=1 when enabled, otherwise preserves; state-dependent 7058.bit 5 effects",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-217F",
+        "cpu-3F61",
+        "f2-stateful"
+      ],
+      "cpu_paths": "217F-218C,3F61",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 1
+    },
+    {
+      "address": "F2.5",
+      "field": "F2",
+      "bit": 5,
+      "purpose": "Sets 4584=1 when enabled, otherwise preserves; state-dependent 7058.bit 4 effects",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-218C",
+        "cpu-3F61",
+        "f2-stateful"
+      ],
+      "cpu_paths": "218C-2199,3F61",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 1
+    },
+    {
+      "address": "F2.6",
+      "field": "F2",
+      "bit": 6,
+      "purpose": "Sets IRAM bit39; initializer clears earlier; at 64B7 false ORs 7801 with10, true preserves",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-1F78",
+        "cpu-2169",
+        "cpu-64B7",
+        "f2-stateful"
+      ],
+      "cpu_paths": "1F78,2169-2172,64B7",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F2.7",
+      "field": "F2",
+      "bit": 7,
+      "purpose": "Sets IRAM bit3A (=byte27.bit2); whole byte saved/restored via B008; independent functional reader unknown",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-1F7A",
+        "cpu-2160",
+        "cpu-81DC",
+        "cpu-832F",
+        "f2-stateful"
+      ],
+      "cpu_paths": "1F7A,2160-2169,81DC,832F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F3.0",
+      "field": "F3",
+      "bit": 0,
+      "purpose": "Event/topology paths; cleared by 6F62; NOT a qualified hot-swap switch",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-2804",
+        "cpu-6F62",
+        "cpu-8FD9"
+      ],
+      "cpu_paths": "2804,6F62,8FD9",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F3.1",
+      "field": "F3",
+      "bit": 1,
+      "purpose": "JM vendor response indicators; 7059.bit 1 status path; private protocol unknown",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-272E",
+        "cpu-2D52",
+        "cpu-9CE1"
+      ],
+      "cpu_paths": "272E,2D52,9CE1",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F3.2",
+      "field": "F3",
+      "bit": 2,
+      "purpose": "If 7086==0 arms 4176/4177; JM report sets 3506.bit 0 and clears 4177",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-7321",
+        "cpu-9CC6",
+        "cpu-2210",
+        "cpu-385A"
+      ],
+      "cpu_paths": "7321,9CC6,2210,385A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F3.3",
+      "field": "F3",
+      "bit": 3,
+      "purpose": "No individual direct decoder established; whole-byte and indirect consumers remain possible",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [],
+      "cpu_paths": "44F1 direct occurrence survey only",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F3.4",
+      "field": "F3",
+      "bit": 4,
+      "purpose": "Filters 7993 high-nibble 0 low2=0 event: off writes 4BC9=2E, 4AD8=1, 4173=0; on skips",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-5216"
+      ],
+      "cpu_paths": "5216-527B",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F3.5",
+      "field": "F3",
+      "bit": 5,
+      "purpose": "USB2-only policy paths: state6, bcdUSB0200 and suppressed BOS; link operation untested",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-32E1",
+        "cpu-DD28",
+        "cpu-B6AE"
+      ],
+      "cpu_paths": "32E1,DD28,B6AE",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F3.6",
+      "field": "F3",
+      "bit": 6,
+      "purpose": "TRIM/DSM capability gate requires IDENTIFY and per-port capability; command success unproven",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-16C2",
+        "cpu-1177",
+        "cpu-C98E"
+      ],
+      "cpu_paths": "16C2,1177,C98E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 1
+    },
+    {
+      "address": "F3.7",
+      "field": "F3",
+      "bit": 7,
+      "purpose": "Additional NCQ enable in no-port-multiplier branch with IDENTIFY words75/76; not global NCQ control",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-154E"
+      ],
+      "cpu_paths": "154E-156F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.0",
+      "field": "F8",
+      "bit": 0,
+      "purpose": "No individual dispatch in C4D3-C501; value may be carried in F8.7 block",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-C4D3",
+        "f8-dispatch"
+      ],
+      "cpu_paths": "C4D3-C501",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.1",
+      "field": "F8",
+      "bit": 1,
+      "purpose": "No individual dispatch in C4D3-C501; value may be carried in F8.7 block",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-C4D3",
+        "f8-dispatch"
+      ],
+      "cpu_paths": "C4D3-C501",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.2",
+      "field": "F8",
+      "bit": 2,
+      "purpose": "No individual dispatch in C4D3-C501; value may be carried in F8.7 block",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-C4D3",
+        "f8-dispatch"
+      ],
+      "cpu_paths": "C4D3-C501",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.3",
+      "field": "F8",
+      "bit": 3,
+      "purpose": "No individual dispatch in C4D3-C501; value may be carried in F8.7 block",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-C4D3",
+        "f8-dispatch"
+      ],
+      "cpu_paths": "C4D3-C501",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.4",
+      "field": "F8",
+      "bit": 4,
+      "purpose": "No individual dispatch in C4D3-C501; value may be carried in F8.7 block",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-C4D3",
+        "f8-dispatch"
+      ],
+      "cpu_paths": "C4D3-C501",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.5",
+      "field": "F8",
+      "bit": 5,
+      "purpose": "No individual dispatch in C4D3-C501; value may be carried in F8.7 block",
+      "read_write": "UNKNOWN (no individual consumer in cited slice)",
+      "evidence": [
+        "cpu-C4D3",
+        "f8-dispatch"
+      ],
+      "cpu_paths": "C4D3-C501",
+      "confidence": "UNKNOWN",
+      "unknowns": "Global and indirect use is not excluded by the bounded non-use result.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.6",
+      "field": "F8",
+      "bit": 6,
+      "purpose": "71C4(04), 7616(02), 71C4(40): CODE 1A18..1B17 ->XDATA 7500..75FF; peripheral meaning unknown",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-C4D3",
+        "cpu-7616",
+        "cpu-8026",
+        "f8-dispatch"
+      ],
+      "cpu_paths": "C4D3,7616,8026",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    },
+    {
+      "address": "F8.7",
+      "field": "F8",
+      "bit": 7,
+      "purpose": "71C4(08), 77DA(7300), 71C4(80): staging 3900..39FF ->7300..73FF with compare; up to 12 copies, sticky mismatch",
+      "read_write": "R (software flag)",
+      "evidence": [
+        "cpu-C4E9",
+        "cpu-77DA",
+        "cpu-800A",
+        "f8-dispatch",
+        "f8-reset-latches",
+        "f8-sticky-mismatch",
+        "f8-retry-bound"
+      ],
+      "cpu_paths": "C4E9,77DA-786E,800A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Silicon effects and asynchronous behavior are not established by the flag test.",
+      "factory_value": 0
+    }
+  ],
+  "registers": [
+    {
+      "space": "MMIO",
+      "address": "0x5040-0x5043",
+      "purpose": "Programmed USB transfer length, little-endian copy of CBW length.",
+      "read_write": "W",
+      "evidence": [
+        "cbw-length-mmio"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x5052.bit0",
+      "purpose": "First completion predicate in CBE3 USB wait.",
+      "read_write": "R",
+      "evidence": [
+        "usb-wait"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "The bit is sampled by software; it does not prove bytes processed by SATA."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x5056.bit0",
+      "purpose": "Cleared before ATA status mapping in PIO result completion.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-B3DC"
+      ],
+      "cpu_paths": "B3DC",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established.",
+      "reference": "tools/patching/udma/audit.py:arithmetic_native_checks"
+    },
+    {
+      "space": "MMIO",
+      "address": "0x5082.bits1-3",
+      "purpose": "E7.7 sets/clears bits 1/2; bit 3 is always set. Separate cleanup clears bits 1/2.",
+      "read_write": "R/W",
+      "evidence": [
+        "e7-5082",
+        "e7-5082-cleanup",
+        "cpu-6631",
+        "cpu-7BED"
+      ],
+      "cpu_paths": "6631,7BED",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x508F",
+      "purpose": "E7.3 conditionally writes 01h.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-D422"
+      ],
+      "cpu_paths": "D422-D435",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x50E2",
+      "purpose": "Nonzero value causes E196 call during CBE3 wait.",
+      "read_write": "R",
+      "evidence": [
+        "usb-wait"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x6300-0x630B",
+      "purpose": "SATA taskfile window: 6300/01 sector count low/high; 6302 command; 6304/05/06 LBA low/mid/high; 6307 device; 6308/09/0A expanded LBA. Twelve bytes copied from taskfile source.",
+      "read_write": "R/W",
+      "evidence": [
+        "sata-taskfile"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Snapshot coherence and association with the intended command/port are not guaranteed by CPU interrupt masking."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x630D",
+      "purpose": "PIO Setup FIS error copied to4B32 at96C5..96CC; distinct from accepted7097 error in other completion families.",
+      "read_write": "R",
+      "evidence": [
+        "pio-setup-result"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Not a universal error source for every completion mode."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x630E",
+      "purpose": "Present in test result-bank fixtures; no independent accepted-status consumer established by these checks.",
+      "read_write": "UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "Do not promote fixture initialization into proof that firmware consumes this register.",
+      "reference": "tools/patching/ckcond/tests/test_terminal_edge_paths.py"
+    },
+    {
+      "space": "MMIO",
+      "address": "0x630F",
+      "purpose": "Common launcher writesD0h;PIO Setup completion copies E_Status into4B31 before waiting for native transfer completion.",
+      "read_write": "R/W",
+      "evidence": [
+        "sata-taskfile",
+        "pio-setup-result"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Context-dependent field; do not replace accepted family-specific status with an arbitrary live read."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x6310",
+      "purpose": "Common launcher writes caller-supplied taskfile control/mode byte.",
+      "read_write": "W",
+      "evidence": [
+        "sata-taskfile"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x6311",
+      "purpose": "Common launcher writes source taskfile byte at pointer+0Ch.",
+      "read_write": "W",
+      "evidence": [
+        "sata-port-fis"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x6312",
+      "purpose": "Selected SATA port copied from IRAM 2Bh; CK_COND checks it around taskfile capture.",
+      "read_write": "R/W",
+      "evidence": [
+        "sata-port-fis"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Port identity checks do not prove peripheral-bank ownership throughout a read.",
+      "reference": "tools/patching/ckcond/core_patch.py:check_port"
+    },
+    {
+      "space": "MMIO",
+      "address": "0x6313",
+      "purpose": "Common launch writes 27h; completion path waits for 34h (host-to-device and device-to-host register FIS markers).",
+      "read_write": "R/W",
+      "evidence": [
+        "sata-port-fis",
+        "ata-completion"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x6318-0x631B",
+      "purpose": "Programmed SATA byte count, little-endian; loaded from SAT quantity or CBW length according to bit 0Fh.",
+      "read_write": "R/W",
+      "evidence": [
+        "sata-length",
+        "pio-subtract"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Requested/programmed length is not evidence of processed-byte count."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x632C",
+      "purpose": "E152 writes 0Ch then 00h during completion cleanup.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-E152"
+      ],
+      "cpu_paths": "E152-E15A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established.",
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    {
+      "space": "MMIO",
+      "address": "0x6346",
+      "purpose": "Common launch writes 20h before clearing 7094 and invoking E164.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-8CAE"
+      ],
+      "cpu_paths": "8CAE",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established.",
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    {
+      "space": "MMIO",
+      "address": "0x638C-0x638F",
+      "purpose": "PIO Setup path copies6318..631B here before setting A9=03h and waiting through0026.",
+      "read_write": "W",
+      "evidence": [
+        "pio-setup-transfer"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Exact engine handoff and transfer timing are unqualified."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x702A",
+      "purpose": "3F61 masks the low nibble on dispatcher states 0,3,4,5,6.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-3F61"
+      ],
+      "cpu_paths": "3F61",
+      "confidence": "CONFIRMED",
+      "unknowns": "Port/peripheral control meaning beyond the observed mask is unknown."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7058.bits4-5",
+      "purpose": "State-dependent F2.5/F2.4 control. Bit4 follows F2.5 in states 0/3/4/6 and clears in 5. With F2.4 enabled, bit5 sets in 0/5/6 and clears in 3/4; other states preserve.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-3F61"
+      ],
+      "cpu_paths": "3F61",
+      "confidence": "CONFIRMED",
+      "unknowns": "Not a constant copy of OEM bits; physical purpose unknown."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7059.bit1",
+      "purpose": "Participates in a JM vendor-response status path.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-9CE1"
+      ],
+      "cpu_paths": "9CE1",
+      "confidence": "CONFIRMED",
+      "unknowns": "Private protocol meaning is not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7075",
+      "purpose": "Unsigned >100 test: clear this byte, decrement nonzero 4A18 and increment 4A9B.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-003E"
+      ],
+      "cpu_paths": "003E-0061",
+      "confidence": "CONFIRMED",
+      "unknowns": "Tick source and period are unknown; not the SZCT field."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7085",
+      "purpose": "E7.3 conditionally writes 2Fh.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-D422"
+      ],
+      "cpu_paths": "D422-D435",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7086",
+      "purpose": "Loaded from 4175 (OEM FB); when zero and F3.2 set, 7321 arms 4176/4177.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-385A",
+        "cpu-7321"
+      ],
+      "cpu_paths": "385A,7321",
+      "confidence": "CONFIRMED",
+      "unknowns": "No time unit or hotplug semantics are established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7094",
+      "purpose": "Common launch clears this completion/FIS observation; later wrappers test 34h.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-8CB4"
+      ],
+      "cpu_paths": "8CB4",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established.",
+      "reference": "tools/patching/ckcond/capture_wrappers.py:build_bodies"
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7097",
+      "purpose": "Accepted ATA error source in DMA and PIO completion mapping, paired with SFR B9h status.",
+      "read_write": "R",
+      "evidence": [
+        "ata-error"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Availability/coherence after abort, reset or overlapping hardware activity is unqualified."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70B0-0x70B5",
+      "purpose": "Multi-byte input window; PIO initializes low four bytes from IRAM 58..55. MODE SELECT also supplies timer arithmetic inputs.",
+      "read_write": "R/W",
+      "evidence": [
+        "pio-operand-load",
+        "cpu-9185",
+        "cpu-9711"
+      ],
+      "cpu_paths": "9185,9711",
+      "confidence": "CONFIRMED",
+      "unknowns": "48-bit operand-A semantics are a tested hypothesis; not a qualified transfer counter."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70B6",
+      "purpose": "Operation-like command byte: native contexts includeC0h,10h,00h,01h,02h,03h,04h,05h,06h.",
+      "read_write": "W",
+      "evidence": [
+        "pio-operand-load",
+        "pio-subtract",
+        "arithmetic-command-wait",
+        "timer-result-c8",
+        "cpu-E0CA",
+        "cpu-E0D4",
+        "cpu-91B6",
+        "cpu-9711"
+      ],
+      "cpu_paths": "E0CA,E0D4,91B6,9711",
+      "confidence": "CONFIRMED",
+      "unknowns": "Only the explicit fixture subset is modeled; operation meanings are not a manufacturer contract or UDMA bank selector."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70B7.bit0",
+      "purpose": "DF9B waits for this bit after issuing an operation to 70B6.",
+      "read_write": "R",
+      "evidence": [
+        "arithmetic-command-wait"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Completion, clearing and timeout guarantees require hardware evidence."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70B8-0x70BD",
+      "purpose": "Second multi-byte input window; native PIO loads 6318..631B into low four bytes. Timer path writes 70B8=64h.",
+      "read_write": "W",
+      "evidence": [
+        "pio-subtract",
+        "cpu-9185"
+      ],
+      "cpu_paths": "9185",
+      "confidence": "CONFIRMED",
+      "unknowns": "48-bit operand-B semantics are a fixture hypothesis; upper-byte and overflow behavior unqualified."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70C0-0x70C3",
+      "purpose": "Result bytes: B3C4 copies C3,C2,C1,C0 to IRAM55,56,57,58. Timer compare consumes C0 as 0/1/2.",
+      "read_write": "R",
+      "evidence": [
+        "pio-result",
+        "cpu-9711"
+      ],
+      "cpu_paths": "9711-977A",
+      "confidence": "CONFIRMED",
+      "unknowns": "NOT a universally valid UDMA processed-byte counter; a zero cannot authorize residue clearing."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70C4",
+      "purpose": "High byte in the explicit 48-bit arithmetic fixture.",
+      "read_write": "UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "HYPOTHESIS",
+      "unknowns": "The fixture width is consistent with other arithmetic contexts; no UDMA processed-byte meaning or complete silicon behavior is proven.",
+      "reference": "tools/patching/udma/fixtures.py:ArithmeticHypothesis"
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70C5.bit7",
+      "purpose": "AfterD1D7 arithmetic,PIO Setup path checks bit7 and branches toD310 phase-error handling when set.",
+      "read_write": "R",
+      "evidence": [
+        "pio-setup-result",
+        "cpu-D310"
+      ],
+      "cpu_paths": "D310",
+      "confidence": "CONFIRMED",
+      "unknowns": "A tested exception/sign-like predicate; high-byte arithmetic meaning and physical timing are not fully established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70C6-0x70C7",
+      "purpose": "No individual role established in the retained OEM/UDMA analysis.",
+      "read_write": "UNKNOWN",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "UNKNOWN",
+      "unknowns": "No extrapolation from neighboring arithmetic result bytes is justified."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x70C8-0x70C9",
+      "purpose": "After operations05h/06h,timer code copiesC9,C8 to4AF1,4AF2 (big-endian output pair).",
+      "read_write": "R",
+      "evidence": [
+        "timer-result-c8"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "No quotient/remainder,timer-unit or completion/status meaning is assigned without a hardware contract."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7288,0x728C,0x728D,0x72D0",
+      "purpose": "71C4 command/control sequence around the F8.7 window copy.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-7207",
+        "cpu-7217",
+        "cpu-7229",
+        "cpu-722F"
+      ],
+      "cpu_paths": "7207,7217,7229,722F",
+      "confidence": "CONFIRMED",
+      "unknowns": "The complete command/wait/control contract and idempotence of repeated copies are unknown."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x72C4",
+      "purpose": "77DA saves this control byte in4BC3 and conditionally callsE1AE according to saved bit2.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-77E9",
+        "cpu-7862"
+      ],
+      "cpu_paths": "77E9,7862",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical control meaning and peripheral state restoration contract unknown."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7300-0x73FF",
+      "purpose": "F8.7 destination: current 3900..39FF staging block copied and compared by 77DA/800A.",
+      "read_write": "R/W",
+      "evidence": [
+        "f8-dispatch",
+        "cpu-7804",
+        "cpu-7826",
+        "cpu-800A"
+      ],
+      "cpu_paths": "7804,7826,800A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Not established as SPI/NVRAM; physical role, write completion and retry idempotence unknown."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7424,0x7440,0x7457",
+      "purpose": "71C4 control sequence for the F8.6 CODE-copy path.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-71D8"
+      ],
+      "cpu_paths": "71D8",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical control function and interrupt/timing contract unknown."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7500-0x75FF",
+      "purpose": "F8.6 destination: CODE1A18..1B17 copied by 7616(02)/8026.",
+      "read_write": "W",
+      "evidence": [
+        "f8-dispatch",
+        "cpu-7616",
+        "cpu-8026"
+      ],
+      "cpu_paths": "7616,8026",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical table function and write completion not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7618,0x7638,0x7658,0x7678",
+      "purpose": "3F61 clears bit0 in selected dispatcher states (0,3,4,5,6).",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-3F61"
+      ],
+      "cpu_paths": "3F61",
+      "confidence": "CONFIRMED",
+      "unknowns": "Context-slot physical meanings and supported port count cannot be inferred from these four addresses."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7801.bit4",
+      "purpose": "At 64B7, OR 10h when IRAM bit39 is zero; otherwise preserve. Usual preceding write is 41h.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-64B7"
+      ],
+      "cpu_paths": "64B7",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical function of bit4 is unknown."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7A04-0x7A05",
+      "purpose": "Read by E7.5 event path; either nonzero can publish 4575=3 when 4172 enabled.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-3A2D"
+      ],
+      "cpu_paths": "3A2D",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7A06 + 8*LUN",
+      "purpose": "Hardware-facing mapping destination populated from459C+LUN by C75C;stride8 comes fromMUL AB.",
+      "read_write": "W",
+      "evidence": [
+        "mapping-stride",
+        "cpu-C75C"
+      ],
+      "cpu_paths": "C75C-C788",
+      "confidence": "CONFIRMED",
+      "unknowns": "Exact hardware routing contract and full five-port qualification are absent."
+    },
+    {
+      "space": "MMIO",
+      "address": "0x7E18",
+      "purpose": "SET_ADDRESS path copies 4174 (OEM FA); 279B later reads when 415E enabled.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-6232",
+        "cpu-279B"
+      ],
+      "cpu_paths": "6232,279B",
+      "confidence": "CONFIRMED",
+      "unknowns": "Raw value; no proven unit such as milliseconds."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x3500-0x3515",
+      "purpose": "SCSI response buffer. CK_COND builds 22-byte descriptor sense: header 3500..3507, ATA descriptor 3508..3515. Vendor response uses overlapping fields in other contexts.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-991E"
+      ],
+      "cpu_paths": "991E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Buffer lifetime/ownership under asynchronous activity must remain serialized.",
+      "reference": "tools/patching/ckcond/sense_patch.py:build_sense_patch"
+    },
+    {
+      "space": "XDATA",
+      "address": "0x3900-0x39FF",
+      "purpose": "OEM initializer staging buffer; also reused by other controller operations. F8.7 copies its current contents.",
+      "read_write": "R/W",
+      "evidence": [
+        "f8-dispatch",
+        "cpu-1F49",
+        "cpu-98B6"
+      ],
+      "cpu_paths": "1F49,98B6",
+      "confidence": "CONFIRMED",
+      "unknowns": "A reference to 39xx is not automatically an OEM-field reference outside the initializer."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x3A96,0x3A99",
+      "purpose": "IDENTIFY words75/76-derived NCQ depth/capability inputs used by F3.7 gate.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-154E"
+      ],
+      "cpu_paths": "154E-156F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Additional no-port-multiplier enable path only; not proof of global NCQ operation."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x3AD2,0x3B52",
+      "purpose": "IDENTIFY words105/169-derived inputs used by F3.6 TRIM gate; page count default16, capped64.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-16C2"
+      ],
+      "cpu_paths": "16C2-170F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Capability reporting does not establish successful physical discard."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4000-0x400C",
+      "purpose": "13-byte CSW staging buffer: signature 0..3, tag 4..7, residue 8..11, status12.",
+      "read_write": "R/W",
+      "evidence": [
+        "csw-residue-status",
+        "cpu-9503"
+      ],
+      "cpu_paths": "9503",
+      "confidence": "CONFIRMED",
+      "unknowns": "The bounded finalizer fixture seeds the USBS signature; transport emission is not modeled."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4052-0x4053",
+      "purpose": "USB descriptor bcdUSB bytes; F3.5 writes 0200h.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-DD28"
+      ],
+      "cpu_paths": "DD28",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4057-0x4058",
+      "purpose": "USB configuration bmAttributes/bMaxPower; E7.0 and mode bit0Eh select exact descriptor values.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-454B"
+      ],
+      "cpu_paths": "454B-457F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Descriptor claims do not measure current or switch power rails."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4161",
+      "purpose": "Event path can schedule value3 with F3.0 clear.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-27FB"
+      ],
+      "cpu_paths": "27FB-2820",
+      "confidence": "CONFIRMED",
+      "unknowns": "Does not by itself isolate the cause of observed full USB disconnects."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x416C,0x4181 + 0x36*port",
+      "purpose": "Single-device and per-port TRIM capability inputs; F3.6 gates C98E result.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-16C2",
+        "cpu-C98E"
+      ],
+      "cpu_paths": "16C2,C98E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Device capability and successful execution remain separate."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4172,0x4575",
+      "purpose": "E7.5 enable and conditionally published event value3; inactive path preserves old4575.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-2129",
+        "cpu-3A2D"
+      ],
+      "cpu_paths": "2129,3A2D",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4173,0x4AD8",
+      "purpose": "F3.4 filters event subtype0: clear bit writes 4173=0,4AD8=1 with 4BC9=2Eh; set skips.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-5216"
+      ],
+      "cpu_paths": "5216-527B",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4174",
+      "purpose": "BC-gated copy of OEM FA, subsequently written to 7E18.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-2208",
+        "cpu-6232"
+      ],
+      "cpu_paths": "2208,6232",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4175",
+      "purpose": "BC-gated copy of OEM FB, subsequently written to 7086.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-2210",
+        "cpu-385A"
+      ],
+      "cpu_paths": "2210,385A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4176-0x4177",
+      "purpose": "Event arm/pending bytes: F3.2 plus zero7086 sets both to1; vendor report consumes4177.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-7321",
+        "cpu-9CC6"
+      ],
+      "cpu_paths": "7321,9CC6",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x417F",
+      "purpose": "Selected physical port returned by D896 and stored at CBW admission.",
+      "read_write": "W",
+      "evidence": [
+        "cbw-direction-lun",
+        "lun-map"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "LUN is a discovery-list index, not necessarily a physical port number."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x44E6-0x44E8",
+      "purpose": "OEM006/007 copies and serial-source selection (0 for selector5,1 for7,2 for nonempty OEM serial).",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-1FAB",
+        "cpu-1FB3",
+        "cpu-2061"
+      ],
+      "cpu_paths": "1FAB,1FB3,2061",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x44EC-0x44EF",
+      "purpose": "VID/PID runtime storage in high-byte-first internal order.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-1FBB",
+        "cpu-1FC3",
+        "cpu-1FCB",
+        "cpu-1FD3"
+      ],
+      "cpu_paths": "1FBB,1FC3,1FCB,1FD3",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x44F0-0x44F1",
+      "purpose": "HD-gated E7/F3 runtime flags, subsequently masked by6F4C; E7&=BBh,F3&=FEh.",
+      "read_write": "R/W",
+      "evidence": [
+        "e7-masks",
+        "cpu-2119"
+      ],
+      "cpu_paths": "2119",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x44F3,0x487D",
+      "purpose": "F2.3 assigns44F3; only sets487D when enabled. Runtime MODE SENSE uses487D for STANDBY_Z.",
+      "read_write": "R/W",
+      "evidence": [
+        "f2-stateful",
+        "cpu-6B04"
+      ],
+      "cpu_paths": "6B04",
+      "confidence": "CONFIRMED",
+      "unknowns": "Inactive F2 slice preserves487D; no persistence/physical timer guarantee."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x44F4-0x44F7",
+      "purpose": "Initial timer transform: (10*max(180,OEM_BE32)) mod2^32; stock input5 produces1800.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-2199"
+      ],
+      "cpu_paths": "2199-2200",
+      "confidence": "CONFIRMED",
+      "unknowns": "Out-of-range OEM inputs wrap; supported vendor limits are undocumented."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x44F9-0x4510",
+      "purpose": "Custom SCSI INQUIRY vendor/product buffers copied when OEM00A=0Ah.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-20F3",
+        "cpu-2100"
+      ],
+      "cpu_paths": "20F3,2100",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4511-0x4550",
+      "purpose": "32-byte manufacturer and product packed-ASCII buffers.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-2011",
+        "cpu-2054"
+      ],
+      "cpu_paths": "2011,2054",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4551-0x456E,0x480D-0x482A,0x48C5-0x48E2",
+      "purpose": "30-byte unit serial destinations. Values are excluded from the public atlas.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-20AD"
+      ],
+      "cpu_paths": "20AD-20D1",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other identity uses are untraced; do not publish values from private images."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4583-0x4584,0x4588",
+      "purpose": "F2.4/F2.5/F2.2 set-only outputs;4588 cleared earlier in initializer.",
+      "read_write": "R/W",
+      "evidence": [
+        "f2-stateful",
+        "cpu-1F7C",
+        "cpu-3F61",
+        "cpu-875A"
+      ],
+      "cpu_paths": "1F7C,3F61,875A",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4589",
+      "purpose": "BC-gated F8 runtime byte consumed by C4D3.",
+      "read_write": "R/W",
+      "evidence": [
+        "f8-dispatch",
+        "cpu-2200"
+      ],
+      "cpu_paths": "2200",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x458C",
+      "purpose": "Current candidate physical port in discovery; appended to discovery list on inspected success branch.",
+      "read_write": "R",
+      "evidence": [
+        "port-list-append"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4592",
+      "purpose": "Port-multiplier mode gate in D896 and F3.7 NCQ branch.",
+      "read_write": "R",
+      "evidence": [
+        "lun-map",
+        "cpu-154E"
+      ],
+      "cpu_paths": "154E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4595",
+      "purpose": "Detected-port count incremented after appending to mapping list; used by max-LUN calculation.",
+      "read_write": "R/W",
+      "evidence": [
+        "port-list-append",
+        "cpu-D1F4"
+      ],
+      "cpu_paths": "D1F4",
+      "confidence": "CONFIRMED",
+      "unknowns": "Full discovery behavior under faults and hot-swap is not qualified."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x459B,0x4590",
+      "purpose": "0709..073D compares459B with4595 under4592/4180 guards and can set4590 plus IRAM bit06.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-0709"
+      ],
+      "cpu_paths": "0709-073D",
+      "confidence": "CONFIRMED",
+      "unknowns": "Temporal meaning of459B is unresolved; do not label it previous-drive-count."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x459C + LUN",
+      "purpose": "Compact discovery list mapping logical unit to physical SATA port.",
+      "read_write": "R/W",
+      "evidence": [
+        "port-list-append",
+        "lun-map"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "List can change with discovery; tray numbering and stable hot-swap identity are unproven."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x480A",
+      "purpose": "Computed serial character count from OEM054 wire-length hint, clamped to at least12.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-207C",
+        "cpu-E1EB"
+      ],
+      "cpu_paths": "207C-20E6,E1EB",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4881-0x4884",
+      "purpose": "Runtime SZCT in big-endian order. MODE SENSE Current/Saved share it; Default returns18000 and ChangeableFFFFFFFF.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-2199",
+        "cpu-6B04",
+        "cpu-7493"
+      ],
+      "cpu_paths": "2199,6B04,7493",
+      "confidence": "CONFIRMED",
+      "unknowns": "SCSI field units are100ms, but real spindle timing and nonvolatile Saved behavior are not proven."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4A18,0x4A9B,0x4AD6",
+      "purpose": "FC override/default counter chain: default4AD6=20h, override only FC>20h, copy to4A18;7075>100 decrements/increments runtime bytes.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-2218",
+        "cpu-028C",
+        "cpu-003E"
+      ],
+      "cpu_paths": "2218,028C,003E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Separate from SZCT; hardware tick source unknown."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4A1C",
+      "purpose": "Non-data source taskfile pointer accepted by CK_COND only for audited launch return0B90 and state guards.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-0B87"
+      ],
+      "cpu_paths": "0B87",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other internal operations can use this scratch structure; pointer match alone is insufficient.",
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    {
+      "space": "XDATA",
+      "address": "taskfile+0x0D / taskfile+0x0E",
+      "purpose": "Non-data completion stages accepted B9 Status and7097 Error in the just-completed source taskfile;capture hook9837 reads those saved bytes.",
+      "read_write": "R/W",
+      "evidence": [
+        "nondata-staged-result"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "R6:R7 ownership at9837 is required; do not reread arbitrary live status after the fact."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4B24-0x4B38",
+      "purpose": "Normalized SAT request taskfile and completion staging used by data paths;4B31/32 supplies accepted PIO-in status/error.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-222B",
+        "cpu-C7A4"
+      ],
+      "cpu_paths": "222B,C7A4",
+      "confidence": "CONFIRMED",
+      "unknowns": "Layout and lifetime are path-specific, not a public vendor structure.",
+      "reference": "tools/patching/ckcond/capture_wrappers.py:build_bodies"
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4B3B,0x4B48",
+      "purpose": "Normalized ATA command and CK_COND field read by generated admission wrapper.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-229E"
+      ],
+      "cpu_paths": "229E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Validity depends on native SAT parser and BOT admission.",
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4B9F,0x4BA0-0x4BA3",
+      "purpose": "MODE SELECT staged standby flag and big-endian timer;7493 commits to487D/4881.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-356C",
+        "cpu-7493"
+      ],
+      "cpu_paths": "356C,7493",
+      "confidence": "CONFIRMED",
+      "unknowns": "Parser acceptance and a later RAM commit do not prove persistence."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4AF1-0x4AF2",
+      "purpose": "Timer-related two-byte result from70C9/70C8,cleared when487D is zero.",
+      "read_write": "R/W",
+      "evidence": [
+        "timer-result-c8",
+        "cpu-9185"
+      ],
+      "cpu_paths": "9185",
+      "confidence": "CONFIRMED",
+      "unknowns": "Units and exact physical timer use are unresolved."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4BC1-0x4BC3",
+      "purpose": "Function-local scratch reused by F8 copy and DMA completion;4BC1/2 destination pointer,4BC3 saved control or completion argument.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-77DA",
+        "cpu-77E9",
+        "cpu-AEF4"
+      ],
+      "cpu_paths": "77DA,77E9,AEF4",
+      "confidence": "CONFIRMED",
+      "unknowns": "Context-dependent reuse; no global single-purpose register label."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4BC4",
+      "purpose": "77DA mismatch latch cleared once at entry; set on mismatch and retained across retries.",
+      "read_write": "R/W",
+      "evidence": [
+        "f8-reset-latches",
+        "f8-sticky-mismatch",
+        "f8-retry-bound"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Caller does not consume the final latch; physical consequence and intended recovery policy are unknown."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4BC5",
+      "purpose": "77DA post-copy retry counter; persistent or first-only mismatch produces12 copies, final counter11.",
+      "read_write": "R/W",
+      "evidence": [
+        "f8-reset-latches",
+        "f8-retry-bound"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Synthetic compare faults establish loop behavior, not safe/idempotent hardware retries."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4BC8-0x4BCA",
+      "purpose": "Shared temporary pointer/length/result fields across launcher, MODE SENSE/SELECT and event paths.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-8CA3",
+        "cpu-364E",
+        "cpu-356C",
+        "cpu-5216"
+      ],
+      "cpu_paths": "8CA3,364E,356C,5216",
+      "confidence": "CONFIRMED",
+      "unknowns": "A single global semantic name is unsafe for this reused scratch region."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x4C16-0x4C19",
+      "purpose": "SAT requested-byte quantity, little-endian; derived by7D61/A203 and used by launch when bit0Fh set.",
+      "read_write": "R/W",
+      "evidence": [
+        "sata-length",
+        "cpu-7D61",
+        "cpu-A203"
+      ],
+      "cpu_paths": "7D61,A203",
+      "confidence": "CONFIRMED",
+      "unknowns": "Derivation relies on the declared arithmetic peripheral hypothesis in offline replay; not a processed-byte count."
+    },
+    {
+      "space": "XDATA",
+      "address": "0x7980-0x799E",
+      "purpose": "31-byte CBW/CDB staging:tag7984..87,length7988..8B,direction798C,LUN798D,opcode798F.",
+      "read_write": "R",
+      "evidence": [
+        "cbw-residue",
+        "cbw-direction-lun"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Command ownership/lifetime follows serialized BOT; not a UAS tag queue."
+    },
+    {
+      "space": "XDATA",
+      "address": "0xB000-0xB001,0xB008",
+      "purpose": "JM context signature and saved/restored IRAM byte27.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-81B9",
+        "cpu-81DC",
+        "cpu-8300",
+        "cpu-832F"
+      ],
+      "cpu_paths": "81B9,81DC,8300,832F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Other context-state semantics and complete reset lifecycle are not established."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x18-0x1F",
+      "purpose": "Decoded USB SETUP:bmRequestType18,bRequest19,wValue1A/1B,wIndex1C/1D,wLength1E/1F; each word high byte first internally.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-CD56",
+        "cpu-D970",
+        "cpu-C702"
+      ],
+      "cpu_paths": "CD56,D970,C702",
+      "confidence": "CONFIRMED",
+      "unknowns": "USB wire words remain little-endian; this describes decoded firmware storage only."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x29",
+      "purpose": "Native non-data state; CK_COND permits host launch only with state37h and an audited return state.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-0B65"
+      ],
+      "cpu_paths": "0B65",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established.",
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    {
+      "space": "IRAM",
+      "address": "0x2B",
+      "purpose": "Selected physical SATA port copied to6312 at common launch.",
+      "read_write": "R",
+      "evidence": [
+        "sata-port-fis"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Changing software state does not guarantee hardware register-bank ownership."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x2C",
+      "purpose": "Non-data return-stack index;CK_COND requires1..4 and stored return3Ch atXDATA4A48+index.",
+      "read_write": "R",
+      "evidence": [],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Index bounds and accepted return state are patch software guards, not scheduler qualification.",
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    {
+      "space": "IRAM",
+      "address": "0x32-0x33",
+      "purpose": "Scheduled handler pointer, high byte first; successful completion schedules94F9.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-73A2"
+      ],
+      "cpu_paths": "73A2",
+      "confidence": "CONFIRMED",
+      "unknowns": "Offline replay may invoke the scheduled handler conditionally; reset scheduling is not fully modeled."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x3A-0x49",
+      "purpose": "Sixteen native per-LUN pending-sense codes;D8AC sets code,991E maps/clears it.",
+      "read_write": "R/W",
+      "evidence": [
+        "pending-sense",
+        "cpu-991E"
+      ],
+      "cpu_paths": "991E",
+      "confidence": "CONFIRMED",
+      "unknowns": "Sixteen representable entries do not establish sixteen or five physically qualified ports."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x55-0x58",
+      "purpose": "32-bit software BOT residue, BIG-endian in IRAM (55 MSB,58 LSB). CBW length and CSW residue are little-endian on the wire.",
+      "read_write": "R/W",
+      "evidence": [
+        "cbw-residue",
+        "csw-residue-status",
+        "dma-data-in-accounting",
+        "pio-result"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "UDMA Data-Out AEF4/CBE3 path does not update it; a repair requires trustworthy command-owned processed bytes."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x59",
+      "purpose": "Native BOT/SAT state: protocol11 uses67h;64h clears residue at736D;0Dh selects phase-error CSW.",
+      "read_write": "R/W",
+      "evidence": [
+        "ata-completion",
+        "cbw-direction-lun",
+        "cpu-247A"
+      ],
+      "cpu_paths": "247A",
+      "confidence": "CONFIRMED",
+      "unknowns": "State values are firmware-specific, not raw SAT protocol values."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x5A",
+      "purpose": "Native command status:1 leads CSW GOOD,other ordinary values lead FAILED; pending sense setter uses2.",
+      "read_write": "R/W",
+      "evidence": [
+        "pending-sense",
+        "csw-residue-status"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "CK_COND informational sense can produce a failed CSW after successful ATA; status alone is not ATA-error evidence."
+    },
+    {
+      "space": "IRAM",
+      "address": "0x5B-0x5C",
+      "purpose": "Response length (high byte first); generated sense path sets0016h before native allocation clamp.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-C339"
+      ],
+      "cpu_paths": "C339",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established.",
+      "reference": "tools/patching/ckcond/sense_patch.py:build_sense_patch"
+    },
+    {
+      "space": "IRAM",
+      "address": "0x5D-0x5E",
+      "purpose": "Maximum LUN and current LUN;CBW parser masks LUN nibble and applies max-LUN bound.",
+      "read_write": "R/W",
+      "evidence": [
+        "cbw-direction-lun",
+        "cpu-D1F4"
+      ],
+      "cpu_paths": "D1F4",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "IRAM bit",
+      "address": "0x0F",
+      "purpose": "Selects SAT-derived4C16 length instead of CBW7988 length in the Data-Out launcher.",
+      "read_write": "R",
+      "evidence": [
+        "sata-length"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Exact flag provenance outside audited parser/launch paths is not exhaustively mapped."
+    },
+    {
+      "space": "IRAM bit",
+      "address": "0x12 (=byte0x22.bit2)",
+      "purpose": "CBW transfer direction (1 Data-In,0 Data-Out);selects residue accounting branch.",
+      "read_write": "R/W",
+      "evidence": [
+        "cbw-direction-lun",
+        "dma-data-in-accounting"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Physical ownership, side effects and asynchronous timing are not established."
+    },
+    {
+      "space": "IRAM bit",
+      "address": "0x21 (=byte0x24.bit1)",
+      "purpose": "Completion predicate tested by7308 before accepting the6313/B9 sample.",
+      "read_write": "R",
+      "evidence": [
+        "cpu-733C"
+      ],
+      "cpu_paths": "733C",
+      "confidence": "CONFIRMED",
+      "unknowns": "Interrupt producer timing and physical completion meaning remain unqualified."
+    },
+    {
+      "space": "IRAM bit",
+      "address": "0x2D (=byte0x25.bit5)",
+      "purpose": "Additional NCQ enable computed byF3.7 gate: no PM,IDENTIFY capability,depth>=15.",
+      "read_write": "W",
+      "evidence": [
+        "cpu-154E"
+      ],
+      "cpu_paths": "154E-156F",
+      "confidence": "CONFIRMED",
+      "unknowns": "Does not establish multidisk NCQ or parallel command ownership."
+    },
+    {
+      "space": "IRAM bit",
+      "address": "0x38-0x3A (=byte0x27.bits0-2)",
+      "purpose": "E7.1\u219238,F2.6\u219239,F2.7\u21923A; bits39/3A explicitly cleared before set-only loader slice.",
+      "read_write": "R/W",
+      "evidence": [
+        "f2-stateful",
+        "cpu-1F78",
+        "cpu-6F4C",
+        "cpu-64B7"
+      ],
+      "cpu_paths": "1F78,6F4C,64B7",
+      "confidence": "CONFIRMED",
+      "unknowns": "Bit addresses differ from IRAM byte addresses38..3A; independent functional reader for bit3A unproven."
+    },
+    {
+      "space": "SFR",
+      "address": "0x82-0x86",
+      "purpose": "Two physical DPTR pairs and DPS select convention used by patched helpers and copy loops.",
+      "read_write": "R/W",
+      "evidence": [
+        "cpu-800A",
+        "cpu-8026"
+      ],
+      "cpu_paths": "800A,8026",
+      "confidence": "INFERRED",
+      "unknowns": "Vendor dual-DPTR behavior is an explicit execution fixture; not a complete silicon SFR specification."
+    },
+    {
+      "space": "SFR",
+      "address": "0x9F.bit2",
+      "purpose": "E140 returns carry set when bit2 is clear; both CBE3 waits can terminate through it.",
+      "read_write": "R",
+      "evidence": [
+        "usb-wait-abort"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Observed software predicate; exact hardware inactive/reset condition and timing unknown."
+    },
+    {
+      "space": "SFR",
+      "address": "0xA3.bit7",
+      "purpose": "Second predicate in CBE3 wait; normal return requires bit7 clear.",
+      "read_write": "R",
+      "evidence": [
+        "usb-wait"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Transport endpoint meaning and completion guarantees are not fully established."
+    },
+    {
+      "space": "SFR",
+      "address": "0xA9.bit0",
+      "purpose": "PIO Setup transfer setsA9=03h and waits through0026 until bit0 clears in the declared fixture.",
+      "read_write": "R/W",
+      "evidence": [
+        "pio-setup-transfer",
+        "cpu-0026"
+      ],
+      "cpu_paths": "0026",
+      "confidence": "CONFIRMED",
+      "unknowns": "Fixture release timing does not qualify hardware engine completion."
+    },
+    {
+      "space": "SFR",
+      "address": "0xA8 / bit0xAF",
+      "purpose": "Interrupt enable / EA. Patched save/restore masks CPU interrupts; enabled native F8 chains leave EA=1.",
+      "read_write": "R/W",
+      "evidence": [
+        "abort-valid-clear",
+        "cpu-77FF",
+        "cpu-786C"
+      ],
+      "cpu_paths": "77FF,786C",
+      "confidence": "CONFIRMED",
+      "unknowns": "Bit-addressAFh is IE.7; direct SFR AFh is a different register. CPU masking does not stop autonomous engines."
+    },
+    {
+      "space": "SFR",
+      "address": "0xAC-0xAF",
+      "purpose": "Data-In residual quantity copied toIRAM58..55; high SFR AFh byte masked with3Fh.",
+      "read_write": "R",
+      "evidence": [
+        "dma-data-in-accounting"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Only this native Data-In use is established; do not treat it as Data-Out processed length."
+    },
+    {
+      "space": "SFR",
+      "address": "0xB9",
+      "purpose": "Accepted ATA status source in DMA and PIO completion;native success test masksE1h and compares40h.",
+      "read_write": "R",
+      "evidence": [
+        "ata-completion",
+        "ata-error"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Native mask excludes BSY/DF/ERR but not DRQ; snapshot coherence after abort/reset remains unqualified."
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4D00 + 16*LUN (LUN0..15)",
+      "purpose": "16-byte saved descriptor slot: byte0 validA5,byte1 native sense code,bytes2..15 ATA Return Descriptor.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4D00-16-LUN-LUN0-15"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block",
+      "source": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "slot+0x02-0x03",
+      "purpose": "ATA Return Descriptor identifier09h and length0Ch.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-slot-0x02-0x03"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block",
+      "source": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "slot+0x04-0x05",
+      "purpose": "EXTEND and accepted ATA Error.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-slot-0x04-0x05"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block",
+      "source": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "slot+0x06-0x0D",
+      "purpose": "Sector count high/low and LBA low/mid/high expanded/low byte pairs;expanded bytes zero whenEXTEND=0.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-slot-0x06-0x0D"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block",
+      "source": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "slot+0x0E-0x0F",
+      "purpose": "Device and accepted ATA Status.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-slot-0x0E-0x0F"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block",
+      "source": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E00",
+      "purpose": "Active command marker:B0h BOT admission, A5h admitted SAT ownership,0 invalid.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4E00"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block",
+      "source": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E01-0x4E05",
+      "purpose": "Saved LUN,original wire protocol,CK_COND bit,EXTEND,ATA command.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4E01-0x4E05"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block",
+      "source": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E06",
+      "purpose": "Launch marker5Ah only after return-PC,protocol,source-taskfile and command guards.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4E06"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block",
+      "source": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E07",
+      "purpose": "Unpublished ATA result markerA5h; cleared at admission/new launch and both native USB-wait abort exits.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "abort-valid-clear",
+        "patch-0x4E07"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block",
+      "source": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E08-0x4E0B",
+      "purpose": "Saved physical port,completion family,source taskfile pointer high/low.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4E08-0x4E0B"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block",
+      "source": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E0C-0x4E0D",
+      "purpose": "Accepted ATA Status/Error from family-specific completion hook.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4E0C-0x4E0D"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block",
+      "source": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E10-0x4E13",
+      "purpose": "Saved CBW tag bytes used for equality only,not a generation counter.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4E10-0x4E13"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block",
+      "source": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    {
+      "space": "PATCH XDATA",
+      "address": "0x4E00-0x4E1F (allocation)",
+      "purpose": "32-byte active context reset range;unassigned bytes are not functional fields.",
+      "read_write": "R/W (generated CK_COND)",
+      "evidence": [
+        "patch-0x4E00-0x4E1F-allocation"
+      ],
+      "cpu_paths": "",
+      "confidence": "CONFIRMED",
+      "unknowns": "Proposed scratch allocation only; exclusive SRAM ownership and asynchronous safety are NOT TESTED.",
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block",
+      "source": "tools/patching/ckcond/core_patch.py:begin_block"
+    }
+  ],
+  "arithmetic_hypothesis": {
+    "confidence": "HYPOTHESIS",
+    "command_register": "0x70B6",
+    "operations": {
+      "0xC0": "Clear inputs;retain result",
+      "0x10": "Copy previous result to operandA",
+      "0x00": "A+B",
+      "0x01": "A-B",
+      "0x02": "Compare:0 equal,1 greater,2 smaller",
+      "0x04": "A shifted left byB"
+    },
+    "evidence": [
+      "pio-operand-load",
+      "pio-subtract",
+      "arithmetic-command-wait",
+      "pio-result"
+    ],
+    "reference": "tools/patching/udma/fixtures.py:ArithmeticHypothesis",
+    "unknowns": "Explicit48-bit fixture model,not manufacturer documentation. It does not establish UDMA processed-byte accounting."
+  },
+  "evidence": {
+    "cpu-1FBB": {
+      "image": "factory",
+      "instructions": [
+        ["0x1FBB", "90 39 01", "MOV DPTR,#3901h"],
+        ["0x1FBE", "E0", "MOVX A,@DPTR"],
+        ["0x1FBF", "90 44 EC", "MOV DPTR,#44ECh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1FC3": {
+      "image": "factory",
+      "instructions": [
+        ["0x1FC3", "90 39 00", "MOV DPTR,#3900h"],
+        ["0x1FC6", "E0", "MOVX A,@DPTR"],
+        ["0x1FC7", "90 44 ED", "MOV DPTR,#44EDh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1FCB": {
+      "image": "factory",
+      "instructions": [
+        ["0x1FCB", "90 39 03", "MOV DPTR,#3903h"],
+        ["0x1FCE", "E0", "MOVX A,@DPTR"],
+        ["0x1FCF", "90 44 EE", "MOV DPTR,#44EEh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1FD3": {
+      "image": "factory",
+      "instructions": [
+        ["0x1FD3", "90 39 02", "MOV DPTR,#3902h"],
+        ["0x1FD6", "E0", "MOVX A,@DPTR"],
+        ["0x1FD7", "90 44 EF", "MOV DPTR,#44EFh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-98B6": {
+      "image": "factory",
+      "instructions": [
+        ["0x98B6", "7C 39", "MOV R4,#39h"],
+        ["0x98B8", "7D 00", "MOV R5,#00h"],
+        ["0x98BA", "7F D0", "MOV R7,#D0h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-98E9": {
+      "image": "factory",
+      "instructions": [
+        ["0x98E9", "90 39 04", "MOV DPTR,#3904h"],
+        ["0x98EC", "E0", "MOVX A,@DPTR"],
+        ["0x98ED", "6E", "XRL A,R6"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1FAB": {
+      "image": "factory",
+      "instructions": [
+        ["0x1FAB", "90 39 06", "MOV DPTR,#3906h"],
+        ["0x1FAE", "E0", "MOVX A,@DPTR"],
+        ["0x1FAF", "90 44 E6", "MOV DPTR,#44E6h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1FB3": {
+      "image": "factory",
+      "instructions": [
+        ["0x1FB3", "90 39 07", "MOV DPTR,#3907h"],
+        ["0x1FB6", "E0", "MOVX A,@DPTR"],
+        ["0x1FB7", "90 44 E7", "MOV DPTR,#44E7h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2061": {
+      "image": "factory",
+      "instructions": [
+        ["0x2061", "90 39 08", "MOV DPTR,#3908h"],
+        ["0x2064", "E0", "MOVX A,@DPTR"],
+        ["0x2065", "24 F9", "ADD A,#F9h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-20E6": {
+      "image": "factory",
+      "instructions": [
+        ["0x20E6", "90 39 0A", "MOV DPTR,#390Ah"],
+        ["0x20E9", "E0", "MOVX A,@DPTR"],
+        ["0x20EA", "64 0A", "XRL A,#0Ah"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1FDB": {
+      "image": "factory",
+      "instructions": [
+        ["0x1FDB", "90 39 0C", "MOV DPTR,#390Ch"],
+        ["0x1FDE", "E0", "MOVX A,@DPTR"],
+        ["0x1FDF", "60 3D", "JZ 201Eh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-E1EB": {
+      "image": "factory",
+      "instructions": [
+        ["0xE1EB", "1F", "DEC R7"],
+        ["0xE1EC", "1F", "DEC R7"],
+        ["0xE1ED", "EF", "MOV A,R7"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2011": {
+      "image": "factory",
+      "instructions": [
+        ["0x2011", "7E 39", "MOV R6,#39h"],
+        ["0x2013", "7F 0E", "MOV R7,#0Eh"],
+        ["0x2015", "7C 45", "MOV R4,#45h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-201E": {
+      "image": "factory",
+      "instructions": [
+        ["0x201E", "90 39 30", "MOV DPTR,#3930h"],
+        ["0x2021", "E0", "MOVX A,@DPTR"],
+        ["0x2022", "60 3D", "JZ 2061h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2054": {
+      "image": "factory",
+      "instructions": [
+        ["0x2054", "7E 39", "MOV R6,#39h"],
+        ["0x2056", "7F 32", "MOV R7,#32h"],
+        ["0x2058", "7C 45", "MOV R4,#45h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-207C": {
+      "image": "factory",
+      "instructions": [
+        ["0x207C", "90 39 54", "MOV DPTR,#3954h"],
+        ["0x207F", "E0", "MOVX A,@DPTR"],
+        ["0x2080", "60 64", "JZ 20E6h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-20AD": {
+      "image": "factory",
+      "instructions": [
+        ["0x20AD", "7E 39", "MOV R6,#39h"],
+        ["0x20AF", "7F 56", "MOV R7,#56h"],
+        ["0x20B1", "7C 45", "MOV R4,#45h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-77DA": {
+      "image": "factory",
+      "instructions": [
+        ["0x77DA", "90 4B C1", "MOV DPTR,#4BC1h"],
+        ["0x77DD", "EE", "MOV A,R6"],
+        ["0x77DE", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-20F3": {
+      "image": "factory",
+      "instructions": [
+        ["0x20F3", "7E 39", "MOV R6,#39h"],
+        ["0x20F5", "7F C8", "MOV R7,#C8h"],
+        ["0x20F7", "7C 44", "MOV R4,#44h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2100": {
+      "image": "factory",
+      "instructions": [
+        ["0x2100", "7E 39", "MOV R6,#39h"],
+        ["0x2102", "7F D0", "MOV R7,#D0h"],
+        ["0x2104", "7C 45", "MOV R4,#45h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-210D": {
+      "image": "factory",
+      "instructions": [
+        ["0x210D", "90 39 E0", "MOV DPTR,#39E0h"],
+        ["0x2110", "E0", "MOVX A,@DPTR"],
+        ["0x2111", "B4 48 22", "CJNE A,#48h,2136h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2119": {
+      "image": "factory",
+      "instructions": [
+        ["0x2119", "90 39 E7", "MOV DPTR,#39E7h"],
+        ["0x211C", "E0", "MOVX A,@DPTR"],
+        ["0x211D", "90 44 F0", "MOV DPTR,#44F0h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-44C4": {
+      "image": "factory",
+      "instructions": [
+        ["0x44C4", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x44C7", "E0", "MOVX A,@DPTR"],
+        ["0x44C8", "20 E6 03", "JB E6h,44CEh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-454B": {
+      "image": "factory",
+      "instructions": [
+        ["0x454B", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x454E", "E0", "MOVX A,@DPTR"],
+        ["0x454F", "FF", "MOV R7,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-6F4C": {
+      "image": "factory",
+      "instructions": [
+        ["0x6F4C", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x6F4F", "E0", "MOVX A,@DPTR"],
+        ["0x6F50", "FF", "MOV R7,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2136": {
+      "image": "factory",
+      "instructions": [
+        ["0x2136", "90 39 F0", "MOV DPTR,#39F0h"],
+        ["0x2139", "E0", "MOVX A,@DPTR"],
+        ["0x213A", "64 42", "XRL A,#42h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-214A": {
+      "image": "factory",
+      "instructions": [
+        ["0x214A", "A3", "INC DPTR"],
+        ["0x214B", "E0", "MOVX A,@DPTR"],
+        ["0x214C", "30 E3 0C", "JNB E3h,215Bh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2199": {
+      "image": "factory",
+      "instructions": [
+        ["0x2199", "90 44 F3", "MOV DPTR,#44F3h"],
+        ["0x219C", "E0", "MOVX A,@DPTR"],
+        ["0x219D", "60 61", "JZ 2200h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2200": {
+      "image": "factory",
+      "instructions": [
+        ["0x2200", "90 39 F8", "MOV DPTR,#39F8h"],
+        ["0x2203", "E0", "MOVX A,@DPTR"],
+        ["0x2204", "90 45 89", "MOV DPTR,#4589h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-C4D3": {
+      "image": "factory",
+      "instructions": [
+        ["0xC4D3", "90 45 89", "MOV DPTR,#4589h"],
+        ["0xC4D6", "E0", "MOVX A,@DPTR"],
+        ["0xC4D7", "30 E6 0F", "JNB E6h,C4E9h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2208": {
+      "image": "factory",
+      "instructions": [
+        ["0x2208", "90 39 FA", "MOV DPTR,#39FAh"],
+        ["0x220B", "E0", "MOVX A,@DPTR"],
+        ["0x220C", "90 41 74", "MOV DPTR,#4174h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-6232": {
+      "image": "factory",
+      "instructions": [
+        ["0x6232", "90 41 74", "MOV DPTR,#4174h"],
+        ["0x6235", "E0", "MOVX A,@DPTR"],
+        ["0x6236", "90 7E 18", "MOV DPTR,#7E18h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-279B": {
+      "image": "factory",
+      "instructions": [
+        ["0x279B", "90 41 5E", "MOV DPTR,#415Eh"],
+        ["0x279E", "E0", "MOVX A,@DPTR"],
+        ["0x279F", "60 2C", "JZ 27CDh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2210": {
+      "image": "factory",
+      "instructions": [
+        ["0x2210", "90 39 FB", "MOV DPTR,#39FBh"],
+        ["0x2213", "E0", "MOVX A,@DPTR"],
+        ["0x2214", "90 41 75", "MOV DPTR,#4175h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-385A": {
+      "image": "factory",
+      "instructions": [
+        ["0x385A", "90 41 75", "MOV DPTR,#4175h"],
+        ["0x385D", "E0", "MOVX A,@DPTR"],
+        ["0x385E", "90 70 86", "MOV DPTR,#7086h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7321": {
+      "image": "factory",
+      "instructions": [
+        ["0x7321", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x7324", "E0", "MOVX A,@DPTR"],
+        ["0x7325", "30 E2 0F", "JNB E2h,7337h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-9CC6": {
+      "image": "factory",
+      "instructions": [
+        ["0x9CC6", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x9CC9", "E0", "MOVX A,@DPTR"],
+        ["0x9CCA", "FD", "MOV R5,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2218": {
+      "image": "factory",
+      "instructions": [
+        ["0x2218", "90 39 FC", "MOV DPTR,#39FCh"],
+        ["0x221B", "E0", "MOVX A,@DPTR"],
+        ["0x221C", "D3", "SETB C"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-028C": {
+      "image": "factory",
+      "instructions": [
+        ["0x028C", "90 4A D6", "MOV DPTR,#4AD6h"],
+        ["0x028F", "E0", "MOVX A,@DPTR"],
+        ["0x0290", "90 4A 18", "MOV DPTR,#4A18h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-003E": {
+      "image": "factory",
+      "instructions": [
+        ["0x003E", "E5 29", "MOV A,29h"],
+        ["0x0040", "70 03", "JNZ 0045h"],
+        ["0x0042", "02 11 47", "LJMP 1147h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1F87": {
+      "image": "factory",
+      "instructions": [
+        ["0x1F87", "90 39 FE", "MOV DPTR,#39FEh"],
+        ["0x1F8A", "E0", "MOVX A,@DPTR"],
+        ["0x1F8B", "64 4A", "XRL A,#4Ah"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2227": {
+      "image": "factory",
+      "instructions": [
+        ["0x2227", "12 9D 1C", "LCALL 9D1Ch"],
+        ["0x222A", "22", "RET"],
+        ["0x222B", "7E 4B", "MOV R6,#4Bh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1F49": {
+      "image": "factory",
+      "instructions": [
+        ["0x1F49", "7C 39", "MOV R4,#39h"],
+        ["0x1F4B", "7D 00", "MOV R5,#00h"],
+        ["0x1F4D", "7F 10", "MOV R7,#10h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-5015": {
+      "image": "factory",
+      "instructions": [
+        ["0x5015", "30 38 49", "JNB 38h,5061h"],
+        ["0x5018", "90 79 8F", "MOV DPTR,#798Fh"],
+        ["0x501B", "E0", "MOVX A,@DPTR"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-6F57": {
+      "image": "factory",
+      "instructions": [
+        ["0x6F57", "54 BF", "ANL A,#BFh"],
+        ["0x6F59", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x6F5C", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-D422": {
+      "image": "factory",
+      "instructions": [
+        ["0xD422", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0xD425", "E0", "MOVX A,@DPTR"],
+        ["0xD426", "30 E3 0C", "JNB E3h,D435h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-364E": {
+      "image": "factory",
+      "instructions": [
+        ["0x364E", "E4", "CLR A"],
+        ["0x364F", "90 4B C8", "MOV DPTR,#4BC8h"],
+        ["0x3652", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-379E": {
+      "image": "factory",
+      "instructions": [
+        ["0x379E", "90 4B C8", "MOV DPTR,#4BC8h"],
+        ["0x37A1", "E0", "MOVX A,@DPTR"],
+        ["0x37A2", "90 35 02", "MOV DPTR,#3502h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-37C8": {
+      "image": "factory",
+      "instructions": [
+        ["0x37C8", "90 4B C8", "MOV DPTR,#4BC8h"],
+        ["0x37CB", "E0", "MOVX A,@DPTR"],
+        ["0x37CC", "90 35 03", "MOV DPTR,#3503h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-6F7C": {
+      "image": "factory",
+      "instructions": [
+        ["0x6F7C", "30 E4 03", "JNB E4h,6F82h"],
+        ["0x6F7F", "54 BF", "ANL A,#BFh"],
+        ["0x6F81", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2129": {
+      "image": "factory",
+      "instructions": [
+        ["0x2129", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x212C", "E0", "MOVX A,@DPTR"],
+        ["0x212D", "30 E5 06", "JNB E5h,2136h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-3A2D": {
+      "image": "factory",
+      "instructions": [
+        ["0x3A2D", "90 41 72", "MOV DPTR,#4172h"],
+        ["0x3A30", "E0", "MOVX A,@DPTR"],
+        ["0x3A31", "60 12", "JZ 3A45h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-46ED": {
+      "image": "factory",
+      "instructions": [
+        ["0x46ED", "54 BF", "ANL A,#BFh"],
+        ["0x46EF", "F0", "MOVX @DPTR,A"],
+        ["0x46F0", "90 45 92", "MOV DPTR,#4592h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-D682": {
+      "image": "factory",
+      "instructions": [
+        ["0xD682", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0xD685", "E0", "MOVX A,@DPTR"],
+        ["0xD686", "90 50 82", "MOV DPTR,#5082h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-5535": {
+      "image": "factory",
+      "instructions": [
+        ["0x5535", "90 50 82", "MOV DPTR,#5082h"],
+        ["0x5538", "E0", "MOVX A,@DPTR"],
+        ["0x5539", "54 F9", "ANL A,#F9h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-6631": {
+      "image": "factory",
+      "instructions": [
+        ["0x6631", "90 50 82", "MOV DPTR,#5082h"],
+        ["0x6634", "E0", "MOVX A,@DPTR"],
+        ["0x6635", "54 F9", "ANL A,#F9h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7BED": {
+      "image": "factory",
+      "instructions": [
+        ["0x7BED", "90 50 82", "MOV DPTR,#5082h"],
+        ["0x7BF0", "E0", "MOVX A,@DPTR"],
+        ["0x7BF1", "54 F9", "ANL A,#F9h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2172": {
+      "image": "factory",
+      "instructions": [
+        ["0x2172", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x2175", "E0", "MOVX A,@DPTR"],
+        ["0x2176", "30 E2 06", "JNB E2h,217Fh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1F7C": {
+      "image": "factory",
+      "instructions": [
+        ["0x1F7C", "E4", "CLR A"],
+        ["0x1F7D", "90 45 88", "MOV DPTR,#4588h"],
+        ["0x1F80", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-875A": {
+      "image": "factory",
+      "instructions": [
+        ["0x875A", "90 45 88", "MOV DPTR,#4588h"],
+        ["0x875D", "E0", "MOVX A,@DPTR"],
+        ["0x875E", "60 17", "JZ 8777h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-6B04": {
+      "image": "factory",
+      "instructions": [
+        ["0x6B04", "90 4B CD", "MOV DPTR,#4BCDh"],
+        ["0x6B07", "EE", "MOV A,R6"],
+        ["0x6B08", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-217F": {
+      "image": "factory",
+      "instructions": [
+        ["0x217F", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x2182", "E0", "MOVX A,@DPTR"],
+        ["0x2183", "30 E4 06", "JNB E4h,218Ch"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-3F61": {
+      "image": "factory",
+      "instructions": [
+        ["0x3F61", "EF", "MOV A,R7"],
+        ["0x3F62", "B4 08 00", "CJNE A,#08h,3F65h"],
+        ["0x3F65", "40 03", "JC 3F6Ah"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-218C": {
+      "image": "factory",
+      "instructions": [
+        ["0x218C", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x218F", "E0", "MOVX A,@DPTR"],
+        ["0x2190", "30 E5 06", "JNB E5h,2199h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1F78": {
+      "image": "factory",
+      "instructions": [
+        ["0x1F78", "C2 39", "CLR 39h"],
+        ["0x1F7A", "C2 3A", "CLR 3Ah"],
+        ["0x1F7C", "E4", "CLR A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2169": {
+      "image": "factory",
+      "instructions": [
+        ["0x2169", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x216C", "E0", "MOVX A,@DPTR"],
+        ["0x216D", "30 E6 02", "JNB E6h,2172h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-64B7": {
+      "image": "factory",
+      "instructions": [
+        ["0x64B7", "20 39 04", "JB 39h,64BEh"],
+        ["0x64BA", "E0", "MOVX A,@DPTR"],
+        ["0x64BB", "44 10", "ORL A,#10h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1F7A": {
+      "image": "factory",
+      "instructions": [
+        ["0x1F7A", "C2 3A", "CLR 3Ah"],
+        ["0x1F7C", "E4", "CLR A"],
+        ["0x1F7D", "90 45 88", "MOV DPTR,#4588h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2160": {
+      "image": "factory",
+      "instructions": [
+        ["0x2160", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x2163", "E0", "MOVX A,@DPTR"],
+        ["0x2164", "30 E7 02", "JNB E7h,2169h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-81DC": {
+      "image": "factory",
+      "instructions": [
+        ["0x81DC", "E5 27", "MOV A,27h"],
+        ["0x81DE", "F0", "MOVX @DPTR,A"],
+        ["0x81DF", "90 B0 10", "MOV DPTR,#B010h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-832F": {
+      "image": "factory",
+      "instructions": [
+        ["0x832F", "F5 27", "MOV 27h,A"],
+        ["0x8331", "90 B0 10", "MOV DPTR,#B010h"],
+        ["0x8334", "E0", "MOVX A,@DPTR"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2804": {
+      "image": "factory",
+      "instructions": [
+        ["0x2804", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x2807", "E0", "MOVX A,@DPTR"],
+        ["0x2808", "20 E0 15", "JB E0h,2820h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-6F62": {
+      "image": "factory",
+      "instructions": [
+        ["0x6F62", "54 FE", "ANL A,#FEh"],
+        ["0x6F64", "F0", "MOVX @DPTR,A"],
+        ["0x6F65", "90 44 F0", "MOV DPTR,#44F0h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-8FD9": {
+      "image": "factory",
+      "instructions": [
+        ["0x8FD9", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x8FDC", "E0", "MOVX A,@DPTR"],
+        ["0x8FDD", "20 E0 45", "JB E0h,9025h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-272E": {
+      "image": "factory",
+      "instructions": [
+        ["0x272E", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x2731", "E0", "MOVX A,@DPTR"],
+        ["0x2732", "FD", "MOV R5,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-2D52": {
+      "image": "factory",
+      "instructions": [
+        ["0x2D52", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x2D55", "E0", "MOVX A,@DPTR"],
+        ["0x2D56", "FD", "MOV R5,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-9CE1": {
+      "image": "factory",
+      "instructions": [
+        ["0x9CE1", "30 E1 37", "JNB E1h,9D1Bh"],
+        ["0x9CE4", "90 35 09", "MOV DPTR,#3509h"],
+        ["0x9CE7", "74 02", "MOV A,#02h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-5216": {
+      "image": "factory",
+      "instructions": [
+        ["0x5216", "12 E1 F9", "LCALL E1F9h"],
+        ["0x5219", "50 03", "JNC 521Eh"],
+        ["0x521B", "02 53 14", "LJMP 5314h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-32E1": {
+      "image": "factory",
+      "instructions": [
+        ["0x32E1", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x32E4", "E0", "MOVX A,@DPTR"],
+        ["0x32E5", "30 E5 02", "JNB E5h,32EAh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-DD28": {
+      "image": "factory",
+      "instructions": [
+        ["0xDD28", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0xDD2B", "E0", "MOVX A,@DPTR"],
+        ["0xDD2C", "30 E5 09", "JNB E5h,DD38h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-B6AE": {
+      "image": "factory",
+      "instructions": [
+        ["0xB6AE", "E5 1A", "MOV A,1Ah"],
+        ["0xB6B0", "FF", "MOV R7,A"],
+        ["0xB6B1", "64 03", "XRL A,#03h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-16C2": {
+      "image": "factory",
+      "instructions": [
+        ["0x16C2", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x16C5", "E0", "MOVX A,@DPTR"],
+        ["0x16C6", "30 E6 41", "JNB E6h,170Ah"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-1177": {
+      "image": "factory",
+      "instructions": [
+        ["0x1177", "90 3B 52", "MOV DPTR,#3B52h"],
+        ["0x117A", "E0", "MOVX A,@DPTR"],
+        ["0x117B", "30 E0 53", "JNB E0h,11D1h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-C98E": {
+      "image": "factory",
+      "instructions": [
+        ["0xC98E", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0xC991", "E0", "MOVX A,@DPTR"],
+        ["0xC992", "30 E6 20", "JNB E6h,C9B5h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-154E": {
+      "image": "factory",
+      "instructions": [
+        ["0x154E", "90 44 F1", "MOV DPTR,#44F1h"],
+        ["0x1551", "E0", "MOVX A,@DPTR"],
+        ["0x1552", "30 E7 1A", "JNB E7h,156Fh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7616": {
+      "image": "factory",
+      "instructions": [
+        ["0x7616", "90 4B C1", "MOV DPTR,#4BC1h"],
+        ["0x7619", "EF", "MOV A,R7"],
+        ["0x761A", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-8026": {
+      "image": "factory",
+      "instructions": [
+        ["0x8026", "A2 AF", "MOV C,AFh"],
+        ["0x8028", "C2 AF", "CLR AFh"],
+        ["0x802A", "8C 83", "MOV 83h,R4"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-C4E9": {
+      "image": "factory",
+      "instructions": [
+        ["0xC4E9", "90 45 89", "MOV DPTR,#4589h"],
+        ["0xC4EC", "E0", "MOVX A,@DPTR"],
+        ["0xC4ED", "30 E7 11", "JNB E7h,C501h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-800A": {
+      "image": "factory",
+      "instructions": [
+        ["0x800A", "A2 AF", "MOV C,AFh"],
+        ["0x800C", "C2 AF", "CLR AFh"],
+        ["0x800E", "8C 83", "MOV 83h,R4"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "f8-reset-latches": {
+      "image": "factory",
+      "instructions": [
+        ["0x77E2", "E4", "CLR A"],
+        ["0x77E3", "90 4B C4", "MOV DPTR,#4BC4h"],
+        ["0x77E6", "F0", "MOVX @DPTR,A"],
+        ["0x77E7", "A3", "INC DPTR"],
+        ["0x77E8", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.f8_transfers"
+    },
+    "f8-sticky-mismatch": {
+      "image": "factory",
+      "instructions": [
+        ["0x7838", "90 4B C4", "MOV DPTR,#4BC4h"],
+        ["0x783B", "74 01", "MOV A,#01h"],
+        ["0x783D", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.f8_transfers"
+    },
+    "f8-retry-bound": {
+      "image": "factory",
+      "instructions": [
+        ["0x784D", "90 4B C5", "MOV DPTR,#4BC5h"],
+        ["0x7850", "E0", "MOVX A,@DPTR"],
+        ["0x7851", "D3", "SETB C"],
+        ["0x7852", "94 0A", "SUBB A,#0Ah"],
+        ["0x7854", "50 0C", "JNC 7862h"],
+        ["0x7856", "90 4B C5", "MOV DPTR,#4BC5h"],
+        ["0x7859", "E0", "MOVX A,@DPTR"],
+        ["0x785A", "04", "INC A"],
+        ["0x785B", "F0", "MOVX @DPTR,A"],
+        ["0x785C", "90 4B C4", "MOV DPTR,#4BC4h"],
+        ["0x785F", "E0", "MOVX A,@DPTR"],
+        ["0x7860", "70 A2", "JNZ 7804h"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.f8_transfers"
+    },
+    "f8-dispatch": {
+      "image": "factory",
+      "instructions": [
+        ["0xC4D3", "90 45 89", "MOV DPTR,#4589h"],
+        ["0xC4D6", "E0", "MOVX A,@DPTR"],
+        ["0xC4D7", "30 E6 0F", "JNB E6h,C4E9h"],
+        ["0xC4DA", "7F 04", "MOV R7,#04h"],
+        ["0xC4DC", "12 71 C4", "LCALL 71C4h"],
+        ["0xC4DF", "7F 02", "MOV R7,#02h"],
+        ["0xC4E1", "12 76 16", "LCALL 7616h"],
+        ["0xC4E4", "7F 40", "MOV R7,#40h"],
+        ["0xC4E6", "12 71 C4", "LCALL 71C4h"],
+        ["0xC4E9", "90 45 89", "MOV DPTR,#4589h"],
+        ["0xC4EC", "E0", "MOVX A,@DPTR"],
+        ["0xC4ED", "30 E7 11", "JNB E7h,C501h"],
+        ["0xC4F0", "7F 08", "MOV R7,#08h"],
+        ["0xC4F2", "12 71 C4", "LCALL 71C4h"],
+        ["0xC4F5", "7F 00", "MOV R7,#00h"],
+        ["0xC4F7", "7E 73", "MOV R6,#73h"],
+        ["0xC4F9", "12 77 DA", "LCALL 77DAh"],
+        ["0xC4FC", "7F 80", "MOV R7,#80h"],
+        ["0xC4FE", "12 71 C4", "LCALL 71C4h"],
+        ["0xC501", "22", "RET"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.f8_transfers"
+    },
+    "f2-stateful": {
+      "image": "factory",
+      "instructions": [
+        ["0x214A", "A3", "INC DPTR"],
+        ["0x214B", "E0", "MOVX A,@DPTR"],
+        ["0x214C", "30 E3 0C", "JNB E3h,215Bh"],
+        ["0x214F", "90 44 F3", "MOV DPTR,#44F3h"],
+        ["0x2152", "74 01", "MOV A,#01h"],
+        ["0x2154", "F0", "MOVX @DPTR,A"],
+        ["0x2155", "90 48 7D", "MOV DPTR,#487Dh"],
+        ["0x2158", "F0", "MOVX @DPTR,A"],
+        ["0x2159", "80 05", "SJMP 2160h"],
+        ["0x215B", "E4", "CLR A"],
+        ["0x215C", "90 44 F3", "MOV DPTR,#44F3h"],
+        ["0x215F", "F0", "MOVX @DPTR,A"],
+        ["0x2160", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x2163", "E0", "MOVX A,@DPTR"],
+        ["0x2164", "30 E7 02", "JNB E7h,2169h"],
+        ["0x2167", "D2 3A", "SETB 3Ah"],
+        ["0x2169", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x216C", "E0", "MOVX A,@DPTR"],
+        ["0x216D", "30 E6 02", "JNB E6h,2172h"],
+        ["0x2170", "D2 39", "SETB 39h"],
+        ["0x2172", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x2175", "E0", "MOVX A,@DPTR"],
+        ["0x2176", "30 E2 06", "JNB E2h,217Fh"],
+        ["0x2179", "90 45 88", "MOV DPTR,#4588h"],
+        ["0x217C", "74 01", "MOV A,#01h"],
+        ["0x217E", "F0", "MOVX @DPTR,A"],
+        ["0x217F", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x2182", "E0", "MOVX A,@DPTR"],
+        ["0x2183", "30 E4 06", "JNB E4h,218Ch"],
+        ["0x2186", "90 45 83", "MOV DPTR,#4583h"],
+        ["0x2189", "74 01", "MOV A,#01h"],
+        ["0x218B", "F0", "MOVX @DPTR,A"],
+        ["0x218C", "90 39 F2", "MOV DPTR,#39F2h"],
+        ["0x218F", "E0", "MOVX A,@DPTR"],
+        ["0x2190", "30 E5 06", "JNB E5h,2199h"],
+        ["0x2193", "90 45 84", "MOV DPTR,#4584h"],
+        ["0x2196", "74 01", "MOV A,#01h"],
+        ["0x2198", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.f2"
+    },
+    "e7-masks": {
+      "image": "factory",
+      "instructions": [
+        ["0x6F4C", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x6F4F", "E0", "MOVX A,@DPTR"],
+        ["0x6F50", "FF", "MOV R7,A"],
+        ["0x6F51", "30 E1 02", "JNB E1h,6F56h"],
+        ["0x6F54", "D2 38", "SETB 38h"],
+        ["0x6F56", "EF", "MOV A,R7"],
+        ["0x6F57", "54 BF", "ANL A,#BFh"],
+        ["0x6F59", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x6F5C", "F0", "MOVX @DPTR,A"],
+        ["0x6F5D", "54 FB", "ANL A,#FBh"],
+        ["0x6F5F", "F0", "MOVX @DPTR,A"],
+        ["0x6F60", "A3", "INC DPTR"],
+        ["0x6F61", "E0", "MOVX A,@DPTR"],
+        ["0x6F62", "54 FE", "ANL A,#FEh"],
+        ["0x6F64", "F0", "MOVX @DPTR,A"],
+        ["0x6F65", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x6F68", "E0", "MOVX A,@DPTR"],
+        ["0x6F69", "FF", "MOV R7,A"],
+        ["0x6F6A", "30 E2 0A", "JNB E2h,6F77h"],
+        ["0x6F6D", "54 AF", "ANL A,#AFh"],
+        ["0x6F6F", "F0", "MOVX @DPTR,A"],
+        ["0x6F70", "A3", "INC DPTR"],
+        ["0x6F71", "E0", "MOVX A,@DPTR"],
+        ["0x6F72", "54 FA", "ANL A,#FAh"],
+        ["0x6F74", "F0", "MOVX @DPTR,A"],
+        ["0x6F75", "80 0B", "SJMP 6F82h"],
+        ["0x6F77", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0x6F7A", "E0", "MOVX A,@DPTR"],
+        ["0x6F7B", "FF", "MOV R7,A"],
+        ["0x6F7C", "30 E4 03", "JNB E4h,6F82h"],
+        ["0x6F7F", "54 BF", "ANL A,#BFh"],
+        ["0x6F81", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.flags_and_descriptors"
+    },
+    "e7-5082": {
+      "image": "factory",
+      "instructions": [
+        ["0xD682", "90 44 F0", "MOV DPTR,#44F0h"],
+        ["0xD685", "E0", "MOVX A,@DPTR"],
+        ["0xD686", "90 50 82", "MOV DPTR,#5082h"],
+        ["0xD689", "30 E7 05", "JNB E7h,D691h"],
+        ["0xD68C", "E0", "MOVX A,@DPTR"],
+        ["0xD68D", "44 0E", "ORL A,#0Eh"],
+        ["0xD68F", "F0", "MOVX @DPTR,A"],
+        ["0xD690", "22", "RET"],
+        ["0xD691", "E0", "MOVX A,@DPTR"],
+        ["0xD692", "54 F9", "ANL A,#F9h"],
+        ["0xD694", "F0", "MOVX @DPTR,A"],
+        ["0xD695", "E0", "MOVX A,@DPTR"],
+        ["0xD696", "44 08", "ORL A,#08h"],
+        ["0xD698", "F0", "MOVX @DPTR,A"],
+        ["0xD699", "22", "RET"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.flags_and_descriptors"
+    },
+    "e7-5082-cleanup": {
+      "image": "factory",
+      "instructions": [
+        ["0x5535", "90 50 82", "MOV DPTR,#5082h"],
+        ["0x5538", "E0", "MOVX A,@DPTR"],
+        ["0x5539", "54 F9", "ANL A,#F9h"],
+        ["0x553B", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.flags_and_descriptors"
+    },
+    "cbw-residue": {
+      "image": "factory",
+      "instructions": [
+        ["0x7BF4", "90 79 88", "MOV DPTR,#7988h"],
+        ["0x7BF7", "E0", "MOVX A,@DPTR"],
+        ["0x7BF8", "F5 58", "MOV 58h,A"],
+        ["0x7BFA", "A3", "INC DPTR"],
+        ["0x7BFB", "E0", "MOVX A,@DPTR"],
+        ["0x7BFC", "F5 57", "MOV 57h,A"],
+        ["0x7BFE", "A3", "INC DPTR"],
+        ["0x7BFF", "E0", "MOVX A,@DPTR"],
+        ["0x7C00", "F5 56", "MOV 56h,A"],
+        ["0x7C02", "A3", "INC DPTR"],
+        ["0x7C03", "E0", "MOVX A,@DPTR"],
+        ["0x7C04", "F5 55", "MOV 55h,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    "cbw-length-mmio": {
+      "image": "factory",
+      "instructions": [
+        ["0x7C06", "90 50 40", "MOV DPTR,#5040h"],
+        ["0x7C09", "E5 58", "MOV A,58h"],
+        ["0x7C0B", "F0", "MOVX @DPTR,A"],
+        ["0x7C0C", "A3", "INC DPTR"],
+        ["0x7C0D", "E5 57", "MOV A,57h"],
+        ["0x7C0F", "F0", "MOVX @DPTR,A"],
+        ["0x7C10", "A3", "INC DPTR"],
+        ["0x7C11", "E5 56", "MOV A,56h"],
+        ["0x7C13", "F0", "MOVX @DPTR,A"],
+        ["0x7C14", "A3", "INC DPTR"],
+        ["0x7C15", "E5 55", "MOV A,55h"],
+        ["0x7C17", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    "cbw-direction-lun": {
+      "image": "factory",
+      "instructions": [
+        ["0x7C18", "90 79 8C", "MOV DPTR,#798Ch"],
+        ["0x7C1B", "E0", "MOVX A,@DPTR"],
+        ["0x7C1C", "33", "RLC A"],
+        ["0x7C1D", "92 12", "MOV 12h,C"],
+        ["0x7C1F", "A3", "INC DPTR"],
+        ["0x7C20", "E0", "MOVX A,@DPTR"],
+        ["0x7C21", "54 0F", "ANL A,#0Fh"],
+        ["0x7C23", "F5 5E", "MOV 5Eh,A"],
+        ["0x7C25", "D3", "SETB C"],
+        ["0x7C26", "95 5D", "SUBB A,5Dh"],
+        ["0x7C28", "40 05", "JC 7C2Fh"],
+        ["0x7C2A", "E5 5D", "MOV A,5Dh"],
+        ["0x7C2C", "04", "INC A"],
+        ["0x7C2D", "F5 5E", "MOV 5Eh,A"],
+        ["0x7C2F", "E4", "CLR A"],
+        ["0x7C30", "F5 5B", "MOV 5Bh,A"],
+        ["0x7C32", "F5 5C", "MOV 5Ch,A"],
+        ["0x7C34", "75 59 05", "MOV 59h,#05h"],
+        ["0x7C37", "C2 14", "CLR 14h"],
+        ["0x7C39", "C2 03", "CLR 03h"],
+        ["0x7C3B", "75 5A 01", "MOV 5Ah,#01h"],
+        ["0x7C3E", "AF 5E", "MOV R7,5Eh"],
+        ["0x7C40", "12 D8 96", "LCALL D896h"],
+        ["0x7C43", "90 41 7F", "MOV DPTR,#417Fh"],
+        ["0x7C46", "EF", "MOV A,R7"],
+        ["0x7C47", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    "csw-residue-status": {
+      "image": "factory",
+      "instructions": [
+        ["0x9529", "90 40 08", "MOV DPTR,#4008h"],
+        ["0x952C", "E5 58", "MOV A,58h"],
+        ["0x952E", "F0", "MOVX @DPTR,A"],
+        ["0x952F", "A3", "INC DPTR"],
+        ["0x9530", "E5 57", "MOV A,57h"],
+        ["0x9532", "F0", "MOVX @DPTR,A"],
+        ["0x9533", "A3", "INC DPTR"],
+        ["0x9534", "E5 56", "MOV A,56h"],
+        ["0x9536", "F0", "MOVX @DPTR,A"],
+        ["0x9537", "A3", "INC DPTR"],
+        ["0x9538", "E5 55", "MOV A,55h"],
+        ["0x953A", "F0", "MOVX @DPTR,A"],
+        ["0x953B", "E5 5A", "MOV A,5Ah"],
+        ["0x953D", "B4 01 04", "CJNE A,#01h,9544h"],
+        ["0x9540", "7F 00", "MOV R7,#00h"],
+        ["0x9542", "80 02", "SJMP 9546h"],
+        ["0x9544", "7F 01", "MOV R7,#01h"],
+        ["0x9546", "90 40 0C", "MOV DPTR,#400Ch"],
+        ["0x9549", "EF", "MOV A,R7"],
+        ["0x954A", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    "sata-taskfile": {
+      "image": "factory",
+      "instructions": [
+        ["0x8CC4", "7B 0C", "MOV R3,#0Ch"],
+        ["0x8CC6", "7D 00", "MOV R5,#00h"],
+        ["0x8CC8", "7C 63", "MOV R4,#63h"],
+        ["0x8CCA", "12 80 0A", "LCALL 800Ah"],
+        ["0x8CCD", "90 63 0F", "MOV DPTR,#630Fh"],
+        ["0x8CD0", "74 D0", "MOV A,#D0h"],
+        ["0x8CD2", "F0", "MOVX @DPTR,A"],
+        ["0x8CD3", "90 4B CA", "MOV DPTR,#4BCAh"],
+        ["0x8CD6", "E0", "MOVX A,@DPTR"],
+        ["0x8CD7", "90 63 10", "MOV DPTR,#6310h"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    "sata-port-fis": {
+      "image": "factory",
+      "instructions": [
+        ["0x8CDB", "90 4B C8", "MOV DPTR,#4BC8h"],
+        ["0x8CDE", "E0", "MOVX A,@DPTR"],
+        ["0x8CDF", "FE", "MOV R6,A"],
+        ["0x8CE0", "A3", "INC DPTR"],
+        ["0x8CE1", "E0", "MOVX A,@DPTR"],
+        ["0x8CE2", "24 0C", "ADD A,#0Ch"],
+        ["0x8CE4", "F5 82", "MOV 82h,A"],
+        ["0x8CE6", "E4", "CLR A"],
+        ["0x8CE7", "3E", "ADDC A,R6"],
+        ["0x8CE8", "F5 83", "MOV 83h,A"],
+        ["0x8CEA", "E0", "MOVX A,@DPTR"],
+        ["0x8CEB", "90 63 11", "MOV DPTR,#6311h"],
+        ["0x8CEE", "F0", "MOVX @DPTR,A"],
+        ["0x8CEF", "A3", "INC DPTR"],
+        ["0x8CF0", "E5 2B", "MOV A,2Bh"],
+        ["0x8CF2", "F0", "MOVX @DPTR,A"],
+        ["0x8CF3", "A3", "INC DPTR"],
+        ["0x8CF4", "74 27", "MOV A,#27h"],
+        ["0x8CF6", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    "sata-length": {
+      "image": "factory",
+      "instructions": [
+        ["0xC78B", "30 0F 06", "JNB 0Fh,C794h"],
+        ["0xC78E", "7E 4C", "MOV R6,#4Ch"],
+        ["0xC790", "7F 16", "MOV R7,#16h"],
+        ["0xC792", "80 04", "SJMP C798h"],
+        ["0xC794", "7E 79", "MOV R6,#79h"],
+        ["0xC796", "7F 88", "MOV R7,#88h"],
+        ["0xC798", "7B 04", "MOV R3,#04h"],
+        ["0xC79A", "7D 18", "MOV R5,#18h"],
+        ["0xC79C", "7C 63", "MOV R4,#63h"],
+        ["0xC79E", "12 80 0A", "LCALL 800Ah"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    "ata-completion": {
+      "image": "factory",
+      "instructions": [
+        ["0x7357", "90 63 13", "MOV DPTR,#6313h"],
+        ["0x735A", "E0", "MOVX A,@DPTR"],
+        ["0x735B", "64 34", "XRL A,#34h"],
+        ["0x735D", "70 49", "JNZ 73A8h"],
+        ["0x735F", "E5 B9", "MOV A,B9h"],
+        ["0x7361", "54 E1", "ANL A,#E1h"],
+        ["0x7363", "FF", "MOV R7,A"],
+        ["0x7364", "BF 40 17", "CJNE R7,#40h,737Eh"],
+        ["0x7367", "E5 59", "MOV A,59h"],
+        ["0x7369", "B4 64 0B", "CJNE A,#64h,7377h"],
+        ["0x736C", "E4", "CLR A"],
+        ["0x736D", "F5 58", "MOV 58h,A"],
+        ["0x736F", "F5 57", "MOV 57h,A"],
+        ["0x7371", "F5 56", "MOV 56h,A"],
+        ["0x7373", "F5 55", "MOV 55h,A"],
+        ["0x7375", "80 19", "SJMP 7390h"],
+        ["0x7377", "E4", "CLR A"],
+        ["0x7378", "FF", "MOV R7,A"],
+        ["0x7379", "12 AE F4", "LCALL AEF4h"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    "ata-error": {
+      "image": "factory",
+      "instructions": [
+        ["0x7386", "90 70 97", "MOV DPTR,#7097h"],
+        ["0x7389", "E0", "MOVX A,@DPTR"],
+        ["0x738A", "FD", "MOV R5,A"],
+        ["0x738B", "AF B9", "MOV R7,B9h"],
+        ["0x738D", "12 AA 9F", "LCALL AA9Fh"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    "dma-data-in-accounting": {
+      "image": "factory",
+      "instructions": [
+        ["0xAEF9", "30 12 29", "JNB 12h,AF25h"],
+        ["0xAEFC", "85 AC 58", "MOV 58h,ACh"],
+        ["0xAEFF", "85 AD 57", "MOV 57h,ADh"],
+        ["0xAF02", "85 AE 56", "MOV 56h,AEh"],
+        ["0xAF05", "E5 AF", "MOV A,AFh"],
+        ["0xAF07", "54 3F", "ANL A,#3Fh"],
+        ["0xAF09", "F5 55", "MOV 55h,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    "usb-wait": {
+      "image": "factory",
+      "instructions": [
+        ["0xCBE3", "90 50 52", "MOV DPTR,#5052h"],
+        ["0xCBE6", "E0", "MOVX A,@DPTR"],
+        ["0xCBE7", "20 E0 0F", "JB E0h,CBF9h"],
+        ["0xCBEA", "90 50 E2", "MOV DPTR,#50E2h"],
+        ["0xCBED", "E0", "MOVX A,@DPTR"],
+        ["0xCBEE", "60 03", "JZ CBF3h"],
+        ["0xCBF0", "12 E1 96", "LCALL E196h"],
+        ["0xCBF3", "12 E1 40", "LCALL E140h"],
+        ["0xCBF6", "50 EB", "JNC CBE3h"],
+        ["0xCBF8", "22", "RET"],
+        ["0xCBF9", "E5 A3", "MOV A,A3h"],
+        ["0xCBFB", "30 E7 09", "JNB E7h,CC07h"],
+        ["0xCBFE", "12 E1 96", "LCALL E196h"],
+        ["0xCC01", "12 E1 40", "LCALL E140h"],
+        ["0xCC04", "50 F3", "JNC CBF9h"],
+        ["0xCC06", "22", "RET"],
+        ["0xCC07", "C3", "CLR C"],
+        ["0xCC08", "22", "RET"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    "usb-wait-abort": {
+      "image": "factory",
+      "instructions": [
+        ["0xE140", "E5 9F", "MOV A,9Fh"],
+        ["0xE142", "20 E2 02", "JB E2h,E147h"],
+        ["0xE145", "D3", "SETB C"],
+        ["0xE146", "22", "RET"],
+        ["0xE147", "C3", "CLR C"],
+        ["0xE148", "22", "RET"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    "pio-operand-load": {
+      "image": "factory",
+      "instructions": [
+        ["0xC7C5", "90 70 B6", "MOV DPTR,#70B6h"],
+        ["0xC7C8", "74 C0", "MOV A,#C0h"],
+        ["0xC7CA", "F0", "MOVX @DPTR,A"],
+        ["0xC7CB", "90 70 B0", "MOV DPTR,#70B0h"],
+        ["0xC7CE", "E5 58", "MOV A,58h"],
+        ["0xC7D0", "F0", "MOVX @DPTR,A"],
+        ["0xC7D1", "A3", "INC DPTR"],
+        ["0xC7D2", "E5 57", "MOV A,57h"],
+        ["0xC7D4", "F0", "MOVX @DPTR,A"],
+        ["0xC7D5", "A3", "INC DPTR"],
+        ["0xC7D6", "E5 56", "MOV A,56h"],
+        ["0xC7D8", "F0", "MOVX @DPTR,A"],
+        ["0xC7D9", "A3", "INC DPTR"],
+        ["0xC7DA", "E5 55", "MOV A,55h"],
+        ["0xC7DC", "F0", "MOVX @DPTR,A"],
+        ["0xC7DD", "90 70 B6", "MOV DPTR,#70B6h"],
+        ["0xC7E0", "E4", "CLR A"],
+        ["0xC7E1", "F0", "MOVX @DPTR,A"],
+        ["0xC7E2", "22", "RET"]
+      ],
+      "reference": "tools/patching/udma/audit.py:arithmetic_native_checks"
+    },
+    "pio-subtract": {
+      "image": "factory",
+      "instructions": [
+        ["0xD1D7", "90 70 B6", "MOV DPTR,#70B6h"],
+        ["0xD1DA", "74 C0", "MOV A,#C0h"],
+        ["0xD1DC", "F0", "MOVX @DPTR,A"],
+        ["0xD1DD", "74 10", "MOV A,#10h"],
+        ["0xD1DF", "F0", "MOVX @DPTR,A"],
+        ["0xD1E0", "7B 04", "MOV R3,#04h"],
+        ["0xD1E2", "7D B8", "MOV R5,#B8h"],
+        ["0xD1E4", "7C 70", "MOV R4,#70h"],
+        ["0xD1E6", "7F 18", "MOV R7,#18h"],
+        ["0xD1E8", "7E 63", "MOV R6,#63h"],
+        ["0xD1EA", "12 80 0A", "LCALL 800Ah"],
+        ["0xD1ED", "90 70 B6", "MOV DPTR,#70B6h"],
+        ["0xD1F0", "74 01", "MOV A,#01h"],
+        ["0xD1F2", "F0", "MOVX @DPTR,A"],
+        ["0xD1F3", "22", "RET"]
+      ],
+      "reference": "tools/patching/udma/audit.py:arithmetic_native_checks"
+    },
+    "arithmetic-command-wait": {
+      "image": "factory",
+      "instructions": [
+        ["0xDF9B", "90 70 B6", "MOV DPTR,#70B6h"],
+        ["0xDF9E", "EF", "MOV A,R7"],
+        ["0xDF9F", "F0", "MOVX @DPTR,A"],
+        ["0xDFA0", "90 70 B7", "MOV DPTR,#70B7h"],
+        ["0xDFA3", "E0", "MOVX A,@DPTR"],
+        ["0xDFA4", "30 E0 F9", "JNB E0h,DFA0h"],
+        ["0xDFA7", "22", "RET"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:ArithmeticHypothesis"
+    },
+    "pio-result": {
+      "image": "factory",
+      "instructions": [
+        ["0xB3C4", "90 70 C3", "MOV DPTR,#70C3h"],
+        ["0xB3C7", "E0", "MOVX A,@DPTR"],
+        ["0xB3C8", "F5 55", "MOV 55h,A"],
+        ["0xB3CA", "90 70 C2", "MOV DPTR,#70C2h"],
+        ["0xB3CD", "E0", "MOVX A,@DPTR"],
+        ["0xB3CE", "F5 56", "MOV 56h,A"],
+        ["0xB3D0", "90 70 C1", "MOV DPTR,#70C1h"],
+        ["0xB3D3", "E0", "MOVX A,@DPTR"],
+        ["0xB3D4", "F5 57", "MOV 57h,A"],
+        ["0xB3D6", "90 70 C0", "MOV DPTR,#70C0h"],
+        ["0xB3D9", "E0", "MOVX A,@DPTR"],
+        ["0xB3DA", "F5 58", "MOV 58h,A"]
+      ],
+      "reference": "tools/patching/udma/audit.py:arithmetic_native_checks"
+    },
+    "port-list-append": {
+      "image": "factory",
+      "instructions": [
+        ["0x05B6", "90 45 8C", "MOV DPTR,#458Ch"],
+        ["0x05B9", "E0", "MOVX A,@DPTR"],
+        ["0x05BA", "FF", "MOV R7,A"],
+        ["0x05BB", "90 45 95", "MOV DPTR,#4595h"],
+        ["0x05BE", "E0", "MOVX A,@DPTR"],
+        ["0x05BF", "24 9C", "ADD A,#9Ch"],
+        ["0x05C1", "F5 82", "MOV 82h,A"],
+        ["0x05C3", "E4", "CLR A"],
+        ["0x05C4", "34 45", "ADDC A,#45h"],
+        ["0x05C6", "F5 83", "MOV 83h,A"],
+        ["0x05C8", "EF", "MOV A,R7"],
+        ["0x05C9", "F0", "MOVX @DPTR,A"],
+        ["0x05CA", "90 45 95", "MOV DPTR,#4595h"],
+        ["0x05CD", "E0", "MOVX A,@DPTR"],
+        ["0x05CE", "04", "INC A"],
+        ["0x05CF", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/ckcond/tests/test_port_ownership.py"
+    },
+    "lun-map": {
+      "image": "factory",
+      "instructions": [
+        ["0xD896", "90 45 92", "MOV DPTR,#4592h"],
+        ["0xD899", "E0", "MOVX A,@DPTR"],
+        ["0xD89A", "60 0D", "JZ D8A9h"],
+        ["0xD89C", "74 9C", "MOV A,#9Ch"],
+        ["0xD89E", "2F", "ADD A,R7"],
+        ["0xD89F", "F5 82", "MOV 82h,A"],
+        ["0xD8A1", "E4", "CLR A"],
+        ["0xD8A2", "34 45", "ADDC A,#45h"],
+        ["0xD8A4", "F5 83", "MOV 83h,A"],
+        ["0xD8A6", "E0", "MOVX A,@DPTR"],
+        ["0xD8A7", "FF", "MOV R7,A"],
+        ["0xD8A8", "22", "RET"],
+        ["0xD8A9", "7F 00", "MOV R7,#00h"],
+        ["0xD8AB", "22", "RET"]
+      ],
+      "reference": "tools/patching/ckcond/tests/test_port_ownership.py"
+    },
+    "pending-sense": {
+      "image": "factory",
+      "instructions": [
+        ["0xD8AC", "E5 5E", "MOV A,5Eh"],
+        ["0xD8AE", "C3", "CLR C"],
+        ["0xD8AF", "94 10", "SUBB A,#10h"],
+        ["0xD8B1", "50 08", "JNC D8BBh"],
+        ["0xD8B3", "74 3A", "MOV A,#3Ah"],
+        ["0xD8B5", "25 5E", "ADD A,5Eh"],
+        ["0xD8B7", "F8", "MOV R0,A"],
+        ["0xD8B8", "C6", "XCH A,@R0"],
+        ["0xD8B9", "EF", "MOV A,R7"],
+        ["0xD8BA", "C6", "XCH A,@R0"],
+        ["0xD8BB", "EF", "MOV A,R7"],
+        ["0xD8BC", "60 03", "JZ D8C1h"],
+        ["0xD8BE", "75 5A 02", "MOV 5Ah,#02h"],
+        ["0xD8C1", "22", "RET"]
+      ],
+      "reference": "tools/patching/ckcond/sense_patch.py:build_sense_patch"
+    },
+    "abort-valid-clear": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xFD20", "C0 A8", "PUSH A8h"],
+        ["0xFD22", "C2 AF", "CLR AFh"],
+        ["0xFD24", "C0 E0", "PUSH E0h"],
+        ["0xFD26", "C0 86", "PUSH 86h"],
+        ["0xFD28", "75 86 00", "MOV 86h,#00h"],
+        ["0xFD2B", "C0 82", "PUSH 82h"],
+        ["0xFD2D", "C0 83", "PUSH 83h"],
+        ["0xFD2F", "90 4E 07", "MOV DPTR,#4E07h"],
+        ["0xFD32", "E4", "CLR A"],
+        ["0xFD33", "F0", "MOVX @DPTR,A"],
+        ["0xFD34", "D0 83", "POP 83h"],
+        ["0xFD36", "D0 82", "POP 82h"],
+        ["0xFD38", "D0 86", "POP 86h"],
+        ["0xFD3A", "D0 E0", "POP E0h"],
+        ["0xFD3C", "D0 A8", "POP A8h"],
+        ["0xFD3E", "22", "RET"]
+      ],
+      "reference": "tools/patching/ckcond/abort_guard.py:build_bodies"
+    },
+    "pio-setup-result": {
+      "image": "factory",
+      "instructions": [
+        ["0x96BD", "90 63 0F", "MOV DPTR,#630Fh"],
+        ["0x96C0", "E0", "MOVX A,@DPTR"],
+        ["0x96C1", "90 4B 31", "MOV DPTR,#4B31h"],
+        ["0x96C4", "F0", "MOVX @DPTR,A"],
+        ["0x96C5", "90 63 0D", "MOV DPTR,#630Dh"],
+        ["0x96C8", "E0", "MOVX A,@DPTR"],
+        ["0x96C9", "90 4B 32", "MOV DPTR,#4B32h"],
+        ["0x96CC", "F0", "MOVX @DPTR,A"],
+        ["0x96CD", "12 D1 D7", "LCALL D1D7h"],
+        ["0x96D0", "90 70 C5", "MOV DPTR,#70C5h"],
+        ["0x96D3", "E0", "MOVX A,@DPTR"],
+        ["0x96D4", "30 E7 07", "JNB E7h,96DEh"],
+        ["0x96D7", "7E 94", "MOV R6,#94h"],
+        ["0x96D9", "7F F9", "MOV R7,#F9h"],
+        ["0x96DB", "02 D3 10", "LJMP D310h"]
+      ],
+      "reference": "tools/patching/ckcond/tests/test_terminal_edge_paths.py:TerminalEdgeTests.test_pio_setup_final_uses_estatus_after_native_data_wait"
+    },
+    "pio-setup-transfer": {
+      "image": "factory",
+      "instructions": [
+        ["0x96DE", "7B 04", "MOV R3,#04h"],
+        ["0x96E0", "7D 8C", "MOV R5,#8Ch"],
+        ["0x96E2", "7C 63", "MOV R4,#63h"],
+        ["0x96E4", "7F 18", "MOV R7,#18h"],
+        ["0x96E6", "7E 63", "MOV R6,#63h"],
+        ["0x96E8", "12 80 0A", "LCALL 800Ah"],
+        ["0x96EB", "75 A9 03", "MOV A9h,#03h"],
+        ["0x96EE", "12 00 26", "LCALL 0026h"],
+        ["0x96F1", "40 FB", "JC 96EEh"]
+      ],
+      "reference": "tools/patching/ckcond/tests/test_terminal_edge_paths.py:TerminalEdgeTests.test_pio_setup_final_uses_estatus_after_native_data_wait"
+    },
+    "nondata-staged-result": {
+      "image": "factory",
+      "instructions": [
+        ["0x9814", "90 4B C2", "MOV DPTR,#4BC2h"],
+        ["0x9817", "E0", "MOVX A,@DPTR"],
+        ["0x9818", "FE", "MOV R6,A"],
+        ["0x9819", "A3", "INC DPTR"],
+        ["0x981A", "E0", "MOVX A,@DPTR"],
+        ["0x981B", "FF", "MOV R7,A"],
+        ["0x981C", "24 0D", "ADD A,#0Dh"],
+        ["0x981E", "F5 82", "MOV 82h,A"],
+        ["0x9820", "E4", "CLR A"],
+        ["0x9821", "3E", "ADDC A,R6"],
+        ["0x9822", "F5 83", "MOV 83h,A"],
+        ["0x9824", "E5 B9", "MOV A,B9h"],
+        ["0x9826", "F0", "MOVX @DPTR,A"],
+        ["0x9827", "90 70 97", "MOV DPTR,#7097h"],
+        ["0x982A", "E0", "MOVX A,@DPTR"],
+        ["0x982B", "FD", "MOV R5,A"],
+        ["0x982C", "EF", "MOV A,R7"],
+        ["0x982D", "24 0E", "ADD A,#0Eh"],
+        ["0x982F", "F5 82", "MOV 82h,A"],
+        ["0x9831", "E4", "CLR A"],
+        ["0x9832", "3E", "ADDC A,R6"],
+        ["0x9833", "F5 83", "MOV 83h,A"],
+        ["0x9835", "ED", "MOV A,R5"],
+        ["0x9836", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/ckcond/capture_wrappers.py:build_bodies"
+    },
+    "mapping-stride": {
+      "image": "factory",
+      "instructions": [
+        ["0xC774", "75 F0 08", "MOV F0h,#08h"],
+        ["0xC777", "EF", "MOV A,R7"],
+        ["0xC778", "A4", "MUL AB"],
+        ["0xC779", "24 06", "ADD A,#06h"],
+        ["0xC77B", "F5 82", "MOV 82h,A"],
+        ["0xC77D", "E5 F0", "MOV A,F0h"],
+        ["0xC77F", "34 7A", "ADDC A,#7Ah"],
+        ["0xC781", "F5 83", "MOV 83h,A"],
+        ["0xC783", "EE", "MOV A,R6"],
+        ["0xC784", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/ckcond/tests/test_port_ownership.py"
+    },
+    "timer-result-c8": {
+      "image": "factory",
+      "instructions": [
+        ["0x91DC", "7F 06", "MOV R7,#06h"],
+        ["0x91DE", "12 DF 9B", "LCALL DF9Bh"],
+        ["0x91E1", "90 70 C9", "MOV DPTR,#70C9h"],
+        ["0x91E4", "E0", "MOVX A,@DPTR"],
+        ["0x91E5", "FE", "MOV R6,A"],
+        ["0x91E6", "90 70 C8", "MOV DPTR,#70C8h"],
+        ["0x91E9", "E0", "MOVX A,@DPTR"],
+        ["0x91EA", "FD", "MOV R5,A"],
+        ["0x91EB", "ED", "MOV A,R5"],
+        ["0x91EC", "FF", "MOV R7,A"],
+        ["0x91ED", "90 4A F1", "MOV DPTR,#4AF1h"],
+        ["0x91F0", "EE", "MOV A,R6"],
+        ["0x91F1", "F0", "MOVX @DPTR,A"],
+        ["0x91F2", "A3", "INC DPTR"],
+        ["0x91F3", "EF", "MOV A,R7"],
+        ["0x91F4", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py:Audit.timer_and_mode_pages",
+      "scope": "Static native consumer; peripheral operations05/06 are not modeled by the retained arithmetic fixture."
+    },
+    "cpu-B3DC": {
+      "image": "factory",
+      "instructions": [
+        ["0xB3DC", "90 50 56", "MOV DPTR,#5056h"],
+        ["0xB3DF", "E0", "MOVX A,@DPTR"],
+        ["0xB3E0", "54 FE", "ANL A,#FEh"]
+      ],
+      "reference": "tools/patching/udma/audit.py:arithmetic_native_checks"
+    },
+    "cpu-E152": {
+      "image": "factory",
+      "instructions": [
+        ["0xE152", "90 63 2C", "MOV DPTR,#632Ch"],
+        ["0xE155", "74 0C", "MOV A,#0Ch"],
+        ["0xE157", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:completion_case"
+    },
+    "cpu-8CAE": {
+      "image": "factory",
+      "instructions": [
+        ["0x8CAE", "90 63 46", "MOV DPTR,#6346h"],
+        ["0x8CB1", "74 20", "MOV A,#20h"],
+        ["0x8CB3", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/udma/fixtures.py:stage_cbw_and_launch"
+    },
+    "cpu-8CB4": {
+      "image": "factory",
+      "instructions": [
+        ["0x8CB4", "90 70 94", "MOV DPTR,#7094h"],
+        ["0x8CB7", "E4", "CLR A"],
+        ["0x8CB8", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/patching/ckcond/capture_wrappers.py:build_bodies"
+    },
+    "cpu-9185": {
+      "image": "factory",
+      "instructions": [
+        ["0x9185", "90 48 7D", "MOV DPTR,#487Dh"],
+        ["0x9188", "E0", "MOVX A,@DPTR"],
+        ["0x9189", "70 07", "JNZ 9192h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-9711": {
+      "image": "factory",
+      "instructions": [
+        ["0x9711", "7C 4B", "MOV R4,#4Bh"],
+        ["0x9713", "7D A0", "MOV R5,#A0h"],
+        ["0x9715", "7B 04", "MOV R3,#04h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-E0CA": {
+      "image": "factory",
+      "instructions": [
+        ["0xE0CA", "90 70 B8", "MOV DPTR,#70B8h"],
+        ["0xE0CD", "EF", "MOV A,R7"],
+        ["0xE0CE", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-E0D4": {
+      "image": "factory",
+      "instructions": [
+        ["0xE0D4", "90 70 B8", "MOV DPTR,#70B8h"],
+        ["0xE0D7", "EF", "MOV A,R7"],
+        ["0xE0D8", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-91B6": {
+      "image": "factory",
+      "instructions": [
+        ["0x91B6", "7F 05", "MOV R7,#05h"],
+        ["0x91B8", "12 DF 9B", "LCALL DF9Bh"],
+        ["0x91BB", "90 70 B6", "MOV DPTR,#70B6h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-D310": {
+      "image": "factory",
+      "instructions": [
+        ["0xD310", "90 4B C3", "MOV DPTR,#4BC3h"],
+        ["0xD313", "EE", "MOV A,R6"],
+        ["0xD314", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7207": {
+      "image": "factory",
+      "instructions": [
+        ["0x7207", "90 72 88", "MOV DPTR,#7288h"],
+        ["0x720A", "E0", "MOVX A,@DPTR"],
+        ["0x720B", "44 08", "ORL A,#08h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7217": {
+      "image": "factory",
+      "instructions": [
+        ["0x7217", "90 72 8C", "MOV DPTR,#728Ch"],
+        ["0x721A", "E0", "MOVX A,@DPTR"],
+        ["0x721B", "44 C0", "ORL A,#C0h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7229": {
+      "image": "factory",
+      "instructions": [
+        ["0x7229", "90 72 8D", "MOV DPTR,#728Dh"],
+        ["0x722C", "74 C7", "MOV A,#C7h"],
+        ["0x722E", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-722F": {
+      "image": "factory",
+      "instructions": [
+        ["0x722F", "90 72 D0", "MOV DPTR,#72D0h"],
+        ["0x7232", "E0", "MOVX A,@DPTR"],
+        ["0x7233", "44 10", "ORL A,#10h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-77E9": {
+      "image": "factory",
+      "instructions": [
+        ["0x77E9", "90 72 C4", "MOV DPTR,#72C4h"],
+        ["0x77EC", "E0", "MOVX A,@DPTR"],
+        ["0x77ED", "90 4B C3", "MOV DPTR,#4BC3h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7862": {
+      "image": "factory",
+      "instructions": [
+        ["0x7862", "90 4B C3", "MOV DPTR,#4BC3h"],
+        ["0x7865", "E0", "MOVX A,@DPTR"],
+        ["0x7866", "30 E2 03", "JNB E2h,786Ch"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7804": {
+      "image": "factory",
+      "instructions": [
+        ["0x7804", "7E 39", "MOV R6,#39h"],
+        ["0x7806", "7F 00", "MOV R7,#00h"],
+        ["0x7808", "90 4B C1", "MOV DPTR,#4BC1h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7826": {
+      "image": "factory",
+      "instructions": [
+        ["0x7826", "E0", "MOVX A,@DPTR"],
+        ["0x7827", "FD", "MOV R5,A"],
+        ["0x7828", "74 00", "MOV A,#00h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-71D8": {
+      "image": "factory",
+      "instructions": [
+        ["0x71D8", "90 74 24", "MOV DPTR,#7424h"],
+        ["0x71DB", "74 0B", "MOV A,#0Bh"],
+        ["0x71DD", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-C75C": {
+      "image": "factory",
+      "instructions": [
+        ["0xC75C", "E4", "CLR A"],
+        ["0xC75D", "FF", "MOV R7,A"],
+        ["0xC75E", "90 45 95", "MOV DPTR,#4595h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-991E": {
+      "image": "factory",
+      "instructions": [
+        ["0x991E", "EF", "MOV A,R7"],
+        ["0x991F", "60 07", "JZ 9928h"],
+        ["0x9921", "74 3A", "MOV A,#3Ah"]
+      ],
+      "reference": "tools/patching/ckcond/sense_patch.py:build_sense_patch"
+    },
+    "cpu-9503": {
+      "image": "factory",
+      "instructions": [
+        ["0x9503", "7E 79", "MOV R6,#79h"],
+        ["0x9505", "7F 84", "MOV R7,#84h"],
+        ["0x9507", "7C 40", "MOV R4,#40h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-27FB": {
+      "image": "factory",
+      "instructions": [
+        ["0x27FB", "30 21 06", "JNB 21h,2804h"],
+        ["0x27FE", "90 45 90", "MOV DPTR,#4590h"],
+        ["0x2801", "E0", "MOVX A,@DPTR"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-D1F4": {
+      "image": "factory",
+      "instructions": [
+        ["0xD1F4", "7F 01", "MOV R7,#01h"],
+        ["0xD1F6", "90 45 92", "MOV DPTR,#4592h"],
+        ["0xD1F9", "E0", "MOVX A,@DPTR"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-0709": {
+      "image": "factory",
+      "instructions": [
+        ["0x0709", "90 45 92", "MOV DPTR,#4592h"],
+        ["0x070C", "E0", "MOVX A,@DPTR"],
+        ["0x070D", "60 2F", "JZ 073Eh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7493": {
+      "image": "factory",
+      "instructions": [
+        ["0x7493", "7E 4B", "MOV R6,#4Bh"],
+        ["0x7495", "7F A0", "MOV R7,#A0h"],
+        ["0x7497", "7C 48", "MOV R4,#48h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-0B87": {
+      "image": "factory",
+      "instructions": [
+        ["0x0B87", "7E 4A", "MOV R6,#4Ah"],
+        ["0x0B89", "7F 1C", "MOV R7,#1Ch"],
+        ["0x0B8B", "7D 08", "MOV R5,#08h"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    "cpu-222B": {
+      "image": "factory",
+      "instructions": [
+        ["0x222B", "7E 4B", "MOV R6,#4Bh"],
+        ["0x222D", "7F 39", "MOV R7,#39h"],
+        ["0x222F", "7D 15", "MOV R5,#15h"]
+      ],
+      "reference": "tools/patching/ckcond/capture_wrappers.py:build_bodies"
+    },
+    "cpu-C7A4": {
+      "image": "factory",
+      "instructions": [
+        ["0xC7A4", "7E 4B", "MOV R6,#4Bh"],
+        ["0xC7A6", "7F 24", "MOV R7,#24h"],
+        ["0xC7A8", "7D 08", "MOV R5,#08h"]
+      ],
+      "reference": "tools/patching/ckcond/capture_wrappers.py:build_bodies"
+    },
+    "cpu-229E": {
+      "image": "factory",
+      "instructions": [
+        ["0x229E", "90 79 90", "MOV DPTR,#7990h"],
+        ["0x22A1", "E0", "MOVX A,@DPTR"],
+        ["0x22A2", "54 1E", "ANL A,#1Eh"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    "cpu-356C": {
+      "image": "factory",
+      "instructions": [
+        ["0x356C", "E5 5E", "MOV A,5Eh"],
+        ["0x356E", "65 6D", "XRL A,6Dh"],
+        ["0x3570", "70 03", "JNZ 3575h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-AEF4": {
+      "image": "factory",
+      "instructions": [
+        ["0xAEF4", "90 4B C3", "MOV DPTR,#4BC3h"],
+        ["0xAEF7", "EF", "MOV A,R7"],
+        ["0xAEF8", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-8CA3": {
+      "image": "factory",
+      "instructions": [
+        ["0x8CA3", "90 4B C8", "MOV DPTR,#4BC8h"],
+        ["0x8CA6", "EE", "MOV A,R6"],
+        ["0x8CA7", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-7D61": {
+      "image": "factory",
+      "instructions": [
+        ["0x7D61", "7E 4C", "MOV R6,#4Ch"],
+        ["0x7D63", "7F 16", "MOV R7,#16h"],
+        ["0x7D65", "7D 04", "MOV R5,#04h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-A203": {
+      "image": "factory",
+      "instructions": [
+        ["0xA203", "90 70 B6", "MOV DPTR,#70B6h"],
+        ["0xA206", "74 C0", "MOV A,#C0h"],
+        ["0xA208", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-81B9": {
+      "image": "factory",
+      "instructions": [
+        ["0x81B9", "90 B0 00", "MOV DPTR,#B000h"],
+        ["0x81BC", "74 4A", "MOV A,#4Ah"],
+        ["0x81BE", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-8300": {
+      "image": "factory",
+      "instructions": [
+        ["0x8300", "90 70 8C", "MOV DPTR,#708Ch"],
+        ["0x8303", "E0", "MOVX A,@DPTR"],
+        ["0x8304", "44 01", "ORL A,#01h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-CD56": {
+      "image": "factory",
+      "instructions": [
+        ["0xCD56", "E5 18", "MOV A,18h"],
+        ["0xCD58", "70 1E", "JNZ CD78h"],
+        ["0xCD5A", "E5 19", "MOV A,19h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-D970": {
+      "image": "factory",
+      "instructions": [
+        ["0xD970", "E5 18", "MOV A,18h"],
+        ["0xD972", "B4 A1 0E", "CJNE A,#A1h,D983h"],
+        ["0xD975", "E5 1D", "MOV A,1Dh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-C702": {
+      "image": "factory",
+      "instructions": [
+        ["0xC702", "E5 1D", "MOV A,1Dh"],
+        ["0xC704", "45 1C", "ORL A,1Ch"],
+        ["0xC706", "70 13", "JNZ C71Bh"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-0B65": {
+      "image": "factory",
+      "instructions": [
+        ["0x0B65", "75 29 37", "MOV 29h,#37h"],
+        ["0x0B68", "90 4A 2D", "MOV DPTR,#4A2Dh"],
+        ["0x0B6B", "E0", "MOVX A,@DPTR"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    "cpu-73A2": {
+      "image": "factory",
+      "instructions": [
+        ["0x73A2", "75 32 94", "MOV 32h,#94h"],
+        ["0x73A5", "75 33 F9", "MOV 33h,#F9h"],
+        ["0x73A8", "22", "RET"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-247A": {
+      "image": "factory",
+      "instructions": [
+        ["0x247A", "E4", "CLR A"],
+        ["0x247B", "90 4B 49", "MOV DPTR,#4B49h"],
+        ["0x247E", "F0", "MOVX @DPTR,A"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-C339": {
+      "image": "factory",
+      "instructions": [
+        ["0xC339", "90 79 93", "MOV DPTR,#7993h"],
+        ["0xC33C", "E0", "MOVX A,@DPTR"],
+        ["0xC33D", "FF", "MOV R7,A"]
+      ],
+      "reference": "tools/patching/ckcond/sense_patch.py:build_sense_patch"
+    },
+    "cpu-733C": {
+      "image": "factory",
+      "instructions": [
+        ["0x733C", "20 21 18", "JB 21h,7357h"],
+        ["0x733F", "20 21 04", "JB 21h,7346h"],
+        ["0x7342", "7F 01", "MOV R7,#01h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-0026": {
+      "image": "factory",
+      "instructions": [
+        ["0x0026", "E5 A9", "MOV A,A9h"],
+        ["0x0028", "13", "RRC A"],
+        ["0x0029", "22", "RET"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-77FF": {
+      "image": "factory",
+      "instructions": [
+        ["0x77FF", "C2 AF", "CLR AFh"],
+        ["0x7801", "12 E1 A6", "LCALL E1A6h"],
+        ["0x7804", "7E 39", "MOV R6,#39h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "cpu-786C": {
+      "image": "factory",
+      "instructions": [
+        ["0x786C", "D2 AF", "SETB AFh"],
+        ["0x786E", "22", "RET"],
+        ["0x786F", "90 41 76", "MOV DPTR,#4176h"]
+      ],
+      "reference": "tools/analysis/native_oem.py"
+    },
+    "patch-0x4D00-16-LUN-LUN0-15": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE861", "E4", "CLR A"],
+        ["0xE862", "8A 82", "MOV 82h,R2"],
+        ["0xE864", "75 83 4D", "MOV 83h,#4Dh"],
+        ["0xE867", "F0", "MOVX @DPTR,A"],
+        ["0xE868", "0A", "INC R2"],
+        ["0xE869", "E4", "CLR A"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    "patch-slot-0x02-0x03": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE861", "E4", "CLR A"],
+        ["0xE862", "8A 82", "MOV 82h,R2"],
+        ["0xE864", "75 83 4D", "MOV 83h,#4Dh"],
+        ["0xE867", "F0", "MOVX @DPTR,A"],
+        ["0xE868", "0A", "INC R2"],
+        ["0xE869", "E4", "CLR A"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    "patch-slot-0x04-0x05": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE861", "E4", "CLR A"],
+        ["0xE862", "8A 82", "MOV 82h,R2"],
+        ["0xE864", "75 83 4D", "MOV 83h,#4Dh"],
+        ["0xE867", "F0", "MOVX @DPTR,A"],
+        ["0xE868", "0A", "INC R2"],
+        ["0xE869", "E4", "CLR A"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    "patch-slot-0x06-0x0D": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE861", "E4", "CLR A"],
+        ["0xE862", "8A 82", "MOV 82h,R2"],
+        ["0xE864", "75 83 4D", "MOV 83h,#4Dh"],
+        ["0xE867", "F0", "MOVX @DPTR,A"],
+        ["0xE868", "0A", "INC R2"],
+        ["0xE869", "E4", "CLR A"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    "patch-slot-0x0E-0x0F": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE861", "E4", "CLR A"],
+        ["0xE862", "8A 82", "MOV 82h,R2"],
+        ["0xE864", "75 83 4D", "MOV 83h,#4Dh"],
+        ["0xE867", "F0", "MOVX @DPTR,A"],
+        ["0xE868", "0A", "INC R2"],
+        ["0xE869", "E4", "CLR A"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    "patch-0x4E00": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE32A", "C0 E0", "PUSH E0h"],
+        ["0xE32C", "75 86 00", "MOV 86h,#00h"],
+        ["0xE32F", "90 4E 00", "MOV DPTR,#4E00h"],
+        ["0xE332", "E0", "MOVX A,@DPTR"],
+        ["0xE333", "B4 B0 02", "CJNE A,#B0h,E338h"],
+        ["0xE336", "80 03", "SJMP E33Bh"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    "patch-0x4E01-0x4E05": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE38E", "02 E3 F5", "LJMP E3F5h"],
+        ["0xE391", "E5 5E", "MOV A,5Eh"],
+        ["0xE393", "90 4E 01", "MOV DPTR,#4E01h"],
+        ["0xE396", "F0", "MOVX @DPTR,A"],
+        ["0xE397", "EF", "MOV A,R7"],
+        ["0xE398", "90 4E 02", "MOV DPTR,#4E02h"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    "patch-0x4E06": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE52A", "C0 E0", "PUSH E0h"],
+        ["0xE52C", "75 86 00", "MOV 86h,#00h"],
+        ["0xE52F", "90 4E 06", "MOV DPTR,#4E06h"],
+        ["0xE532", "74 00", "MOV A,#00h"],
+        ["0xE534", "F0", "MOVX @DPTR,A"],
+        ["0xE535", "90 4E 07", "MOV DPTR,#4E07h"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    "patch-0x4E07": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE800", "90 4E 07", "MOV DPTR,#4E07h"],
+        ["0xE803", "74 00", "MOV A,#00h"],
+        ["0xE805", "F0", "MOVX @DPTR,A"],
+        ["0xE806", "12 FC 00", "LCALL FC00h"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    "patch-0x4E08-0x4E0B": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE66D", "02 E6 8B", "LJMP E68Bh"],
+        ["0xE670", "E5 2B", "MOV A,2Bh"],
+        ["0xE672", "90 4E 08", "MOV DPTR,#4E08h"],
+        ["0xE675", "F0", "MOVX @DPTR,A"],
+        ["0xE676", "E9", "MOV A,R1"],
+        ["0xE677", "90 4E 09", "MOV DPTR,#4E09h"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:launch_block"
+    },
+    "patch-0x4E0C-0x4E0D": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE84E", "02 E9 48", "LJMP E948h"],
+        ["0xE851", "EF", "MOV A,R7"],
+        ["0xE852", "90 4E 0C", "MOV DPTR,#4E0Ch"],
+        ["0xE855", "F0", "MOVX @DPTR,A"],
+        ["0xE856", "ED", "MOV A,R5"],
+        ["0xE857", "90 4E 0D", "MOV DPTR,#4E0Dh"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:capture_block"
+    },
+    "patch-0x4E10-0x4E13": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE3CF", "90 79 84", "MOV DPTR,#7984h"],
+        ["0xE3D2", "E0", "MOVX A,@DPTR"],
+        ["0xE3D3", "90 4E 10", "MOV DPTR,#4E10h"],
+        ["0xE3D6", "F0", "MOVX @DPTR,A"],
+        ["0xE3D7", "90 79 85", "MOV DPTR,#7985h"],
+        ["0xE3DA", "E0", "MOVX A,@DPTR"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block"
+    },
+    "patch-0x4E00-0x4E1F-allocation": {
+      "image": "ckcond-revised",
+      "instructions": [
+        ["0xE32A", "C0 E0", "PUSH E0h"],
+        ["0xE32C", "75 86 00", "MOV 86h,#00h"],
+        ["0xE32F", "90 4E 00", "MOV DPTR,#4E00h"],
+        ["0xE332", "E0", "MOVX A,@DPTR"],
+        ["0xE333", "B4 B0 02", "CJNE A,#B0h,E338h"],
+        ["0xE336", "80 03", "SJMP E33Bh"]
+      ],
+      "reference": "tools/patching/ckcond/core_patch.py:begin_block"
+    }
+  },
+  "limits": [
+    "All CPU addresses are CODE addresses;full SPI file offsets add0x1000. The67072-byte updater uses a different0x400 CODE origin.",
+    "Instruction excerpts are anchored at cited routine boundaries,not results of treating arbitrary byte matches as instructions.",
+    "The OEM second half is zero in this stock image,not universally reserved. Donor variation does not establish a PH8057 consumer.",
+    "OEM serial payload056..077 is never stored in this metadata;decoder outputs redact it by default.",
+    "No hardware timing,interrupt delivery,autonomous DMA,MMIO ownership or flash safety is qualified by this atlas."
+  ]
+}

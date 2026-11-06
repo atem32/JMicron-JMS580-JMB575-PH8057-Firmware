@@ -1,4 +1,4 @@
-"""Independent execution contracts for the integrated PH8057 v8 candidate.
+"""Execution contracts for the integrated revised CK_COND candidate.
 
 Runs original and patched CPU bytes. The XDATA/SFR arrays are explicit static
 fixtures; completion-bank updates between phases are injected observations,
@@ -16,12 +16,12 @@ from ph8057_fixtures import DualDPTRCPU
 import core_patch
 import capture_wrappers
 import abort_guard
-import build_ckcond as build_v8
+import build_ckcond
 from sense_patch import build_sense_patch,apply_to_code
 
 STOCK=load_code(STOCK_PATH)
 SOURCE_FULL=(STOCK_PATH).read_bytes()
-CANDIDATE_FULL=build_v8.build(SOURCE_FULL)[0]
+CANDIDATE_FULL=build_ckcond.build(SOURCE_FULL)[0]
 OBSERVED_MAX_SP=0
 
 

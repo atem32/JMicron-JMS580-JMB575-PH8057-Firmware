@@ -1,4 +1,4 @@
-"""New tests exercise native failure paths, evidence attribution and bounds."""
+"""Native failure paths, BOT evidence and accounting bounds."""
 import json
 import os
 from pathlib import Path

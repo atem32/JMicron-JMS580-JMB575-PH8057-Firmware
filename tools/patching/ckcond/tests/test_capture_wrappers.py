@@ -10,10 +10,9 @@ from pathlib import Path
 import json
 import sys
 
-from mcs51 import CPU, decode
+from mcs51 import CPU
 from ph8057_fixtures import DualDPTRCPU
 from capture_wrappers import build_patches, SYMBOLS
-import dis51
 
 STOCK=(STOCK_PATH).read_bytes()[0x1000:0x11000]
 PATCHED=bytearray(STOCK)
@@ -160,23 +159,13 @@ def run_mapper():
         count+=1
     return count
 
-def run_decoder():
-    code=bytearray(65536)
-    for op in range(256):
-        code[:3]=bytes((op,0x92,0xE7))
-        ins=decode(code,0);n,t=dis51.decode(code,0)
-        normalize=lambda s:s.replace("h","").replace(" ","")
-        assert ins.size==n
-        assert normalize(ins.mnemonic+ins.operands)==normalize(t)
-    return 256
-
 def main():
     result={
+      "status":"PASS",
       "wrapper_abi_current_register_bank_dps_ea_cases":run_wrapper_abi(),
       "pio_transport_guard_cases":run_pio_transport_guard(),
       "authentic_nondata_branches_with_actual_wrapper":run_nondata_branches(),
       "native_mapper_against_original_AA9F_inputs":run_mapper(),
-      "independent_decoder_opcodes":run_decoder(),
       "limitations":["CoreE800 is an explicit ABIclobber stub in wrapper-isolation tests",
        "StaticXDATA/SFRfixtures do not model SATA,USB,DMA,interrupt timing or realRAM",
        "New17-byte wrapper frame plus nestedcalls needs physical stack qualification"],

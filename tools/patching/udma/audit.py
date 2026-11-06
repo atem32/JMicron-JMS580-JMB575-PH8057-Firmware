@@ -10,8 +10,7 @@ from trace_patch import STOCK_SHA256, V8_SHA256, sha256, overlay_for_emulation
 from unsafe_prototype_fixture import rejected_overlay_for_test
 
 HERE = Path(__file__).resolve().parent
-# Development: components/udma; released package: tools/patching/udma.
-ROOT = HERE.parents[2] if HERE.parent.name == "patching" else HERE.parents[1]
+ROOT = HERE.parents[2]
 
 
 def default_source(name, variable):

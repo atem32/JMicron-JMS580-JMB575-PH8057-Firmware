@@ -11,10 +11,10 @@ import sys
 
 from mcs51 import FixtureBus
 from ph8057_fixtures import DualDPTRCPU
-import build_ckcond as build_v8
+import build_ckcond
 
 raw=(STOCK_PATH).read_bytes()
-candidate,_,_=build_v8.build(raw)
+candidate,_,_=build_ckcond.build(raw)
 STOCK=raw[0x1000:0x11000]
 PATCHED=candidate[0x1000:0x11000]
 
@@ -91,7 +91,7 @@ def main():
                                '85':'4A97 ->4288 ->4B89 ->CAA9 ->BD5C ->scheduled222B'},
             'CDB_opcode_preserved':'A1','EXTEND_cleared_by_native_A1_normalizer':True,
             'external_code_stubs':0,
-            'candidate_sha256':build_v8.sha(candidate),
+            'candidate_sha256':build_ckcond.sha(candidate),
             'scope':'Instruction execution with explicit XDATA memory fixtures; no peripheral transactions or device IO. Completion and late sense tested separately by integration suite.'}
     (RESULTS/'sat12_test_results.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result,indent=2))

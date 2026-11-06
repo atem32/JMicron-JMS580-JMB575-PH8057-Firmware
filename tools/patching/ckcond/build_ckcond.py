@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Build the audited CK_COND candidate offline; no device or SPI operations."""
+"""Build the revised CK_COND candidate offline; no device or SPI operations."""
 import argparse
 import json
-import os
 from pathlib import Path
 
 import core_patch
@@ -11,9 +10,6 @@ import sense_patch
 import abort_guard
 from image import (sha, check_crc, repackage, validate_stock, read_stock, changed_ranges,
                    ORIGINAL_V8_SHA, REVISED_CKCOND_SHA, STOCK_FULL_SHA, guard_outputs)
-
-DEFAULT_STOCK = Path(os.environ.get("PH8057_STOCK", "firmware/original/PH8057_FACTORY_COMPLETE_READBACK_DO_NOT_FLASH.bin"))
-
 
 def collect_patches(stock, variant="revised"):
     if variant not in ("v8", "revised"):
@@ -53,10 +49,12 @@ def metadata(stock, candidate, changes, symbols, variant="revised"):
         "candidate": ("CK_COND original v8" if variant == "v8" else
                       "CK_COND revised: invalidate capture on native USB-wait abort"),
         "variant": variant,
-        "status": "EXPERIMENTAL / DO NOT FLASH",
+        "status": "REGRESSION BASELINE / DO NOT FLASH" if variant == "v8" else "EXPERIMENTAL / DO NOT FLASH",
+        "image_format": "full_spi",
         "source_sha256": sha(stock), "candidate_sha256": sha(candidate),
         "original_v8_preserved_byte_for_byte": sha(candidate) == ORIGINAL_V8_SHA,
-        "hardware_tests_of_candidate": 0,
+        "artifact_hardware_status": "NOT TESTED",
+        "hardware_scope": "Limited observations apply to the separate 67,072-byte updater package, not this SPI artifact",
         "image_size": len(candidate),
         "changed_bytes_vs_stock": sum(a != b for a, b in zip(stock, candidate)),
         "oem_unchanged": stock[0x11000:] == candidate[0x11000:],
@@ -80,18 +78,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stock", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--variant", choices=("v8", "revised"), default="revised")
     args = parser.parse_args()
     stock = read_stock(args.stock)
-    candidate, changes, symbols = build(stock, variant=args.variant)
-    output = args.out / ("PH8057_CKCOND_V8_ORIGINAL_DO_NOT_FLASH.bin" if args.variant == "v8"
-                         else "PH8057_CKCOND_REVISED_DO_NOT_FLASH.bin")
-    manifest = args.out / f"ckcond_{args.variant}_manifest.json"
-    records = args.out / f"ckcond_{args.variant}_patch_records.json"
+    candidate, changes, symbols = build(stock)
+    output = args.out / "PH8057_CKCOND_REVISED_DO_NOT_FLASH.bin"
+    manifest = args.out / "ckcond_revised_manifest.json"
+    records = args.out / "ckcond_revised_patch_records.json"
     guard_outputs(args.stock, [output, manifest, records])
     args.out.mkdir(parents=True, exist_ok=True)
     output.write_bytes(candidate)
-    report = metadata(stock, candidate, changes, symbols, variant=args.variant)
+    report = metadata(stock, candidate, changes, symbols)
     manifest.write_text(json.dumps(report, indent=2) + "\n")
     records.write_text(json.dumps(changes, indent=2) + "\n")
     print(json.dumps({"status": report["status"], "sha256": sha(candidate),

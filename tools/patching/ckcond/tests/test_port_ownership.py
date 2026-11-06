@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""v14 stock observations replayed through v8 patched 8051 executable code.
+"""Stock port-ownership observations replayed through revised CK_COND code.
 
 This is intentionally an offline unit test. Device=21/31/41 decoding by native
 CPU 2426 is NOT executed here: selected ports are provided as hardware fixtures.
@@ -58,7 +58,7 @@ def main():
                 disclaimer='Offline 8051 fixture; no physical CPU/RAM/USB/SATA/DF register writes')
     path=RESULTS/'port_owner_results.json'
     path.write_text(json.dumps(result,indent=2)+'\n')
-    print('PASS v14 port/owner v8 offline scenarios:',len(out))
+    print('PASS port-ownership offline scenarios:',len(out))
     print('report:',path)
 
 if __name__=='__main__':main()

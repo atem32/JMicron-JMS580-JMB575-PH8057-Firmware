@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Image-integrity contracts and replay of the actual v7 E5 register bytes.
+"""Image integrity and replay of previously observed stock E5 register bytes.
 
 Replay is software execution using previously observed bytes. It is explicitly
 NOT a hardware measurement of the modified firmware.
@@ -10,7 +10,7 @@ import json
 import sys
 import unittest
 
-from build_ckcond import DEFAULT_STOCK, build, collect_patches, sha
+from build_ckcond import build, collect_patches, sha
 from image import repackage
 from image import check_crc
 from test_integrated_patch import new_cpu,admit,begin,launch,complete,finalize,get_sense
@@ -18,7 +18,7 @@ from test_integrated_patch import new_cpu,admit,begin,launch,complete,finalize,g
 
 class BuildAndCaptureTests(unittest.TestCase):
     def test_full_image_only_exact_manifest_and_crcs_change(self):
-        stock=DEFAULT_STOCK.read_bytes()
+        stock=STOCK_PATH.read_bytes()
         result,changes,_=build(stock)
         self.assertEqual(len(result),0x11200)
         self.assertEqual(result[0xE00:0x1000],stock[0xE00:0x1000])
@@ -35,7 +35,7 @@ class BuildAndCaptureTests(unittest.TestCase):
         self.assertEqual(build(stock)[0],result)
 
     def test_wrong_input_and_corrupted_patch_contracts_are_rejected(self):
-        stock=DEFAULT_STOCK.read_bytes()
+        stock=STOCK_PATH.read_bytes()
         changes,_=collect_patches(stock)
         mutated=bytearray(stock);mutated[0x11000]^=1
         with self.assertRaises(Exception):build(bytes(mutated))
@@ -65,11 +65,12 @@ class BuildAndCaptureTests(unittest.TestCase):
         self.assertEqual(result,expected)
         record={
             'status':'PASS_OFFLINE_REPLAY_NOT_NEW_HARDWARE_OBSERVATION',
-            'stock_evidence':'ph8057_v7/PH8057_v7_stock_evidence.json',
+            'stock_evidence':'local E5 register capture fixture',
+            'stock_evidence_sha256':sha(EVIDENCE_PATH.read_bytes()),
             'observed_bank_hex':bank.hex(' '),
             'observed_original_getter_hex':getter.hex(' '),
             'candidate_software_sense_hex':result.hex(' '),
-            'candidate_sha256':sha(build(DEFAULT_STOCK.read_bytes())[0]),
+            'candidate_sha256':sha(build(STOCK_PATH.read_bytes())[0]),
             'hardware_execution_of_modified_code':False,
         }
         (RESULTS/'e5_capture_replay_result.json').write_text(json.dumps(record,indent=2)+'\n')

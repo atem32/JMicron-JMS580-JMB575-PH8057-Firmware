@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "scope": "Exact firmware identities and compatibility bounds. Vendor binaries are local inputs, not repository contents.",
+  "layouts": {
+    "full_spi": {
+      "size_bytes": 70144,
+      "code_file_offset": "0x1000",
+      "code_size_bytes": 65536,
+      "oem_file_offset": "0x11000",
+      "oem_size_bytes": 512
+    },
+    "updater": {
+      "size_bytes": 67072,
+      "code_file_offset": "0x400",
+      "code_size_bytes": 65536,
+      "oem_file_offset": "0x10400",
+      "oem_size_bytes": 512
+    }
+  },
+  "images": {
+    "factory-spi": {
+      "filename": "PH8057_FACTORY_COMPLETE_READBACK_DO_NOT_FLASH.bin",
+      "role": "input",
+      "layout": "full_spi",
+      "sha256": "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09",
+      "code_sha256": "d5a63b69fe3fe96ebbef6d128107ba061d7ac6d448fff82acec4272c5606fe5c",
+      "oem_sha256": "9521e63007a1289846438195896ef2908a6ccd695c983f90b54fd501eb00e635",
+      "crc": {
+        "header": "698135A8",
+        "metadata": "452BD627",
+        "code": "10600021",
+        "full": "2FD3716F"
+      }
+    },
+    "factory-updater": {
+      "filename": "1.bin",
+      "role": "input",
+      "layout": "updater",
+      "sha256": "481e62548a3a7b9cf07e8552fa2e2a9d66a5f89d222a66301ad22982c8aca7c5",
+      "code_sha256": "d5a63b69fe3fe96ebbef6d128107ba061d7ac6d448fff82acec4272c5606fe5c",
+      "oem_sha256": "9521e63007a1289846438195896ef2908a6ccd695c983f90b54fd501eb00e635",
+      "crc": {
+        "wrapper_crc": "698135a8",
+        "metadata_header_crc": "452bd627",
+        "code_crc": "10600021",
+        "full_crc": "2fd3716f"
+      },
+      "stored_metadata_header_crc": "00000000",
+      "note": "The exact original package has a zero metadata-header CRC; the computed CRC is recorded above. Only this pinned original is accepted with a blank field."
+    },
+    "ckcond-revised": {
+      "filename": "PH8057_CKCOND_REVISED_DO_NOT_FLASH.bin",
+      "role": "candidate",
+      "layout": "full_spi",
+      "base": "factory-spi",
+      "sha256": "2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b",
+      "code_sha256": "0fc4849dad98c8c76bdfbef42c23e9956dffb2f571be840f0b9f2557e2f326b1",
+      "crc": {
+        "header": "698135A8",
+        "metadata": "2426F5E2",
+        "code": "46FFB024",
+        "full": "FAA494BF"
+      },
+      "patch_record_count": 32,
+      "changed_bytes_vs_base": 2607,
+      "oem_unchanged": true,
+      "udma_residue_fix": false,
+      "validation_status": "OFFLINE VALIDATED",
+      "hardware_status": "NOT TESTED",
+      "cpu_patch_records": "firmware/ph8057-device/modified/ckcond_revised_patch_records.json",
+      "hardware_scope": "Limited observations apply to ckcond-revised-updater; this SPI-container artifact has not been physically qualified."
+    },
+    "udma-trace": {
+      "filename": "PH8057_UDMA_TRACE_ONLY_DO_NOT_FLASH.bin",
+      "role": "candidate",
+      "layout": "full_spi",
+      "base": "factory-spi",
+      "sha256": "a4bf69164548003a26efebcb3f5fd6e59d0dfc3321eeda2ffb97d6e36ba63712",
+      "code_sha256": "81e93efbdf7e4ee5046482dcc0bce4cd41f2fc54e69ee43e53439b8d97b5e72e",
+      "crc": {
+        "header": "698135A8",
+        "metadata": "C8ABCF58",
+        "code": "278995AD",
+        "full": "95406CEB"
+      },
+      "patch_record_count": 2,
+      "changed_bytes_vs_base": 27,
+      "oem_unchanged": true,
+      "udma_residue_fix": false,
+      "validation_status": "OFFLINE VALIDATED",
+      "hardware_status": "NOT TESTED",
+      "trace_source": "tools/patching/udma/trace_patch.py",
+      "hardware_scope": "Observation trampoline only; no physical debugger or logging channel is supplied or qualified."
+    },
+    "combined-revised-trace": {
+      "filename": "PH8057_CKCOND_REVISED_UDMA_TRACE_ONLY_DO_NOT_FLASH.bin",
+      "role": "candidate",
+      "layout": "full_spi",
+      "base": "factory-spi",
+      "sha256": "825660ce89e77f9fe827d0a34f7c527d155e1726795d093671c9aff38a844163",
+      "code_sha256": "ef3f3eb68ef8763bfe4e19d6628d78eb036d7576df70fcefc7c87170db0d6886",
+      "crc": {
+        "header": "698135A8",
+        "metadata": "A9A6EC9D",
+        "code": "711625A8",
+        "full": "4037893B"
+      },
+      "patch_record_count": 34,
+      "changed_bytes_vs_base": 2618,
+      "oem_unchanged": true,
+      "udma_residue_fix": false,
+      "validation_status": "OFFLINE VALIDATED",
+      "hardware_status": "NOT TESTED",
+      "trace_source": "tools/patching/udma/trace_patch.py",
+      "hardware_scope": "Observation trampoline only; no physical debugger or logging channel is supplied or qualified."
+    },
+    "ckcond-v8": {
+      "filename": "PH8057_CKCOND_V8_REGRESSION_BASELINE_DO_NOT_FLASH.bin",
+      "role": "regression_baseline",
+      "layout": "full_spi",
+      "base": "factory-spi",
+      "sha256": "4b7ac3e5bd124d8e44281e9aa79b7b65f7b62c54410ffd1abd8af4a586d74e11",
+      "code_sha256": "937db3d08f7b67ade3710b01b38ac7c882c8604106a20ac4a8c2ed5abc6bd062",
+      "crc": {
+        "header": "698135A8",
+        "metadata": "19FF89C9",
+        "code": "D042940A",
+        "full": "C52EF5E7"
+      },
+      "patch_record_count": 27,
+      "changed_bytes_vs_base": 2555,
+      "oem_unchanged": true,
+      "udma_residue_fix": false,
+      "validation_status": "OFFLINE VALIDATED",
+      "hardware_status": "NOT TESTED",
+      "purpose": "Differential regression baseline for stale ATA snapshot publication on native USB-wait abort; not a current patch option."
+    },
+    "ckcond-revised-updater": {
+      "filename": "PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin",
+      "role": "candidate",
+      "layout": "updater",
+      "base": "factory-updater",
+      "sha256": "f8406e8b83e9f97695ce4ae395a90b29e28d8210bc40c09087f3f6b43f33fd5b",
+      "code_sha256": "0fc4849dad98c8c76bdfbef42c23e9956dffb2f571be840f0b9f2557e2f326b1",
+      "crc": {
+        "wrapper_crc": "698135a8",
+        "metadata_header_crc": "2426f5e2",
+        "code_crc": "46ffb024",
+        "full_crc": "faa494bf"
+      },
+      "patch_record_count": 32,
+      "changed_bytes_vs_base": 2607,
+      "oem_unchanged": true,
+      "udma_residue_fix": false,
+      "validation_status": "OFFLINE VALIDATED",
+      "hardware_status": "HARDWARE OBSERVED",
+      "hardware_evidence": "docs/testing.md",
+      "post_flash_readback_available": false,
+      "hardware_scope": "Owner-reported installation and limited SMART STATUS/CHECK POWER MODE observations; later two-disk BOT summaries lack raw logs and per-run readback/hash attestation in this repository. Not all paths or ports are qualified.",
+      "cpu_patch_records": "firmware/ph8057-device/modified/ckcond_revised_patch_records.json"
+    },
+    "truncated-spi-prefix": {
+      "filename": "ph8057-original.bin",
+      "role": "rejected_input",
+      "size_bytes": 65536,
+      "sha256": "131bab19b558a25745c881c3c4193fd1f9fb541c0a6c89c7961bad31cecc60b2",
+      "code_file_offset": "0x1000",
+      "code_complete": false,
+      "oem_present": false,
+      "reason": "This SPI prefix is not a raw 64 KiB CODE image and is rejected by patch builders."
+    }
+  },
+  "donors": [
+    {
+      "filename": "JMS580_00.02.00.02_Blueendless_U23TC_UPDATE.BIN",
+      "layout": "updater",
+      "sha256": "ee9024d1abe886af2878aa469618826e3f1c370c7f3477badb3cfa28a94e4cfc",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "JMS580_BIWIN-Release-v162.03.00.01-20181204.BIN",
+      "layout": "updater",
+      "sha256": "c6147a3ccdb34bbd3f24d25b544418eb305a6b22e49f318f66054452351fc670",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "JMS580_FW_194.01.00.01.BIN",
+      "layout": "updater",
+      "sha256": "5571a697dc3284b51b9d054c297b623460dc04d2e3c9bfa6da3c4c2beb1260a3",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "JMS580_G-3501-A-10G-Release-v168.01.00.01-20220316.BIN",
+      "layout": "updater",
+      "sha256": "ba0805c80658c0c12f47b27e316900c04fb61c83a2fb01e5e539062cc935091a",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "JMS580_HIKSEMI-PSSD-131.06.00.01.BIN",
+      "layout": "updater",
+      "sha256": "40a4763ea54f19fdd8c89af78762f8d1828bf02372959272c63eda70e575c1b1",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "JMS580_STD_Release_v00.02.00.04_20181109_Bus Power.BIN",
+      "layout": "updater",
+      "sha256": "4cd61e028d9a455b17f73b806022bbcff9de339efd6693c5f794ec11de2b383b",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "JMS580_Sandbox-v255.01.00.02-20190701.BIN",
+      "layout": "updater",
+      "sha256": "61a8b6b452e384690d9c2968a0449793bcd8cb4bb18423bfa357aae4289f7f9e",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "Orico 152D JMS580 M.2 SSD FW with NVRAM.BIN",
+      "layout": "updater",
+      "sha256": "b9acde2388ed4e2b3ae0ebee15bf857988ad03d5b0a5bbf1bbf9e8b318c5faf8",
+      "size_bytes": 67072
+    },
+    {
+      "filename": "backup.bin",
+      "layout": "updater",
+      "sha256": "32dd2c643a52e85bf6fbf10f1ebbf134455c763e3cdcff207833810a0a6cfed9",
+      "size_bytes": 67072
+    }
+  ],
+  "donor_scope": "Static instruction-signature comparisons only. No donor image is an authorized PH8057 replacement."
+}

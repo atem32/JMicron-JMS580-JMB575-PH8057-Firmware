@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "ckcond"))
 from image import guard_outputs
 
-from audit import (DEFAULT_STOCK, DEFAULT_V8, load_sources, hardware_excerpt,
+from audit import (ROOT, DEFAULT_STOCK, DEFAULT_V8, load_sources, hardware_excerpt,
                    static_checks, completion_matrix, arithmetic_native_checks,
                    rejected_prototype_counterexamples)
 from fixtures import completion_case
@@ -65,11 +65,26 @@ def donor_record(raw, name):
 
 
 def donor_checks(directory):
+    identities = json.loads((ROOT / "firmware/manifests/images.json").read_text())["donors"]
+    known = {row["sha256"]: row["filename"] for row in identities}
     results = []
+    seen = set()
     for path in sorted(Path(directory).iterdir()):
-        if not path.is_file():
+        if not path.is_file() or path.suffix.lower() != ".bin":
             continue
-        results.append(donor_record(path.read_bytes(), path.name))
+        if path.stat().st_size != 0x10600:
+            raise ValueError("Donor package has the wrong size: " + path.name)
+        raw = path.read_bytes()
+        digest = sha256(raw)
+        if digest not in known:
+            raise ValueError("Unidentified donor package SHA256: " + path.name)
+        if digest not in seen:
+            row = donor_record(raw, path.name)
+            row["identified_package"] = known[digest]
+            results.append(row)
+            seen.add(digest)
+    if not results:
+        raise ValueError("No identified donor packages supplied")
     return results
 
 
@@ -90,6 +105,7 @@ def run(stock, v8, donors=None, revised=None):
         "arithmetic_hypothesis": arithmetic_native_checks(stock),
         "rejected_prototype_counterexamples": rejected_prototype_counterexamples(stock, v8),
         "donors": donor_checks(donors) if donors else [],
+        "donor_comparison_status": "OFFLINE VALIDATED" if donors else "NOT TESTED",
         "coverage_boundaries": {
             "native": "CBW parsing, SAT16 decoding, programmed launch, completion gates, arithmetic consumers, CSW assembly",
             "modeled": "Explicit MMIO samples, 48-bit ALU hypothesis, dual-DPTR select convention, fixed LUN mapping",

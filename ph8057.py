@@ -10,15 +10,15 @@ for relative in ("tools/emulator", "tools/analysis", "tools/patching/ckcond", "t
     sys.path.insert(0, str(ROOT / relative))
 
 NAMES = {
-    "ckcond-v8": "PH8057_CKCOND_V8_ORIGINAL_DO_NOT_FLASH.bin",
     "ckcond-revised": "PH8057_CKCOND_REVISED_DO_NOT_FLASH.bin",
     "udma-trace": "PH8057_UDMA_TRACE_ONLY_DO_NOT_FLASH.bin",
     "combined-revised-trace": "PH8057_CKCOND_REVISED_UDMA_TRACE_ONLY_DO_NOT_FLASH.bin",
 }
+BASELINES = {"ckcond-v8": "PH8057_CKCOND_V8_REGRESSION_BASELINE_DO_NOT_FLASH.bin"}
 
 
 def construct(stock, variant):
-    """All variants are composed once from the exact immutable factory image."""
+    """Compose current variants or the v8 regression baseline from exact stock."""
     import build_ckcond
     import trace_patch
     from image import repackage, validate_stock, changed_ranges, check_crc, sha
@@ -30,7 +30,7 @@ def construct(stock, variant):
     if variant in ("udma-trace", "combined-revised-trace"):
         changes.extend(trace_patch.collect_patches(stock))
         symbols.update(udma_observe_before=0xE700, udma_observe_after=0xE705)
-    if variant not in NAMES:
+    if variant not in NAMES and variant not in BASELINES:
         raise ValueError("Unknown candidate variant")
     normalized = [{**p, "cpu": int(p["cpu"], 16) if isinstance(p["cpu"], str) else p["cpu"]}
                   for p in changes]
@@ -41,8 +41,12 @@ def construct(stock, variant):
         if candidate != reference:
             raise ValueError("Composite builder differs from CK_COND builder")
     report = {
-        "variant": variant, "filename": NAMES[variant],
-        "status": "EXPERIMENTAL / DO NOT FLASH", "candidate_hardware_tests": 0,
+        "variant": variant, "filename": {**NAMES, **BASELINES}[variant],
+        "status": ("REGRESSION BASELINE / DO NOT FLASH" if variant in BASELINES
+                   else "EXPERIMENTAL / DO NOT FLASH"),
+        "role": "regression_baseline" if variant in BASELINES else "candidate",
+        "image_format": "full_spi",
+        "artifact_hardware_status": "NOT TESTED",
         "source_sha256": sha(stock), "candidate_sha256": sha(candidate),
         "image_size": len(candidate), "crc": check_crc(candidate),
         "changed_bytes_vs_stock": sum(a != b for a, b in zip(stock, candidate)),
@@ -55,7 +59,7 @@ def construct(stock, variant):
                     for p in normalized],
         "actual_byte_differences": changed_ranges(stock, candidate),
         "symbols": {key: f"0x{value:04X}" for key, value in symbols.items()},
-        "qualification": "Offline instructions and explicit fixtures only; no device, interrupts, SRAM ownership or SPI qualification",
+        "qualification": "This 70,144-byte SPI artifact is validated offline. Limited hardware observations refer to the separate 67,072-byte updater package; no SPI execution/readback qualification is implied.",
     }
     return candidate, report
 
@@ -66,7 +70,7 @@ def main():
     ins = sub.add_parser("inspect", help="Identify a local image without printing OEM identifiers")
     ins.add_argument("image", type=Path)
     ins.add_argument("--raw-cpu", action="store_true")
-    oem = sub.add_parser("oem", help="Generate the corrected512-byte atlas; serial redacted by default")
+    oem = sub.add_parser("oem", help="Decode the OEM block and export the register atlas; identifiers redacted by default")
     oem.add_argument("--stock", type=Path, required=True)
     oem.add_argument("--out", type=Path, required=True)
     oem.add_argument("--include-sensitive", action="store_true")
@@ -84,7 +88,7 @@ def main():
         if args.action == "oem":
             from oem import write_outputs
             write_outputs(stock, args.out, include_sensitive=args.include_sensitive, source_path=args.stock)
-            print("OEM atlas:512 byte rows and32 bit records; exact stock validated")
+            print("OEM atlas and register table generated; exact stock validated")
         else:
             candidate, report = construct(stock, args.variant)
             output = args.out / NAMES[args.variant]

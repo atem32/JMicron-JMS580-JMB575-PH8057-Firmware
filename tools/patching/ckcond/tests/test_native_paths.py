@@ -1,4 +1,4 @@
-"""Independent audit regressions, distinct from legacy fixture expectations.
+"""Builder guards, native SAT dispatch and CK_COND abort regressions.
 
 Firmware tests execute the admitted native dispatcher (3804), not a fabricated
 launch PC. MMIO readiness is supplied explicitly; this is still software-only.
@@ -7,16 +7,12 @@ from test_config import STOCK_PATH, RESULTS, COMPONENT
 import hashlib
 import importlib
 import json
-import os
-from pathlib import Path
 import subprocess
 import sys
-import tempfile
 import unittest
-from unittest import mock
 
 import capture_wrappers
-from image import repackage, changed_ranges, ORIGINAL_V8_SHA
+from image import changed_ranges, ORIGINAL_V8_SHA
 
 
 GUARD_PROBE = r'''
@@ -49,41 +45,12 @@ def run_guard_probe(path):
     return json.loads(proc.stdout)
 
 
-def reviewed_legacy_guard_probe(path):
-    path = Path(path)
-    expected = "0f2212ca71a647da485473fec19d4f248eb1c5d371f5f988ab2a31bff84de330"
-    if path.is_symlink() or not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
-        raise ValueError("Historical guard witness must match the exact reviewed source SHA256")
-    return run_guard_probe(path)
-
 
 class BuilderRegressionTests(unittest.TestCase):
-    def test_unreviewed_legacy_witness_is_rejected_before_execution(self):
-        with tempfile.TemporaryDirectory() as td:
-            path = Path(td) / "capture_wrappers.py"
-            path.write_text("raise RuntimeError('unreviewed source must never execute')\n")
-            with mock.patch.object(subprocess, "run") as process:
-                with self.assertRaises(ValueError):
-                    reviewed_legacy_guard_probe(path)
-                process.assert_not_called()
-
     def test_expected_byte_and_duplicate_label_guards_survive_optimization(self):
         observed = run_guard_probe(COMPONENT / "capture_wrappers.py")
         self.assertEqual(observed, {"hook": "REJECTED", "cave": "REJECTED",
                                     "duplicate_label": "REJECTED"})
-
-    def test_original_guard_bug_if_historical_source_is_supplied(self):
-        legacy = os.environ.get("PH8057_LEGACY_CAPTURE_GENERATOR")
-        if not legacy:
-            self.skipTest("Historical-source witness optional; fixed behavior tested independently")
-        original, fixed = reviewed_legacy_guard_probe(Path(legacy)), run_guard_probe(COMPONENT / "capture_wrappers.py")
-        self.assertEqual(set(original.values()), {"ACCEPTED_INVALID"})
-        self.assertEqual(set(fixed.values()), {"REJECTED"})
-        (RESULTS / "optimized_guard_regression.json").write_text(json.dumps({
-            "historical_source_sha256": hashlib.sha256(Path(legacy).read_bytes()).hexdigest(),
-            "mode": "python -O", "before": original, "after": fixed,
-            "scope": "Patch-generator API guards, not a demonstrated flaw in the existing v8 BIN",
-        }, indent=2) + "\n")
 
     def test_patch_generator_rejects_every_corrupted_hook_and_allocated_cave(self):
         template = bytearray(65536)

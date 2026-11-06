@@ -12,30 +12,6 @@
     "bytes": 1316
   },
   {
-    "file": "emu8051_opcodes.c",
-    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/opcodes.c",
-    "sha256": "76e33619b88d60042f5275f62af6599a2b5495186d43ad18be477543b2f34263",
-    "bytes": 49387
-  },
-  {
-    "file": "emu8051_core.c",
-    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/core.c",
-    "sha256": "8f11018c38f6bdd5754cb9cb420d9ed3f07c3c4c71e18c68a37965e544c432d6",
-    "bytes": 16789
-  },
-  {
-    "file": "emu8051.h",
-    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/emu8051.h",
-    "sha256": "3cf6f070b8cd51791aeb2555dcfdcb75220b3931f1617c7e2a6148c0628a7a63",
-    "bytes": 7932
-  },
-  {
-    "file": "emu8051_LICENSE",
-    "url": "https://raw.githubusercontent.com/jarikomppa/emu8051/master/LICENSE",
-    "sha256": "3c05d81f8d97faa7f8acc73af3e1a41491d9cea7f7ed01e5b03ec5c4e9566751",
-    "bytes": 1068
-  },
-  {
     "file": "usbmassbulk_10.pdf",
     "url": "https://www.usb.org/sites/default/files/usbmassbulk_10.pdf",
     "sha256": "9137e8eefaf366ba32c7f081719a75a403c48004d47f4252ec36d711dda84a23",
@@ -58,24 +34,6 @@
     "url": "https://raw.githubusercontent.com/9500/ds500u3-jms567-uas/main/docs/test-log.md",
     "sha256": "ee93cd8af891d2f34d979dd49b8e1f6ec964e508cf030d0565fda9f827541c45",
     "bytes": 7326
-  },
-  {
-    "file": "jms567ctl_LICENSE",
-    "url": "https://raw.githubusercontent.com/projectgus/jms567ctl/main/LICENSE",
-    "sha256": "d2dc80ad52c478f7f3b092e4cccad36b06abd2ea255eb72dcdb7e3d4bddda492",
-    "bytes": 1458
-  },
-  {
-    "file": "jms578flash_LICENSE",
-    "url": "https://raw.githubusercontent.com/BertoldVdb/jms578flash/master/LICENSE",
-    "sha256": "cd69e4b93b4b5874157318115870584d4a4583ece9be73617f43e7d96073e5a2",
-    "bytes": 1078
-  },
-  {
-    "file": "jms567settings_LICENSE",
-    "url": "https://raw.githubusercontent.com/xx25/jms567settings/main/LICENSE",
-    "sha256": "22be3f66b7e58d8125e781910a7a16ba7c025655885d01534344cd165590332d",
-    "bytes": 1792
   },
   {
     "file": "JMS580_product_brief.pdf",
@@ -106,18 +64,6 @@
     "url": "https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/usb/ch9.h",
     "sha256": "56ac789006af0e76a0cdfc671540aabc8da3f1edcab0c034518e2314c3e72ff8",
     "bytes": 41079
-  },
-  {
-    "file": "actions_checkout_v6.json",
-    "url": "https://api.github.com/repos/actions/checkout/git/ref/tags/v6",
-    "sha256": "0c8d764a2a127180586b43336b681fbab150dad597157ae1dca02190a04f19c5",
-    "bytes": 329
-  },
-  {
-    "file": "actions_setup_python_v6.json",
-    "url": "https://api.github.com/repos/actions/setup-python/git/ref/tags/v6",
-    "sha256": "4fcd447b0b01b24650571b26198adc8c53900a97702f70c850f47829fbe27e70",
-    "bytes": 337
   },
   {
     "file": "infineon_usb_configurator.pdf",

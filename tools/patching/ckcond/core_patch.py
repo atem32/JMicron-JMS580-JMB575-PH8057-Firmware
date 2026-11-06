@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PH8057 v8 OFFLINE CK_COND implementation; no hardware access.
+"""CK_COND command state and capture code shared by revised and baseline builds.
 
 This is experimental code with explicit, unqualified XDATA and peripheral
 assumptions. The builder is intentionally separate from any flash writer.

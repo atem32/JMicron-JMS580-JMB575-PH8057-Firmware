@@ -1,4 +1,4 @@
-name: Safe offline validation
+name: Offline validation
 
 on:
   push:
@@ -16,11 +16,28 @@ jobs:
       matrix:
         python: ['3.11', '3.12']
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, verified2026-11-02
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6, verified2026-11-02
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python }}
       - name: Run portable tests and record firmware-dependent skips
         run: python3 run_tests.py --out build/public-validation
+      - name: Summarize executed checks and missing inputs
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path('build/public-validation/summary.json')
+          if path.is_file():
+              report = json.loads(path.read_text())
+              lines = ['## Offline validation', '', f"Status: {report['status']}", '',
+                       '| Group | Status | Reason |', '|---|---|---|']
+              for row in report['groups']:
+                  lines.append(f"| {row['group']} | {row['status']} | {row.get('reason', '')} |")
+              lines += ['', 'Private firmware inputs are not supplied to public CI. Hardware tests: NOT TESTED.']
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
+                  output.write('\n'.join(lines) + '\n')
+          PY

@@ -48,10 +48,13 @@ def check_record(data: bytes, *, allow_blank_header_crc: bool = False) -> dict:
     if data[0x200:0x204] != bytes.fromhex('5a c3 69 e1'):
         raise ValueError('Wrong metadata header signature')
     values = {
+        'wrapper_crc': crc(data[:0x1fc]),
         'metadata_header_crc': crc(data[:0x200] + data[0x200:0x3fc]),
         'code_crc': crc(data[CODE_OFF:CODE_OFF+0xfff8]),
         'full_crc': crc(data[:0x200] + data[CODE_OFF:CODE_OFF+0xfffc]),
     }
+    if values['wrapper_crc'] != int.from_bytes(data[0x1fc:0x200], 'big'):
+        raise ValueError('Wrapper CRC invalid')
     if int.from_bytes(data[0x3fc:0x400], 'big') not in ({0,values['metadata_header_crc']} if allow_blank_header_crc else {values['metadata_header_crc']}):
         raise ValueError('Metadata header CRC invalid')
     if values['code_crc'] != int.from_bytes(data[0x103f8:0x103fc], 'big'):
@@ -63,17 +66,37 @@ def check_record(data: bytes, *, allow_blank_header_crc: bool = False) -> dict:
     return {k: f'{v:08x}' for k,v in values.items()}
 
 
+def read_package(path: Path) -> bytes:
+    """Read a regular updater file of the exact size, never a device node."""
+    path = Path(path)
+    if not path.is_file() or not stat.S_ISREG(path.stat().st_mode) or path.stat().st_size != BIN_SIZE:
+        raise ValueError('Input must be a regular 67,072-byte updater package')
+    return path.read_bytes()
+
+
+def read_stock_package(path: Path) -> bytes:
+    source = read_package(path)
+    if sha(source) != STOCK_SHA:
+        raise ValueError('Wrong original updater package SHA256')
+    check_record(source, allow_blank_header_crc=True)
+    return source
+
+
 def build(source: bytes, patch_records: list) -> bytes:
     if len(source) != BIN_SIZE or sha(source) != STOCK_SHA:
         raise ValueError('Wrong input. Must be the exact original user 1.bin, SHA256 ' + STOCK_SHA)
     check_record(source, allow_blank_header_crc=True)
+    if not isinstance(patch_records, list):
+        raise ValueError('Patch records must be a list')
     candidate = bytearray(source)
     visited = set()
     for item in patch_records:
+        if not isinstance(item, dict) or set(item) != {'cpu', 'old', 'new'}:
+            raise ValueError('Patch fields must be cpu, old, new')
         cpu = int(item['cpu'],16) if isinstance(item['cpu'],str) else item['cpu']
         old = bytes.fromhex(item['old'])
         new = bytes.fromhex(item['new'])
-        if cpu < 0 or cpu + len(old) > 0xffec or not old or len(old)!=len(new):
+        if type(cpu) is not int or cpu < 0 or cpu + len(old) > 0xffec or not old or len(old)!=len(new):
             raise ValueError(f'Unsafe patch at {cpu:04x}')
         places = set(range(cpu,cpu+len(old)))
         if visited & places:
@@ -96,7 +119,7 @@ def build(source: bytes, patch_records: list) -> bytes:
     allowed = {CODE_OFF + addr for addr in visited} | set(range(0x103f8,0x10400)) | set(range(0x20c,0x210)) | set(range(0x3fc,0x400))
     if any(a!=b and i not in allowed for i,(a,b) in enumerate(zip(source,result))):
         raise ValueError('Unexpected difference from original file')
-    if EXPECTED_OUT_SHA != '__REPLACE_AFTER_BUILD__' and sha(result) != EXPECTED_OUT_SHA:
+    if sha(result) != EXPECTED_OUT_SHA:
         raise ValueError('Unexpected candidate SHA256')
     return result
 
@@ -107,12 +130,14 @@ def main():
     parser.add_argument('--patches',default=Path(__file__).with_name('ckcond_revised_patch_records.json'),type=Path)
     parser.add_argument('--output',required=True,type=Path)
     args=parser.parse_args()
-    if not args.stock.is_file() or not stat.S_ISREG(args.stock.stat().st_mode):
-        raise ValueError('Source must be a regular file')
-    if args.output.is_symlink() or args.output.resolve() == args.stock.resolve() or args.output.is_dir() or (args.output.exists() and args.output.stat().st_nlink>1):
-        raise ValueError('Refusing to overwrite source or symlink/hardlinked output')
+    source = read_stock_package(args.stock)
+    if args.output.is_symlink() or args.output.is_dir() or (args.output.exists() and args.output.stat().st_nlink>1):
+        raise ValueError('Refusing to overwrite a symlink/hardlinked output')
+    for original in (args.stock, args.patches):
+        if args.output.resolve() == original.resolve() or (args.output.exists() and args.output.samefile(original)):
+            raise ValueError('Refusing to overwrite an immutable source file')
     records=json.loads(args.patches.read_text())
-    out=build(args.stock.read_bytes(),records)
+    out=build(source,records)
     args.output.write_bytes(out)
     print('WROTE',args.output,'SIZE',len(out),'SHA256',sha(out))
     print('STATUS: EXPERIMENTAL / NOT HARDWARE QUALIFIED / NO SPI ACTION PERFORMED')

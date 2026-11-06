@@ -2,11 +2,13 @@
 import json
 import os
 from pathlib import Path
+import tempfile
 import unittest
 
-from oem import (BIT_FIELDS, CATEGORIES, REGIONS, build_atlas, decode_oem,
+from oem import (BIT_FIELDS, CATEGORIES, REGIONS, REGISTER_ATLAS, build_atlas, decode_oem,
                  expected_7058, f2_slice_effect, retry_77da_model, setup_iram,
-                 timer_value)
+                 timer_value, validate_atlas_metadata, verify_atlas_evidence,
+                 write_outputs)
 
 
 def synthetic_oem():
@@ -21,6 +23,32 @@ def synthetic_oem():
 
 
 class DecoderTests(unittest.TestCase):
+    def test_canonical_metadata_is_complete_and_references_resolve(self):
+        self.assertTrue(validate_atlas_metadata())
+        self.assertEqual(CATEGORIES, {"CONFIRMED", "INFERRED", "HYPOTHESIS", "UNKNOWN"})
+        self.assertEqual({row["space"] for row in REGISTER_ATLAS["registers"]},
+                         {"MMIO", "XDATA", "IRAM", "IRAM bit", "SFR", "PATCH XDATA"})
+        root = Path(__file__).resolve().parents[2]
+        for item in REGISTER_ATLAS["evidence"].values():
+            self.assertIn(item["image"], REGISTER_ATLAS["images"])
+            if item.get("reference"):
+                self.assertTrue((root / item["reference"].split(":", 1)[0]).is_file(), item["reference"])
+
+    def test_generated_views_share_metadata_and_keep_serial_private(self):
+        with tempfile.TemporaryDirectory() as directory:
+            write_outputs(synthetic_oem(), Path(directory))
+            self.assertEqual({path.name for path in Path(directory).iterdir()},
+                             {"oem_atlas.json", "register-map.md"})
+            result = json.loads((Path(directory) / "oem_atlas.json").read_text())
+            self.assertEqual(result["metadata"], "research/oem/registers.json")
+            self.assertEqual(len(result["oem_bytes"]), 512)
+            for path in Path(directory).iterdir():
+                self.assertNotIn("SYNTHETIC-ID", path.read_text())
+                self.assertNotIn("53594e5448455449432d4944", path.read_text().lower())
+            table = (Path(directory) / "register-map.md").read_text()
+            self.assertIn("| Address | Name / purpose | Read/write | Evidence | Confidence | Unknowns |", table)
+            self.assertIn("0x7A06 + 8*LUN", table)
+
     def test_every_byte_has_exactly_one_region(self):
         rows = build_atlas(synthetic_oem())
         self.assertEqual(len(rows), 512)
@@ -141,6 +169,22 @@ class NativeRegressionTests(unittest.TestCase):
 
     def test_native_correct_setup_mapping(self):
         self.audit.auxiliary()
+
+    def test_atlas_instructions_match_exact_factory_image(self):
+        result = verify_atlas_evidence(self.audit.raw)
+        self.assertEqual(result["image"], "factory")
+        self.assertGreater(result["instructions_checked"], 0)
+        altered = bytearray(self.audit.raw)
+        altered[0x1000 + 0x7BF4] ^= 1
+        with self.assertRaises(ValueError):
+            verify_atlas_evidence(altered)
+
+    @unittest.skipUnless(os.environ.get("PH8057_REVISED_CKCOND"),
+                         "Generated candidate evidence requires PH8057_REVISED_CKCOND")
+    def test_atlas_instructions_match_generated_revised_candidate(self):
+        result = verify_atlas_evidence(Path(os.environ["PH8057_REVISED_CKCOND"]).read_bytes())
+        self.assertEqual(result["image"], "ckcond-revised")
+        self.assertGreater(result["instructions_checked"], 0)
 
 
 if __name__ == "__main__":
