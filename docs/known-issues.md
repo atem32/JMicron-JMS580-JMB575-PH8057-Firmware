@@ -1,20 +1,53 @@
-# Known issues and qualification gaps
+# Known issues
 
-Severity describes the consequence within the stated scope, not the probability of failure. Evidence labels are defined in [testing](testing.md). A missing hardware contract remains a gap even when bounded offline checks pass.
+## UDMA / BOT CSW residue
 
-| Issue | Severity | Evidence | Impact | Next action |
-|---|---|---|---|---|
-| **UDMA Data-Out / CSW residue** | High | Owner's WRITE DMA EXT excerpt reports 512 successful USB bytes with CSW status = 0 / residue = 512; native `7BF4 → SAT → C789 → 7308 → AEF4 → 94F9` preserves CBW length in `55h..58h`. [Evidence and regression](patches.md#udma-data-out-and-csw-residue). | Incorrect processed-byte claim on the established pass-through path. No confirmed accounting fix; no data-corruption conclusion follows from this alone. | Establish a stable command-owned processed-byte quantity and partial/error/recovery semantics, then implement bounded `H−P` without altering status/sense policy. |
-| **CK_COND physical coverage** | High outside exercised paths | Valid SMART STATUS and active/idle CHECK POWER MODE descriptors on one WD disk; revised abort correction and wider SAT/ownership cases are **OFFLINE VALIDATED**. [Results](testing.md#hardware-evidence). | SAT12/SAT16 variants, failed ATA commands, both abort paths, sense lifetime and all port mappings remain experimental physically. Active/idle success does not qualify a real standby transition. | Correlate command, LUN, port and descriptor on the specified success/error/abort matrix; measure standby without a command that wakes the disk. |
-| **Native abort/reset scheduler** | High | CBE3 can return carry set via `CBF8` or `CC06`; AEF4 preserves it and the caller can schedule `94F9`. Tests execute that finalizer conditionally. | It is unknown whether actual reset recovery cancels CSW, emits it, or changes other transport state. Revised CK only suppresses stale descriptor publication. | Trace both wait exits through actual command cancellation/CSW and next-command admission, including ATA error and CK_COND clear/set. |
-| **UASP** | High if enabled without implementation | `E7.6` gates descriptors at `44C4`; `6F57`/`46ED` can clear the flag. Current CK state is globally serialized. [Architecture](architecture.md). | Not implemented or qualified. A bit change cannot provide tag ownership, task management, streams and multi-LUN error recovery. | Implement and verify a complete UAS command lifecycle separately before enabling descriptors; no UASP patch is part of this project. |
-| **NCQ and concurrent commands** | High if assumed | No physical qualification of concurrent JMS580/JMB575 command ownership. Generic JMB575 FIS-switching capability and another controller's experiment do not establish this implementation. | Parallel tag/port completion, errors and queue flushing are unproven; BOT tests provide no concurrency guarantee. | Establish queue/tag ownership, per-port completion and reset/error contracts before adding parallel dispatch. |
-| **Hot-swap / USB disconnect** | High during removal | Owner reported USB disconnect/re-enumeration on drive removal. Native discovery compacts the LUN map; event snippets do not isolate electrical versus firmware causes. [Architecture](architecture.md#port-discovery-and-lun-mapping). | Other drives can disappear and existing LUN identities can change. Stable hot-swap is not implemented. | In a separate hardware investigation, correlate power/reset/link/host traces; design stable slot identity, cache/sense invalidation and per-port recovery only after the cause is established. |
-| **MMIO, SRAM and execution contracts** | High | `6300` snapshot ownership/coherence, proposed `4D00..4DFF`/`4E00..4E1F` SRAM exclusivity, loader/cave execution, interrupt timing and stack headroom lack a complete hardware contract. [Register map](register-map.md). | Offline ownership guards cannot exclude aliasing or asynchronous interference. Combined trace+abort adds seven stack bytes over the corresponding v8 abort path, in addition to existing frames/interrupts. | Obtain documented ownership or correlated lifetime traces; qualify loaded CODE, physical stack watermark and interrupt interactions for each capture family. |
-| **Five-port coverage** | Medium; qualification gap | Four disks enumerated on November 2; sustained November 3–6 workloads used two HDDs. | No claim of stable operation for every LUN, all five SATA ports, or every bay combination. | Record the actual physical-port/LUN map and repeat scoped tests for each exposed port and relevant populated configuration. |
-| **Full-surface verification** | Medium; qualification gap | Supplied completed workloads give cycles/phases and cumulative volume; no complete full-surface verification record is available. | Passing terabytes of repeated I/O does not demonstrate every LBA was written/read/verified. | Preserve exact ranges/coverage and a completed per-disk full-surface result from a separately arranged disposable-media run. |
-| **Hardware SMART parser** | Medium | Automatic baseline/end delta was missing or incomplete in the reported runs. Manual Test 3 values for attributes 5/197/198 and 199 were unchanged. [Results](testing.md#hardware-evidence). | The automated health-verification step cannot be called complete or repaired; manual comparison is separate evidence. | Recover the verified original harness and raw SMART files, fix the parser against those formats, then rerun delta extraction and its regression. |
-| **Flashing, readback and recovery** | Critical for installation | Owner reports updater 1.19.16.48 accepted the 67,072-byte package and the board rebooted; tool showed JMS580 Series with unknown SPI type. No post-flash readback/final NVRAM state or demonstrated recovery is supplied. | Installed contents cannot be attested byte for byte; safe chip selection, full-SPI flashing and recoverability are not established. | Identify the actual SPI/loader contract, establish independent recovery and obtain qualified readback. Successful reported programming is not permission to force a chip selection. |
-| **Optional OEM F8 controller-window policy** | Medium; inactive in factory settings | `F8=00` disables the path in stock. Native `77DA` has a sticky mismatch and up to 12 copies; caller `C4F9 → C4FE` proceeds to `71C4(R7=80h)` without consuming `4BC4`. [Atlas](register-map.md). | Software behavior is known; `7300/7500` window meaning, idempotence, intended retries and error recovery are not. A policy patch is unjustified. | Establish window/command contracts and immediate/transient/persistent mismatch behavior before changing retry or latch handling. |
+**Confirmed defect; no fix implemented.** A WRITE DMA EXT transaction requested
+512 bytes, completed 512 USB Data-Out bytes with `usb_status=0`, and returned
+CSW status 0 with residue 512. The
+[wire excerpt](../research/usb/supplied_bot_excerpt.json),
+[decoded evidence and native execution chain](patches.md#udma-data-out-and-csw-residue)
+retain the exact command, addresses and regression.
 
-The negative UDMA prototype, old descriptor-association defect and decoder/emulator errors have retained regressions and current corrections in source; they are not additional unresolved implementations. The remaining hardware observations and acceptance criteria are collected in the [qualification plan](../tests/hardware/QUALIFICATION_PLAN.md).
+The Data-Out path `7377 → AEF4 → CBE3` leaves software residue at
+IRAM `55h..58h` unchanged; CSW construction at `9529..953A` copies that value.
+A correct repair needs a stable, command-owned count of **device-processed
+bytes**, with defined partial-transfer, error and recovery behavior. Merely
+clearing residue after USB completion or reading zero from the unqualified
+`70C0..70C3` arithmetic window is unsafe; executable counterexamples are
+retained.
+
+Zero anomalies in the three workload summaries do not resolve this targeted
+pass-through defect. The observation alone also does not establish data
+corruption or an identical problem on every ordinary SCSI WRITE path.
+
+## UASP / NCQ
+
+**Not implemented; no safe patch is supplied by this project.** OEM `E7.6`
+gates a UAS descriptor path at `44C4`; native code at `6F57` and `46ED` can
+clear the flag. Exposing descriptors does not establish a usable concurrent
+command path. The current CK_COND state follows serialized BOT ownership.
+
+A complete implementation requires tag/port ownership, independent completion
+and result storage, task management, endpoint/stream handling and coordinated
+abort, reset and queue flushing across JMS580 and JMB575. NCQ concurrency is
+not established by ordinary BOT tests or the port multiplier's generic
+FIS-switching capability. See [architecture](architecture.md#uasp-ncq-and-hot-swap-boundaries)
+and the [related-controller research](references.md#related-controller-work)
+for the concrete findings and cross-disk concurrency counterexample.
+
+## Hot-swap
+
+**Not fixed.** HDD removal has caused USB disconnect and re-enumeration,
+affecting access to the enclosure's other drives. Discovery compacts the
+LUN-to-port list, so removal can also change the disk behind a LUN.
+
+The available instruction paths do not distinguish firmware detach policy
+from a power, reset or link cause. Stable hot-swap needs established slot
+identity, absent-LUN behavior, cache/sense invalidation and per-port recovery.
+The exact discovery/event addresses are retained in
+[architecture](architecture.md#port-discovery-and-lun-mapping).
+
+For the boundaries of the completed tests and the evidence needed to extend
+them, see [testing](testing.md#hardware-evidence) and
+[hardware coverage](../tests/hardware/QUALIFICATION_PLAN.md).

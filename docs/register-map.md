@@ -46,7 +46,7 @@ private analysis only.
 `tools/analysis/native_oem.py` executes the original instruction paths with
 explicit RAM/MMIO fixtures. The OEM regression group checks atlas coverage,
 evidence references, redaction and, when exact inputs are available, the
-instruction excerpts against the factory image and generated revised candidate.
+instruction excerpts against the factory image and generated CK_COND image.
 
 ## OEM loader and options
 
@@ -130,7 +130,7 @@ peripheral command/wait/control helpers `B37F`, `80F5`, `E1A6`, `E1AE`.
 | MMIO `70B0–70BD`, `70C0–70C9` | Operand, command and result uses in arithmetic-related paths | R/W by field | `C7C5`, `D1D7`, `B3C4`, `9711`, `91E1` | CONFIRMED | Full silicon operation semantics; none is a universal UDMA counter |
 | SFR `AC–AF` | Data-In residual quantity; upper byte masked with `3Fh` | R | `AEFC–AF09` | CONFIRMED | Equivalent Data-Out interpretation |
 | XDATA `4D00 + 16*LUN` | Generated pending ATA descriptor slots | R/W | `core_patch.py:capture_block`, `sense_patch.py` | CONFIRMED | Exclusive physical SRAM allocation |
-| XDATA `4E00–4E1F` | Generated single active-command context | R/W | `core_patch.py`; revised `FD20–FD3E` clears `4E07` | CONFIRMED | Whole-system interrupt/DMA and concurrent ownership contract |
+| XDATA `4E00–4E1F` | Generated single active-command context | R/W | `core_patch.py`; `FD20–FD3E` clears `4E07` | CONFIRMED | Whole-system interrupt/DMA and concurrent ownership contract |
 
 CBW and CSW use little-endian lengths on the wire: the parser copies
 `7988..798B → 58,57,56,55`, and the CSW builder serializes `58,57,56,55`.
@@ -152,4 +152,4 @@ regressions preserve that distinction.
 
 The dual-DPTR convention is an explicit execution model. CPU interrupt
 masking does not freeze USB/SATA engines. Unknown ownership, timing and SRAM
-contracts remain in [known issues](known-issues.md).
+contracts are recorded in the [hardware coverage guide](../tests/hardware/QUALIFICATION_PLAN.md).

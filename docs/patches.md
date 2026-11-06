@@ -1,17 +1,18 @@
 # Firmware patches
 
-## Scope and variants
+## Scope
 
-All current builds use exact input hashes and guarded byte replacements. [Firmware layout](firmware-layout.md) lists whole-file identities and checksum rules; [testing](testing.md) gives build commands and separates offline results from hardware observations.
+`ckcond` is the single patched firmware variant. It adds command-owned ATA
+Return Descriptors and invalidates unpublished results on abort, preserving
+native handling of other commands and all OEM bytes. The 70,144-byte SPI output
+changes 2,607 bytes relative to its exact factory input, including integrity
+fields.
 
-| Variant | Function | Actual byte changes versus full factory | Status |
-|---|---|---:|---|
-| `ckcond-revised` | Command-owned ATA Return Descriptor plus abort invalidation | 2,607 | **OFFLINE VALIDATED**; corresponding 67,072-byte updater has limited **HARDWARE OBSERVED** SMART success. |
-| `udma-trace` | Transparent completion observation points | 27 | **OFFLINE VALIDATED**; hardware **NOT TESTED**; residue unchanged. |
-| `combined-revised-trace` | Revised CK_COND plus observation trampoline | 2,618 | **OFFLINE VALIDATED**; hardware **NOT TESTED**; no UDMA accounting repair. |
-| CK_COND v8 | Reproducible predecessor used by the abort regression | 2,555 | Regression baseline only; contains the stale-snapshot defect below. |
-
-The 67,072-byte revised updater and the 70,144-byte revised full image share CODE, but have different containers and SHA256 values. Successful updater use does not qualify installation of the full SPI artifact. All patch families remain experimental outside the stated checks. OEM settings are preserved; corrected OEM decoding is documented in the [register map](register-map.md).
+The 67,072-byte updater and 70,144-byte SPI output contain the same patched
+CODE in different containers. [Firmware layout](firmware-layout.md) records
+the whole-file hashes and checksum rules. [Testing](testing.md) gives the
+single build command, offline checks and physical results. OEM decoding and
+its confidence classifications are in the [register map](register-map.md).
 
 ## CK_COND and ATA Return Descriptor
 
@@ -43,35 +44,53 @@ Descriptor slots are at XDATA `4D00..4DFF`, active state at `4E00..4E1F`, with u
 
 Native sense selector `28h` is an internal pending-sense value, not a SCSI sense key or descriptor length. A good ATA result with CK_COND=1 legitimately yields CHECK CONDITION with an ATA Return Descriptor; BOT CSW failure status in that case is not evidence of ATA failure. Native ATA error mapping is retained. Finalization rejects BSY/DRQ snapshots and leaves phase-error handling to stock firmware.
 
-### Revised abort invalidation
+### Abort invalidation
 
-v8 captures at `735F` **before** Data-Out executes `7377 → AEF4 → CBE3`. CBE3 first waits for `5052.bit0`, then for `A3.bit7` to clear. Its helper `E140` returns carry set when `9F.bit2` is clear. Both native carry-set exits returned without clearing v8's `4E07=A5`:
+ATA capture at `735F` occurs **before** Data-Out executes
+`7377 → AEF4 → CBE3`. CBE3 first waits for `5052.bit0`, then for `A3.bit7`
+to clear. Its helper `E140` returns carry set when `9F.bit2` is clear.
+CK_COND handles both native abort exits so that an unpublished result cannot
+survive a failed wait:
 
-| Wait | Native exit | Carry-clear retry | Revised hook |
+| Wait | Native exit | Carry-clear retry | CK_COND hook |
 |---|---|---|---|
 | `5052.bit0` | `CBF6: JNC CBE3; CBF8: RET` | `CBE3` | `CBF6..CBF8`: `50 EB 22 → 02 FD 00` |
 | `A3.bit7` | `CC04: JNC CBF9; CC06: RET` | `CBF9` | `CC04..CC06`: `50 F3 22 → 02 FD 08` |
 
-AEF4 preserves the carry. Its caller can schedule `94F9` without branching on that carry; if finalization runs, v8 can publish the pre-abort snapshot. The outer reset scheduler might cancel that finalizer on hardware, so the regression deliberately tests a **conditional finalizer**, not observed post-reset CSW emission.
+[abort_guard.py](../tools/patching/ckcond/abort_guard.py) places dispatchers
+at `FD00..FD07` and `FD08..FD0F`. Carry clear follows the original retry;
+carry set tail-jumps to `FD20..FD3E`, which clears **only `4E07`**. The leaf
+saves IE, A, DPS and physical DPTR0, masks CPU interrupts for the write, and
+restores IE last. It preserves carry/AC/OV, register-bank selection, B, all Rn,
+physical DPTR1 and the original caller's return address. Its five saved stack
+bytes introduce no additional nested call. Exact instruction replacements are
+checked against the [patch record file](../firmware/ph8057-device/modified/ckcond_patch_records.json).
 
-[abort_guard.py](../tools/patching/ckcond/abort_guard.py) places dispatchers at `FD00..FD07` and `FD08..FD0F`. Carry clear follows the original retry; carry set tail-jumps to `FD20..FD3E`, which clears **only `4E07`**. The leaf saves IE, A, DPS and physical DPTR0, masks CPU interrupts for the write, and restores IE last. It preserves carry/AC/OV, register-bank selection, B, all Rn, physical DPTR1 and the original caller's return address. Its five saved stack bytes introduce no additional nested call.
+AEF4 preserves the carry. Its caller can schedule `94F9` without branching on
+that carry. The regression therefore executes the finalizer conditionally after
+an abort to verify that it cannot publish the captured result. Actual reset
+recovery might cancel finalization; this test does not assert post-reset CSW
+emission on hardware.
 
-Relative to v8, the five records span 53 CODE bytes, of which 52 change; 16 CRC/mirror changes make **68 actual byte differences**. Exact records are generated from source and checked against the [revised record file](../firmware/ph8057-device/modified/ckcond_revised_patch_records.json). CPU addresses translate using the selected container's CODE offset.
+The native regression in [test_native_paths.py](../tools/patching/ckcond/tests/test_native_paths.py)
+executes original launch/completion/wait/finalizer instructions across both
+abort exits, CK_COND clear/set and ATA success/ERR/DF. For the 512-byte,
+good-ATA, CK_COND=1 abort fixture, the required post-guard state is:
 
-The native regression in [test_native_paths.py](../tools/patching/ckcond/tests/test_native_paths.py) executes the original launch/completion/wait/finalizer instructions across both abort exits, CK_COND clear/set and ATA success/ERR/DF. In the 512-byte good-ATA, CK_COND=1 abort fixture:
+| Conditional result | CK_COND |
+|---|---:|
+| Unpublished validity / published descriptor marker | `00 / 00` |
+| Pending sense selector | `00h` |
+| CSW status if finalization runs | 0, preserving native policy |
+| Residue | 512 |
 
-| Conditional result | v8 | Revised |
-|---|---:|---:|
-| Unpublished validity / published descriptor marker | `A5 / A5` | `00 / 00` |
-| Pending sense selector | `28h` | `00h` |
-| CSW status if finalization runs | 1 | 0, preserving stock policy |
-| Residue | 512 | 512 |
-
-The revision repairs stale descriptor publication. It neither certifies stock's conditional GOOD status after abort nor changes UDMA accounting. Normal error/sense policy, retries and residue are preserved.
+Abort invalidation suppresses stale descriptor publication. It preserves native
+error/sense policy, retries and residue; it does not establish correctness of
+the native reset scheduler or implement UDMA accounting.
 
 ### Physical scope
 
-The owner reported installing updater package SHA256 `f8406e8b83e9f97695ce4ae395a90b29e28d8210bc40c09087f3f6b43f33fd5b`. On one WD disk, SMART RETURN STATUS returned `ERR=00, SC=00, LM=4F, LH=C2, STS=50`; CHECK POWER MODE returned `ERR=00, SC=FF, STS=50` with an ATA Return Descriptor. `SC=FF` demonstrates ACTIVE/IDLE in that transaction, not a measured standby transition. Both abort paths, full SAT12/SAT16/error coverage and interrupt/reentrant behavior remain unqualified physically. [Testing](testing.md#hardware-evidence) records provenance, later two-disk workloads and the missing readback.
+The owner reported installing the CK_COND updater package SHA256 `f8406e8b83e9f97695ce4ae395a90b29e28d8210bc40c09087f3f6b43f33fd5b`. On one WD disk, SMART RETURN STATUS returned `ERR=00, SC=00, LM=4F, LH=C2, STS=50`; CHECK POWER MODE returned `ERR=00, SC=FF, STS=50` with an ATA Return Descriptor. `SC=FF` demonstrates ACTIVE/IDLE in that transaction, not a measured standby transition. Both abort paths, full SAT12/SAT16/error coverage and interrupt/reentrant behavior remain unqualified physically. [Testing](testing.md#hardware-evidence) records provenance, later two-disk workloads and the missing readback.
 
 ## UDMA Data-Out and CSW residue
 
@@ -87,7 +106,7 @@ Data-Out completion reported: length=512, usb_status=0
 
 The strict [decoder](../tools/patching/udma/bot_evidence.py) identifies tag `0x00000DFA`, LUN 1, a 512-byte Data-Out request and ATA PASS-THROUGH(16): protocol 11, EXTEND=1, CK_COND=0, T_DIR=0, BYT_BLOK=1, T_LENGTH=2, WRITE DMA EXT `35h`, sector count 1. The matching CSW has status = 0 and residue = 512, implying zero processed bytes despite the separately reported 512 successful USB bytes.
 
-A complete raw usbmon capture is unavailable in this repository. The older SG_IO observation also reported residue = 512, but its `actual_bytes=0` was calculated from requested length minus residue. It is not an independent USB measurement. Matching readback/no-error observations came from the owner; a same-data readback alone does not prove physical media rewriting.
+A complete raw usbmon capture is unavailable in this repository. An SG_IO observation also reported residue = 512, but its `actual_bytes=0` was calculated from requested length minus residue. It is not an independent USB measurement. Matching readback/no-error observations came from the owner; a same-data readback alone does not prove physical media rewriting.
 
 BOT Data-Out residue means host-requested bytes **minus device-processed bytes**; phase-error residue is ignored. USB completion, ATA-good status and processed-byte accounting must remain distinct ([BOT specification](references.md)). No data corruption or identical defect in every ordinary SCSI WRITE path is established by this observation.
 
@@ -114,7 +133,7 @@ The original-instruction replay in [test_udma.py](../tools/patching/udma/tests/t
 
 `70B0..70BD` and `70C0..70C5` are consistent with an arithmetic/compare interface, not a demonstrated always-live UDMA byte counter. Native timer code `9711..977A` compares bounds 600/288000; PIO code `C7C5 → D1D7 → B3C4` supports chunk subtraction such as `512−128−384=0` and `512−255−256=1`; `A203 → E0CA` converts sectors to bytes. The [atlas](register-map.md) retains operation hypotheses and exact references. A result zero has no UDMA meaning without an operation and ownership contract establishing it.
 
-The previous helper called AEF4, then cleared residue when later USB flags looked ready and `70C0..70C3` read zero. The negative regression [unsafe_prototype_fixture.py](../tools/patching/udma/unsafe_prototype_fixture.py) demonstrates:
+An unsafe helper calls AEF4, then clears residue when later USB flags looked ready and `70C0..70C3` read zero. The negative regression [unsafe_prototype_fixture.py](../tools/patching/udma/unsafe_prototype_fixture.py) demonstrates:
 
 1. `5052` first reads 0; `E140` sees `9F.bit2=0`, so CBE3 exits at `CBF8` with carry set.
 2. AEF4 returns with carry intact; the helper ignores it.
@@ -124,17 +143,23 @@ This is an instruction-level counterexample under stated sample timing. The unsa
 
 A correct repair needs a stable processed-byte quantity `P` attributable to the active command: source address/event, width, byte order, units, lifetime, latch/reset behavior and partial/error semantics. It must compute bounded `H−P` while preserving transport status and sense independently. [accounting_contract.py](../tools/patching/udma/accounting_contract.py) rejects unqualified/stale counts and reset, abort, timeout, stall or phase-error updates; it is a regression contract, not an implemented firmware repair.
 
-### Observation-only trampoline
+### Reproduce the native analysis
 
-[trace_patch.py](../tools/patching/udma/trace_patch.py) makes exactly these CODE edits:
+With the exact local full factory capture:
 
-| CPU range | Replacement |
-|---|---|
-| `7377..737B` | `E4 FF 12 AE F4 → 12 E7 00 00 00` |
-| `E700..E707` | Zero cave → `E4 FF 12 AE F4 00 00 22` |
+```bash
+python3 tools/patching/udma/run_audit.py \
+  --stock /private/complete-factory.bin \
+  --out build/udma-native
+```
 
-The original jump at `737C..737D` remains. Observation PCs are `E700` before completion and `E705` after it. The helper adds no MMIO reads, persistent RAM, residue/status/sense writes or on-device logging channel; it adds a two-byte nested call frame. Observing those PCs on hardware would require a separately qualified debugger or mechanism.
+The analysis generates native disassembly and executes the preserved BOT/SAT
+chain, wait/abort cases, arithmetic-interface fixtures and unsafe-clearing
+counterexamples. It checks Factory and CK_COND, building CK_COND in memory by default.
+Optional `--ckcond /private/PH8057_CKCOND_SPI.bin` verifies the supplied image
+against that build before exercising the same native paths. Generated disassembly remains local because
+it contains vendor instructions.
 
-Offline compatibility compares live IRAM, SFRs, both DPTR banks, fixture XDATA and MMIO events for each base with/without trace. It covers full/partial Data-In, successful and failed ATA results, pending/stall/abort paths, phase errors, CK_COND settings and the actual combined image. The trace preserves revised abort invalidation, including the seven-byte combined stack increment described in [architecture](architecture.md).
-
-**The trace and combined variants retain the known UDMA residue defect.** No `udma-fix` artifact exists, and zero anomalies in later sampled usbmon monitoring do not change this result.
+**No UDMA accounting fix is implemented.** The three successful workloads and
+zero anomalies in their sampled USB monitoring do not change the result of the
+targeted WRITE DMA EXT regression.

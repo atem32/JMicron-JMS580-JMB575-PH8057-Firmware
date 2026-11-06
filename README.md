@@ -1,27 +1,23 @@
 # PH8057 firmware: JMS580 / JMB575
 
-Reverse engineering, reproducible patch builders and offline tests for one
-captured PH8057 firmware. The five-bay enclosure uses a **JMicron JMS580
-USB-to-SATA bridge** and a **JMB575 SATA port multiplier**. The tested transport
-is **USB Bulk-Only Transport (BOT)**; sustained tests cover two attached HDDs.
+SMART firmware repair, reproducible builds and tests for the **PH8057 enclosure
+controller**, using a **JMicron JMS580 USB-to-SATA bridge** and a **JMB575
+one-to-five SATA port multiplier**. The tested transport is **USB Bulk-Only
+Transport (BOT)**; the completed stress tests cover two attached HDDs.
 
 <img src="assets/images/ph8057.jpg" alt="PH8057 USB-to-SATA enclosure controller board" width="560">
 
 *Owner-supplied product photograph from an Ozon listing;
 [image attribution](NOTICE.md#image-attribution).*
 
-## AIM
+## Why the SMART patch exists
 
-Make **SMART STATUS** and **CHECK POWER MODE** return usable ATA registers, so
-standby-aware monitoring can determine whether a HDD is asleep and skip further
-queries. The factory firmware's incomplete ATA Return Descriptor prevented this.
-The standby timer itself is a separate drive setting, not a feature added by the
-patch.
-
-The owner observed successful SMART STATUS and CHECK POWER MODE responses on one
-physical HDD after installing the revised CK_COND updater package. Later I/O and
-protocol-load tests exercised two WD5000AAKX drives. These observations have
-different scopes: they do not qualify every command, abort path or SATA port.
+The factory firmware returns incomplete ATA result registers on affected
+ATA PASS-THROUGH commands. This prevents reliable **SMART RETURN STATUS** and
+**CHECK POWER MODE** responses, including the power-state check used by
+standby-aware monitoring. CK_COND supplies a valid ATA Return Descriptor and
+keeps the result associated with the command that produced it. The HDD's
+standby timer remains a separate drive setting.
 
 ### A word from the carbon-based owner 🥩
 
@@ -29,89 +25,125 @@ different scopes: they do not qualify every command, abort path or SATA port.
 >
 > And yes, this paragraph was also written by AI. The human was too lazy to write even his own disclaimer. 🤖
 
-## Current status
+## Firmware
 
-| Component | Result | Evidence and boundary |
-|---|---|---|
-| Revised CK_COND / SMART | Builds ATA Return Descriptors and invalidates unpublished snapshots on both native USB-wait abort exits | **OFFLINE VALIDATED**; two command responses on one HDD are **HARDWARE OBSERVED**. Abort handling, SRAM ownership and interrupt timing remain unqualified. |
-| OEM decoder and register atlas | Corrected flag semantics, F8.7 retries, sticky mismatch, state preservation and USB setup-field mapping | **OFFLINE VALIDATED** against exact firmware instructions; undocumented hardware semantics remain explicitly uncertain. |
-| UDMA Data-Out / CSW residue | Known `WRITE DMA EXT` transaction transferred 512 USB bytes but reported residue 512 | **HARDWARE OBSERVED** excerpt and offline reproduction. **No validated residue repair.** |
-| UDMA observation candidate | Adds observation PCs while preserving native accounting | **OFFLINE VALIDATED**; **NOT TESTED** on hardware. It is neither a residue fix nor an autonomous logger. |
-| Revised CK_COND + observation | Composes both changes from the exact factory image | **OFFLINE VALIDATED**; **NOT TESTED** on hardware. |
-| UASP, NCQ and hot-swap | No implementation or qualification in this project | Changing an OEM bit does not establish safe multi-command operation. Disk removal has caused USB disconnects. |
+| Firmware | Purpose |
+|---|---|
+| **Factory / Original** | Unmodified factory firmware; the exact source for reproducible builds. |
+| **SMART Fixed / CK_COND** | The `ckcond` patch: correct ATA Return Descriptors, SMART RETURN STATUS and CHECK POWER MODE support, command/result ownership and invalid-result clearing on abort. |
 
-The full SPI image and the updater package are **different artifacts**, even
-when their CODE regions match. The observed installation used the 67,072-byte
-package; no post-flash readback is available. Exact identities, layouts and CRCs
-are recorded in [firmware layout](docs/firmware-layout.md) and
-[image manifest](firmware/manifests/images.json).
+CK_COND preserves native handling of other commands, USB BOT accounting and all
+OEM bytes. Its implementation and instruction-level checks are documented in
+[patches](docs/patches.md).
 
-## Hardware results through 6 November 2026
+The **70,144-byte SPI image** and **67,072-byte updater image** are two container
+formats of the same firmware patch. They have matching CODE and different
+wrappers and whole-file hashes. [Firmware layout](docs/firmware-layout.md) and
+[the manifest](firmware/manifests/images.json) identify the exact inputs and
+outputs. Vendor-derived BINs are not distributed.
 
-The following is the owner's supplied summary. Original long-run archives and
-the qualification script are not present in this repository.
+## Build SMART Fixed
 
-| Run | Scope | Result |
-|---|---|---|
-| 3–4 November: I/O | 24.008 h; two HDDs; 6.839 TB written and 6.839 TB read in total | No fio or target kernel errors reported. |
-| 4 November: protocol-idle | 308 SCSI/SAT commands | No host timeouts or unexpected successes; 102 expected negative-command rejections. |
-| 4 November: protocol-load | 3.751 h; 81,773 SCSI commands | **ABORTED — TEST-HARNESS SAFETY** after Linux detected false AHDI partitions in the test region. |
-| 5–6 November: protocol-load v7.1 | 24.015 h; 520,828 SCSI commands | No fio errors, host timeouts, unexpected successes, target kernel errors or monitor warnings reported; AHDI partitions did not recur. |
+Use Python 3.11 or newer. The single build command accepts either exact factory
+format and selects the matching output format:
 
-The final run's manual SMART checks found no change in attributes 5, 197, 198 or
-199 on either HDD. The automatic SMART delta parser remained incomplete.
-No CSW phase/residue anomalies were recorded by the sampling monitor, which does
-**not** resolve the targeted UDMA residue defect. See
-[testing and evidence](docs/testing.md) for exact counts, bytes, provenance and
-limits. There is no whole-firmware **HARDWARE QUALIFIED** claim.
+```bash
+python3 ph8057.py build ckcond \
+  --stock /absolute/path/factory.bin \
+  --out build/ckcond
+```
 
-## Reproduce
+| Input format | Generated firmware |
+|---|---|
+| Full SPI capture, 70,144 bytes | `build/ckcond/PH8057_CKCOND_SPI.bin` |
+| Updater readback, 67,072 bytes | `build/ckcond/PH8057_CKCOND_UPDATER.bin` |
 
-Requirements: Python 3.11 or newer, its standard library, and `cc` or `gcc` for
-the bundled decoder comparison. Public checks do not need vendor firmware:
+The builder checks the input SHA256, original instruction bytes, patch bounds,
+overlap, CRCs and OEM equality. It also writes `ckcond_manifest.json` and
+`ckcond_patch_records.json`. Building only creates local files; it does not
+flash a device. See [format and installation boundaries](docs/firmware-layout.md).
+
+## Three successful hardware tests
+
+The following results were supplied by the device owner for two WD5000AAKX
+HDDs on the PH8057 in BOT mode.
+
+| Test | Dates | Work completed | Result |
+|---|---|---|---|
+| **1 — 24h I/O stress** | 3–4 November 2026 | 24.008 h; 1,593 fio passes; 6.838812672 TB written and the same amount read, approximately 6.219864 TiB each. | **PASS** — zero fio errors, target kernel errors or recorded CSW phase/residue anomalies. |
+| **2 — SCSI/SAT protocol** | 4 November 2026 | `protocol-idle`; 308 commands; 102 expected negative-command rejections. | **PASS** — zero host timeouts, failures of expected-success commands or recorded CSW anomalies. |
+| **3 — 24h combined stress** | 5–6 November 2026 | 24.015 h; 199 fio cycles; 595 verified fio phases; 520,828 SCSI/SAT commands; 201,114 expected negative-command rejections. | **PASS for the tested dual-HDD BOT workload** — zero fio errors, host timeouts, failures of expected-success commands, target kernel errors, recorded CSW anomalies or monitor warnings. |
+
+The combined run's manual SMART baseline/end checks found no change in
+attributes 5, 197, 198 or 199 on either HDD. Exact counts, byte conversions,
+manual SMART values and evidence scope are in [testing](docs/testing.md#hardware-evidence).
+These workloads do not qualify all five ports, UASP/NCQ or hot-swap, and do not
+resolve the specific WRITE DMA EXT residue defect.
+
+## Run the qualification suite
+
+The actual hardware test suite is in [tests/hardware](tests/hardware/README.md).
+It provides I/O stress, SCSI/SAT protocol tests and combined stress with fio
+verification, SMART comparison, USB/SCSI/kernel monitoring and device guards.
+
+**Writing modes destroy disk data. Use only disposable disks and physically
+disconnect production disks from the bridge.** Start with a read-only preflight,
+using the actual target paths and their exact ATA serials:
+
+```bash
+sudo python3 tests/hardware/ph8057_qualify.py \
+  --devices /dev/disk/by-path/YOUR_DISK_1 /dev/disk/by-path/YOUR_DISK_2 \
+  --expected-serials YOUR_ATA_SERIAL_1 YOUR_ATA_SERIAL_2 \
+  --preflight
+```
+
+The [suite instructions](tests/hardware/README.md) give dependencies and the
+three run commands. Destructive modes require an interactive `ERASE-…` token
+derived from the verified target serials. The suite rejects mounted or
+partitioned devices, filesystem/RAID/LVM use, unexpected bridge members and
+identity or routing changes. The `rand64k` window is **512–768 MiB**.
+
+## Offline tests
+
+Public checks, including the hardware suite's regression tests, use no real
+disks or firmware writer. Install Python 3.11+ and `cc` or `gcc` for the
+bundled decoder comparison, then run:
 
 ```bash
 python3 run_tests.py --out build/public-validation
 ```
 
-Firmware-dependent checks are explicitly skipped when their inputs are absent.
-With the exact local full factory capture:
+[Testing](docs/testing.md#run-the-offline-suite) also documents checks against
+locally held factory images. Missing proprietary inputs are reported as explicit
+skips.
 
-```bash
-python3 ph8057.py inspect /absolute/path/complete-factory.bin
-python3 run_tests.py --stock /absolute/path/complete-factory.bin --out build/full-validation
-python3 ph8057.py oem --stock /absolute/path/complete-factory.bin --out build/oem
-python3 ph8057.py build ckcond-revised --stock /absolute/path/complete-factory.bin --out build/candidates
-```
+## Known issues
 
-The accepted full capture is 70,144 bytes, SHA256
-`ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09`.
-Other current build choices are `udma-trace` and `combined-revised-trace`.
-Superseded v8 exists only as a differential regression baseline.
+| Area | Current state |
+|---|---|
+| **UDMA / BOT CSW residue** | A WRITE DMA EXT transaction transferred 512 USB bytes but reported CSW residue = 512. No accounting fix is implemented. |
+| **UASP / NCQ** | Not implemented or developed into a safe patch in this project. Multi-command ownership and recovery require further work. |
+| **Hot-swap** | Not fixed. HDD removal has caused USB disconnect/re-enumeration. |
 
-Builders enforce source identity, expected bytes, code-cave boundaries, patch
-overlap, checksums and unchanged OEM data. The source-only
-[device package builder](firmware/ph8057-device/README.md) separately accepts the
-exact 67,072-byte input. No tool here establishes safe flashing or recovery.
-See [patches](docs/patches.md) for patch records and
-[testing](docs/testing.md) for commands, skipped checks and fixture assumptions.
+[Known issues](docs/known-issues.md) links the exact evidence, native execution
+paths and technical requirements for further work.
 
 ## Engineering references
 
-| Location | Canonical content |
+| Location | Content |
 |---|---|
 | [Architecture](docs/architecture.md) | USB BOT, SATA port mapping, 8051 memory and command lifecycle |
-| [Firmware layout](docs/firmware-layout.md) | CPU addresses versus file offsets, container identities and CRCs |
-| [Register map](docs/register-map.md), [machine-readable atlas](research/oem/registers.json) | OEM fields, MMIO, IRAM/XDATA, instruction evidence and confidence |
-| [Patches](docs/patches.md) | CK_COND implementation, rejected UDMA approach and observation-only variant |
-| [Testing](docs/testing.md), [hardware qualification plan](tests/hardware/QUALIFICATION_PLAN.md) | Reproduction, evidence levels and remaining qualification work |
-| [Known issues](docs/known-issues.md) | Severity, evidence, impact and next action for unresolved problems |
-| [References](docs/references.md) | Primary specifications and related projects |
+| [Firmware layout](docs/firmware-layout.md) | Container offsets, input/output identities and CRC rules |
+| [Register map](docs/register-map.md), [machine-readable atlas](research/oem/registers.json) | Complete OEM coverage, registers, instruction evidence and confidence |
+| [Patches](docs/patches.md) | CK_COND implementation, native UDMA/SCSI/BOT findings and unsafe-accounting counterexamples |
+| [Testing](docs/testing.md), [hardware suite](tests/hardware/README.md) | Offline reproduction, hardware results and run instructions |
+| [Hardware coverage](tests/hardware/QUALIFICATION_PLAN.md) | Acceptance criteria for extending the tested configuration |
+| [References](docs/references.md) | Primary specifications and related controller research |
 
-`tools/` contains analysis, the 8051 emulator and patch builders; `tests/`
-contains regression, integration and hardware test documentation.
-`firmware/` contains manifests and the device-specific builder.
-`research/` contains the canonical atlas and bounded source evidence.
+`tools/` contains analysis, the 8051 emulator and the firmware builder.
+`tests/` contains regression, integration and hardware qualification code.
+`firmware/` holds image identities and guarded patch records; `research/`
+holds the register atlas and bounded source evidence.
 
 Project contributions use the scoped [MIT license](LICENSE). Vendor BINs and
 proprietary Windows flashers are not distributed. Authorship, third-party
