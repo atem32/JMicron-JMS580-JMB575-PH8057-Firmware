@@ -27,19 +27,59 @@ Do not publish vendor firmware, proprietary flash utilities, serial numbers or p
 **An external SPI programmer was not required for the PH8057 work recorded here.**
 The bridge exposes vendor-specific firmware access over USB, but this is *device/firmware-dependent* and is not a universal JMS580 recovery guarantee.
 
-**Linux — firmware readback used in this project:**
+**Linux — complete PH8057 firmware acquisition used in this project:**
 
-- Reader: [projectgus/jms567ctl](https://github.com/projectgus/jms567ctl), an unofficial JMS567 utility whose §read_flash§ operation was also used successfully with this PH8057/JMS580.
-- Linux SCSI helper used with it: [§py3_sg.py§ from 9500/ds500u3-jms567-uas](https://github.com/9500/ds500u3-jms567-uas/blob/main/tools/py3_sg.py). Place the helper where Python can import it, and use the script from the reader repository.
-- Example of the **read-only** command recorded for the PH8057 (replace §/dev/sdb§ with the verified bridge disk node):
+The reference's complete **70,144-byte** factory image **was acquired through Linux over USB**, in two stages; it was not obtained using an external SPI flasher.
 
-  ~~~bash
-  python3 jms567ctl.py -d /dev/sdb read_flash ph8057-original.bin
-  sha256sum ph8057-original.bin
-  ~~~
+1. **Initial 64-KiB prefix:** [projectgus/jms567ctl](https://github.com/projectgus/jms567ctl) with the [`py3_sg.py` Linux SG_IO helper](https://github.com/9500/ds500u3-jms567-uas/blob/main/tools/py3_sg.py):
 
-- The recorded read returned **65,536 bytes**, SHA256 §131bab19b558a25745c881c3c4193fd1f9fb541c0a6c89c7961bad31cecc60b2§. **This is a truncated SPI prefix, not the complete 70,144-byte PH8057 image and not a standalone patchable factory source.** It does not include the complete CODE trailer and OEM block. The separate original 67,072-byte updater-format §1.bin§ was backed up using the Windows vendor tool; see [original updater readback](../firmware/ph8057-device/original/README.md) and [container layouts](firmware-layout.md).
-- The reader repository also contains erase/write/reset operations. **Their safe use on JMS580/PH8057 was not demonstrated here; do not infer write compatibility from a successful read.**
+   ~~~bash
+   python3 jms567ctl.py -d /dev/sdc read_flash ph8057-original.bin
+   sha256sum ph8057-original.bin
+   ~~~
+
+   This standard read returns the first **65,536 bytes** (`0x00000..0x0FFFF`), SHA256 `131bab19b558a25745c881c3c4193fd1f9fb541c0a6c89c7961bad31cecc60b2`, **not** the entire PH8057 factory image.
+
+2. **Missing tail:** the read-only, reference-device-specific Linux collector [`tools/analysis/read_stock_tail.py`](../tools/analysis/read_stock_tail.py) (preserved from the actual `PH8057_stock_probe_v6.py` acquisition tool) performed five more USB vendor-SCSI `SG_IO` reads with `DF/FA`:
+
+   | Factory-image offset | Bytes received |
+   |---|---:|
+   | `0x10000` | 1,024 |
+   | `0x10400` | 1,024 |
+   | `0x10800` | 1,024 |
+   | `0x10C00` | 1,024 |
+   | `0x11000` | 512 |
+   | **Total** | **4,608** |
+
+   The collector also checked the first 1,024 bytes against the original prefix and queried cached flash information. All seven SG_IO reads reported SCSI GOOD, zero host/driver errors and zero residue. The final five payloads formed `ph8057-stock-10000-111ff.bin`, SHA256 `083e5851cbdc17e0d641a33c8027d6a8e68d023995a03b6186fa134b7122e190`.
+
+   **Example using the preserved collector** (replace the node and *USB enclosure serial*, not the HDD ATA serial; requires an isolated, idle PH8057 and root privileges):
+
+   ~~~bash
+   python3 tools/analysis/read_stock_tail.py \
+     --phase flash-tail \
+     --device /dev/sdc \
+     --usb-serial YOUR_ENCLOSURE_USB_SERIAL \
+     --original ph8057-original.bin \
+     --run \
+     --output stock-tail-capture
+   ~~~
+
+   The tool enforces the reference USB VID:PID (`152d:a562`), the original prefix hash, unchanged device identity, no mounted/claimed bridge disks, a fixed read-only command allowlist, zero transfer residue, and no erase/write/reset. It saves a detailed `stock_probe.json` alongside the tail. This is **not a generic full-flash reader**: its target-specific assumptions must not be bypassed on another device.
+
+3. **Reconstruct and verify the complete factory image** from the two files:
+
+   ~~~bash
+   cat ph8057-original.bin \
+     stock-tail-capture/ph8057-stock-10000-111ff.bin \
+     > PH8057_FACTORY_COMPLETE_READBACK.bin
+   wc -c PH8057_FACTORY_COMPLETE_READBACK.bin
+   sha256sum PH8057_FACTORY_COMPLETE_READBACK.bin
+   ~~~
+
+   Verified for this PH8057: size **70,144 bytes** (`0x11200`), SHA256 `ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09`. The reconstructed CODE/trailer CRCs and OEM configuration were checked. The last 512 bytes are the captured OEM block; **70,144 bytes describe the validated firmware image, not necessarily the flash chip's entire physical capacity**.
+
+The Windows vendor tool separately produced the original **67,072-byte updater-format** readback (`1.bin`). It is not interchangeable with the Linux full-image layout; see [container layouts](firmware-layout.md) and [original updater readback](../firmware/ph8057-device/original/README.md).
 
 **Windows — firmware installation used in this project:**
 
