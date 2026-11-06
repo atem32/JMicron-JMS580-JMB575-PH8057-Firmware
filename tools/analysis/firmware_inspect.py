@@ -1,8 +1,13 @@
 """Read-only container identification; never infer CPU CODE from size alone."""
 import hashlib
 from pathlib import Path
+import sys
 
-FACTORY = "ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09"
+ROOT = Path(__file__).resolve().parents[2]
+for relative in ("tools/patching/ckcond", "firmware/ph8057-device/modified"):
+    sys.path.insert(0, str(ROOT / relative))
+from image import STOCK_FULL_SHA as FACTORY, CKCOND_SHA
+from build_from_1bin import STOCK_SHA as FACTORY_UPDATER_SHA, EXPECTED_OUT_SHA as CKCOND_UPDATER_SHA
 PREFIX = "131bab19b558a25745c881c3c4193fd1f9fb541c0a6c89c7961bad31cecc60b2"
 DONORS = {
     "ee9024d1abe886af2878aa469618826e3f1c370c7f3477badb3cfa28a94e4cfc",
@@ -31,12 +36,26 @@ def identify(raw, *, explicit_cpu=False):
                       error="This 64KiB file is not a CPU CODE image")
     elif len(raw) == 0x11200 and raw[:4] == bytes.fromhex("5ac369e1"):
         from image import check_crc
-        report.update(layout="PH8057_COMPLETE_SPI", code_complete=True,
+        report.update(layout="PH8057_COMPLETE_SPI", image_format="full_spi",
+                      firmware_variant=("factory" if sha == FACTORY else "ckcond" if sha == CKCOND_SHA else "unknown"),
+                      code_complete=True,
                       code_file_offset="0x1000", code_size=0x10000,
                       oem_file_offset="0x11000", oem_size=512,
                       code_sha256=digest(raw[0x1000:0x11000]),
                       oem_sha256=digest(raw[0x11000:]), crc=check_crc(raw),
-                      exact_factory=sha == FACTORY)
+                      exact_factory=sha == FACTORY, exact_ckcond=sha == CKCOND_SHA)
+    elif sha in (FACTORY_UPDATER_SHA, CKCOND_UPDATER_SHA):
+        from build_from_1bin import check_record
+        crc = check_record(raw, allow_blank_header_crc=sha == FACTORY_UPDATER_SHA)
+        report.update(layout="PH8057_UPDATER", image_format="updater",
+                      firmware_variant="factory" if sha == FACTORY_UPDATER_SHA else "ckcond",
+                      code_complete=True, code_file_offset="0x0400", code_size=0x10000,
+                      oem_file_offset="0x10400", oem_size=512,
+                      code_sha256=digest(raw[0x400:0x10400]),
+                      oem_sha256=digest(raw[0x10400:]), crc=crc,
+                      stored_metadata_header_crc=raw[0x3FC:0x400].hex(),
+                      exact_factory=sha == FACTORY_UPDATER_SHA,
+                      exact_ckcond=sha == CKCOND_UPDATER_SHA)
     elif sha in DONORS:
         if len(raw) != 0x10600 or raw[0x400] != 0x02:
             raise ValueError("Known donor layout invariant failed")

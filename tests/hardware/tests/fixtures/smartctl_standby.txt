@@ -1,0 +1,4 @@
+$ smartctl -d sat -n standby,3 -A -H /dev/disk/by-path/fake-scsi-lun0
+Exit code: 3
+smartctl 7.4 2023-08-01 r5530 [x86_64-linux-6.12.0] (local build)
+Device is in STANDBY mode, exit(3)

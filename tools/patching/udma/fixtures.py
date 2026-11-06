@@ -17,12 +17,6 @@ sys.path.insert(0, str(EMULATOR))
 from mcs51 import ExecutionError, FixtureBus  # noqa: E402
 from ph8057_fixtures import DualDPTRCPU  # noqa: E402
 
-try:
-    from .trace_patch import CAVE, POST_COMPLETION
-except ImportError:
-    from trace_patch import CAVE, POST_COMPLETION
-
-
 class ReadSequence:
     """One explicit sequence, with the final value held until the test ends."""
     def __init__(self, values):
@@ -96,7 +90,7 @@ MMIO_RANGES = (
 )
 FIXTURE_RAM_RANGES = (
     (0x3500, 0x3510), (0x4000, 0x4C20),
-    # These are V8's claimed scratch areas, modeled for compatibility tests;
+    # These are CK_COND's scratch areas, modeled for compatibility tests;
     # listing them here does not establish real RAM ownership or safe use.
     (0x4D00, 0x4E20), (0x7980, 0x79A0),
 )
@@ -120,7 +114,7 @@ def make_bus(*, usb=(1,), error=(0,), arithmetic=True):
 class ObservedCPU(DualDPTRCPU):
     """Observe Python state at real instruction boundaries; no firmware hooks."""
     WATCH = {0x7377, 0xAEF4, 0xAF25, 0xCBE3, 0xCBF8, 0xCC06, 0xCC07,
-             0x94F9, 0x9529, CAVE, POST_COMPLETION}
+             0x94F9, 0x9529, 0xFD20}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -169,7 +163,7 @@ def new_cpu(raw, *, usb=(1,), error=(0,), endpoint=(0,), active=(4,)):
 
 
 def stage_cbw_and_launch(cpu, cbw):
-    """Execute real stock/V8 fragments; scheduler and bus transport are inputs.
+    """Execute real factory/CK_COND fragments; scheduler and bus transport are inputs.
 
     Stages are deliberately bounded: parse CBW fields; ATA PASS-THROUGH(16)
     decoder; SAT transfer-length helper; BOT state dispatch/SATA programming.
@@ -179,7 +173,7 @@ def stage_cbw_and_launch(cpu, cbw):
         raise ValueError("31-byte CBW required")
     cpu.xdata.memory[0x7980:0x799F] = cbw
     # The 8051 region 7BF4..7C47 is the real CBW field parser, including the
-    # LUN mapping call, its417F store and V8 admission wrapper when present.
+    # LUN mapping call, its 417F store and CK_COND admission wrapper when present.
     # Discovery of the mapping table itself is outside this fixture.
     cpu.run(0x7BF4, stop=(0x7C48,), max_steps=3000)
     after_cbw = int.from_bytes(cpu.iram[0x55:0x59], "big")
@@ -258,9 +252,9 @@ def completion_case(raw, *, length=512, state=0x67, data_in=False, ata_status=0x
         "state": cpu.iram[0x59], "sense_code": cpu.iram[0x3A + cpu.iram[0x5E]],
         "scheduled_handler": f"0x{int.from_bytes(cpu.iram[0x32:0x34], 'big'):04X}",
         "carry_after_handler": cpu.cy,
-        "trace_helper_entered": CAVE in cpu.trace,
         "cc07_normal_wait_return_reached": 0xCC07 in cpu.trace,
-        "cbe3_inactive_return_reached": 0xCBF8 in cpu.trace or 0xCC06 in cpu.trace,
+        # CK_COND routes both native abort returns through snapshot invalidation.
+        "cbe3_inactive_return_reached": any(pc in cpu.trace for pc in (0xCBF8, 0xCC06, 0xFD20)),
         "csw": None,
     }
     if outcome == "native_handler_returned" and result["scheduled_handler"] == "0x94F9":

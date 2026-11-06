@@ -1,4 +1,4 @@
-"""Integration checks for container boundaries and actual candidate composition."""
+"""Integration checks for the CK_COND build, source integrity and container boundaries."""
 import os
 import importlib.util
 import json
@@ -10,9 +10,9 @@ import unittest
 from unittest import mock
 
 from firmware_inspect import identify
-from image import (check_crc, repackage, STOCK_FULL_SHA, ORIGINAL_V8_SHA,
-                   REVISED_CKCOND_SHA, read_stock, sha, guard_outputs)
-from ph8057 import construct, ROOT
+from image import (check_crc, repackage, STOCK_FULL_SHA, CKCOND_SHA,
+                   read_stock, sha, guard_outputs)
+from ph8057 import construct, ROOT, NAMES
 
 
 class PublicBoundaryTests(unittest.TestCase):
@@ -99,12 +99,21 @@ class PublicBoundaryTests(unittest.TestCase):
         raw = b"\0" * 0x10600
         self.assertEqual(identify(raw)["layout"], "UNKNOWN")
 
+    def test_only_ckcond_is_exposed_and_unknown_variants_are_rejected(self):
+        self.assertEqual(set(NAMES), {"ckcond"})
+        with self.assertRaisesRegex(ValueError, "only ckcond"):
+            construct(b"", "not-a-firmware")
+        help_result = subprocess.run([sys.executable, str(ROOT / "ph8057.py"), "build", "--help"],
+                                     capture_output=True, text=True, check=True)
+        self.assertIn("{ckcond}", help_result.stdout)
+        import build_ckcond
+        with self.assertRaises(TypeError):
+            build_ckcond.build(b"", variant="not-a-firmware")
+
     def test_no_builder_accepts_synthetic_or_truncated_stock(self):
-        for variant in ("ckcond-v8", "ckcond-revised", "udma-trace", "combined-revised-trace"):
-            for length in (512, 65536, 70144):
-                with self.subTest(variant=variant, length=length):
-                    with self.assertRaises(ValueError):
-                        construct(b"\0" * length, variant)
+        for length in (512, 65536, 67072, 70144):
+            with self.subTest(length=length), self.assertRaises(ValueError):
+                construct(b"\0" * length, "ckcond")
 
 
 @unittest.skipUnless(os.environ.get("PH8057_STOCK"), "Exact local factory image required")
@@ -112,88 +121,84 @@ class CandidateIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.stock = read_stock(os.environ["PH8057_STOCK"])
-        cls.built = {variant: construct(cls.stock, variant) for variant in
-                     ("ckcond-v8", "ckcond-revised", "udma-trace", "combined-revised-trace")}
+        cls.candidate, cls.report = construct(cls.stock, "ckcond")
 
     def test_reproducible_hashes_and_crc(self):
+        expected = json.loads((ROOT / "firmware/manifests/images.json").read_text())["images"]["ckcond"]
         self.assertEqual(sha(self.stock), STOCK_FULL_SHA)
-        self.assertEqual(sha(self.built["ckcond-v8"][0]), ORIGINAL_V8_SHA)
-        self.assertEqual(sha(self.built["ckcond-revised"][0]), REVISED_CKCOND_SHA)
-        self.assertEqual(sha(self.built["udma-trace"][0]),
-                         "a4bf69164548003a26efebcb3f5fd6e59d0dfc3321eeda2ffb97d6e36ba63712")
-        identities = json.loads((ROOT / "firmware/manifests/images.json").read_text())["images"]
-        for raw, report in self.built.values():
-            with self.subTest(variant=report["variant"]):
-                expected = identities[report["variant"]]
-                self.assertEqual(sha(raw), expected["sha256"])
-                self.assertEqual(sha(raw[0x1000:0x11000]), expected["code_sha256"])
-                self.assertEqual(report["crc"], expected["crc"])
-                self.assertEqual(len(raw), 70144)
-                self.assertEqual(raw[0x11000:], self.stock[0x11000:])
-                self.assertEqual(check_crc(raw), report["crc"])
-                self.assertFalse(report["udma_residue_fix"])
-                self.assertEqual(report["artifact_hardware_status"], "NOT TESTED")
+        self.assertEqual(sha(self.candidate), CKCOND_SHA)
+        self.assertEqual(sha(self.candidate), expected["sha256"])
+        self.assertEqual(sha(self.candidate[0x1000:0x11000]), expected["code_sha256"])
+        self.assertEqual(self.report["crc"], expected["crc"])
+        self.assertEqual(len(self.candidate), 70144)
+        self.assertEqual(self.candidate[0x11000:], self.stock[0x11000:])
+        self.assertEqual(check_crc(self.candidate), self.report["crc"])
+        self.assertFalse(self.report["udma_residue_fix"])
+        self.assertEqual(self.report["artifact_hardware_status"], "NOT TESTED")
 
-    def test_all_builder_sidecars_preserve_source_on_filename_collision(self):
+    def test_inspector_recognizes_exact_factory_and_ckcond_spi_containers(self):
+        for data, variant in ((self.stock, "factory"), (self.candidate, "ckcond")):
+            with self.subTest(variant=variant):
+                report = identify(data)
+                self.assertEqual(report["layout"], "PH8057_COMPLETE_SPI")
+                self.assertEqual(report["image_format"], "full_spi")
+                self.assertEqual(report["firmware_variant"], variant)
+                self.assertEqual(int(report["code_file_offset"], 16), 0x1000)
+                self.assertEqual(int(report["oem_file_offset"], 16), 0x11000)
+                self.assertEqual(report["exact_factory"], variant == "factory")
+                self.assertEqual(report["exact_ckcond"], variant == "ckcond")
+                self.assertEqual(report["crc"], check_crc(data))
+
+    def test_all_builder_outputs_preserve_source_on_filename_collision(self):
         scripts = [
-            ("ph8057.py", "ckcond-revised_manifest.json", ["build", "ckcond-revised"]),
-            ("tools/patching/ckcond/build_ckcond.py", "ckcond_revised_manifest.json", []),
-            ("tools/patching/udma/build_trace.py", "udma_trace_manifest.json", []),
+            ("ph8057.py", ["build", "ckcond"]),
+            ("tools/patching/ckcond/build_ckcond.py", []),
         ]
-        for script, filename, flags in scripts:
-            with self.subTest(script=script), tempfile.TemporaryDirectory() as td:
-                directory = Path(td); source = directory / filename
-                source.write_bytes(self.stock)
-                cp = subprocess.run([sys.executable, "-B", str(ROOT / script), *flags,
-                                     "--stock", str(source), "--out", str(directory)],
-                                    capture_output=True, text=True)
-                self.assertNotEqual(cp.returncode, 0)
-                self.assertIn("immutable source", cp.stderr)
-                self.assertEqual(source.read_bytes(), self.stock)
-                self.assertEqual(len(list(directory.iterdir())), 1)
-
-    def test_combined_code_is_exact_revised_plus_observation_trampoline(self):
-        from trace_patch import overlay_for_emulation
-        revised = self.built["ckcond-revised"][0]
-        combined = self.built["combined-revised-trace"][0]
-        overlay = overlay_for_emulation(revised)
-        # CRC locations are separately tested. Every executable byte must agree.
-        self.assertEqual(combined[0x1000:0x10FF8], overlay[0x1000:0x10FF8])
-        self.assertEqual(combined[0x11000:], revised[0x11000:])
-        self.assertNotEqual(combined, revised)
-        self.assertEqual(len(self.built["combined-revised-trace"][1]["patches"]),
-                         len(self.built["ckcond-revised"][1]["patches"]) + 2)
+        for script, flags in scripts:
+            for filename in ("ckcond_manifest.json", "ckcond_patch_records.json", NAMES["ckcond"]):
+                with self.subTest(script=script, filename=filename), tempfile.TemporaryDirectory() as td:
+                    directory = Path(td)
+                    source = directory / filename
+                    source.write_bytes(self.stock)
+                    cp = subprocess.run([sys.executable, "-B", str(ROOT / script), *flags,
+                                         "--stock", str(source), "--out", str(directory)],
+                                        capture_output=True, text=True)
+                    self.assertNotEqual(cp.returncode, 0)
+                    self.assertIn("immutable source", cp.stderr)
+                    self.assertEqual(source.read_bytes(), self.stock)
+                    self.assertEqual(len(list(directory.iterdir())), 1)
 
     def test_updater_records_equal_the_current_cpu_patch_plan(self):
-        records = json.loads((ROOT / "firmware/ph8057-device/modified/ckcond_revised_patch_records.json").read_text())
+        records = json.loads((ROOT / "firmware/ph8057-device/modified/ckcond_patch_records.json").read_text())
         normalize = lambda rows: [{"cpu": int(row["cpu"], 16) if isinstance(row["cpu"], str) else row["cpu"],
                                    "old": row["old"], "new": row["new"]} for row in rows]
-        self.assertEqual(normalize(records), normalize(self.built["ckcond-revised"][1]["patches"]))
+        self.assertEqual(normalize(records), normalize(self.report["patches"]))
+        self.assertEqual(len(records), 32)
 
-    def test_combined_disjoint_guards_and_invalid_crc_rejected(self):
+    def test_patch_overlap_boundaries_and_invalid_crc_rejected(self):
         with self.assertRaisesRegex(ValueError, "overlap"):
             repackage(self.stock, [{"cpu": 0xE700, "old": "00", "new": "00"}] * 2)
         with self.assertRaisesRegex(ValueError, "trailer"):
             repackage(self.stock, [{"cpu": 0xFFEC, "old": "00", "new": "00"}])
-        for raw, report in self.built.values():
-            for offset in (0x0C, 0x1FC, 0xFFC, 0x1000, 0x10FF8, 0x10FFC):
-                altered = bytearray(raw); altered[offset] ^= 1
-                with self.subTest(variant=report["variant"], offset=offset):
-                    with self.assertRaises(ValueError):
-                        check_crc(bytes(altered))
+        for offset in (0x0C, 0x1FC, 0xFFC, 0x1000, 0x10FF8, 0x10FFC):
+            altered = bytearray(self.candidate)
+            altered[offset] ^= 1
+            with self.subTest(offset=offset), self.assertRaises(ValueError):
+                check_crc(bytes(altered))
 
-    def test_actual_combined_image_has_same_native_semantics_as_paired_trace(self):
-        from fixtures import completion_case
-        from audit import native_cases, semantic_result
-        from trace_patch import overlay_for_emulation
-        combined = self.built["combined-revised-trace"][0]
-        reference = overlay_for_emulation(self.built["ckcond-revised"][0])
-        for name, kwargs, _, _ in native_cases():
-            with self.subTest(case=name):
-                expected, old_cpu = completion_case(reference, **kwargs)
-                actual, new_cpu = completion_case(combined, **kwargs)
-                self.assertEqual(semantic_result(actual), semantic_result(expected))
-                self.assertEqual(new_cpu.events, old_cpu.events)
+    def test_canonical_cli_emits_the_exact_spi_image_and_patch_records(self):
+        with tempfile.TemporaryDirectory() as td:
+            output = Path(td)
+            subprocess.run([sys.executable, str(ROOT / "ph8057.py"), "build", "ckcond",
+                            "--stock", os.environ["PH8057_STOCK"], "--out", str(output)],
+                           capture_output=True, text=True, check=True)
+            self.assertEqual((output / NAMES["ckcond"]).read_bytes(), self.candidate)
+            manifest = json.loads((output / "ckcond_manifest.json").read_text())
+            self.assertEqual(manifest["variant"], "ckcond")
+            self.assertEqual(manifest["image_format"], "full_spi")
+            records = json.loads((output / "ckcond_patch_records.json").read_text())
+            self.assertEqual(len(records), 32)
+            self.assertEqual(repackage(self.stock, records), self.candidate)
 
 
 if __name__ == "__main__":

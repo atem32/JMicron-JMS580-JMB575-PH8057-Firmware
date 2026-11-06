@@ -3,10 +3,14 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "ckcond"))
+from image import STOCK_FULL_SHA, CKCOND_SHA, sha, check_crc
+from build_ckcond import build
 
 from bot_evidence import analyze_transaction
 from fixtures import completion_case, new_cpu
-from trace_patch import STOCK_SHA256, V8_SHA256, sha256, overlay_for_emulation
 from unsafe_prototype_fixture import rejected_overlay_for_test
 
 HERE = Path(__file__).resolve().parent
@@ -20,7 +24,7 @@ def default_source(name, variable):
 
 
 DEFAULT_STOCK = default_source("PH8057_FACTORY_COMPLETE_READBACK_DO_NOT_FLASH.bin", "PH8057_STOCK")
-DEFAULT_V8 = default_source("PH8057_v8_EXPERIMENTAL_DO_NOT_FLASH.bin", "PH8057_V8")
+DEFAULT_CKCOND = Path(os.environ["PH8057_CKCOND"]) if os.environ.get("PH8057_CKCOND") else None
 
 
 def read_exact_image(path, expected):
@@ -30,13 +34,16 @@ def read_exact_image(path, expected):
     if path.stat().st_size != 0x11200:
         raise ValueError("Only the complete 70,144-byte capture is accepted")
     raw = path.read_bytes()
-    if sha256(raw) != expected:
+    if sha(raw) != expected:
         raise ValueError("Source SHA256 differs from the audited image")
+    check_crc(raw)
     return raw
 
 
-def load_sources(stock=DEFAULT_STOCK, v8=DEFAULT_V8):
-    return read_exact_image(stock, STOCK_SHA256), read_exact_image(v8, V8_SHA256)
+def load_sources(stock=DEFAULT_STOCK, ckcond=DEFAULT_CKCOND):
+    factory = read_exact_image(stock, STOCK_FULL_SHA)
+    fixed = read_exact_image(ckcond, CKCOND_SHA) if ckcond else build(factory)[0]
+    return factory, fixed
 
 
 RAW_CBW = bytes.fromhex("55534243fa0d00000002000000011085170600000001001000000001403500")
@@ -87,40 +94,28 @@ def semantic_result(result):
         "final_sense_code", "ck_slot_header")}
 
 
-def completion_matrix(stock, v8, revised=None):
+def completion_matrix(stock, ckcond):
+    """Exercise native completion bytes directly, without firmware instrumentation."""
     rows = []
-    variants = [("stock", stock), ("original_ckcond_v8", v8)]
-    if revised is not None:
-        variants.append(("revised_ckcond", revised))
-    for name, base in variants:
-        trace = overlay_for_emulation(base)
+    for name, base in (("factory", stock), ("ckcond", ckcond)):
         for case, kwargs, residue, expected_status in native_cases():
-            before, old_cpu = completion_case(base, **kwargs)
-            after, new_cpu = completion_case(trace, **kwargs)
-            if before["residue_before_finalizer"] != residue:
-                raise AssertionError((name, case, before))
-            status = before["csw"]["status"] if before["csw"] else None
+            result, cpu = completion_case(base, **kwargs)
+            if result["residue_before_finalizer"] != residue:
+                raise AssertionError((name, case, result))
+            status = result["csw"]["status"] if result["csw"] else None
             if expected_status == "ck_dependent":
-                wanted = 0 if name == "stock" else 1
+                wanted = 0 if name == "factory" else 1
             elif expected_status == "ck_abort_dependent":
-                wanted = 1 if name == "original_ckcond_v8" else 0
+                wanted = 0
             else:
                 wanted = expected_status
             if status != wanted:
                 raise AssertionError((name, case, status, wanted))
-            if semantic_result(before) != semantic_result(after):
-                raise AssertionError((name, case, "Trace helper changed semantics"))
-            if before["outcome"] == "native_handler_returned":
-                # A popped stack is scratch; live IRAM, all SFRs, the entire
-                # fixture address space and observable MMIO effects must match.
-                if (old_cpu.iram[:0x91] != new_cpu.iram[:0x91] or old_cpu.sfr != new_cpu.sfr or
-                        old_cpu.xdata.memory != new_cpu.xdata.memory or old_cpu.events != new_cpu.events):
-                    raise AssertionError((name, case, "Architectural state or bus event divergence"))
+            if cpu.hooks:
+                raise AssertionError("Native replay must not replace instruction bodies")
             rows.append({"base": name, "case": case,
-                         "native_result": semantic_result(before),
-                         "trace_variant_equivalent": True,
-                         "helper_entered": after["trace_helper_entered"],
-                         "base_max_sp": before["max_sp"], "trace_max_sp": after["max_sp"],
+                         "native_result": semantic_result(result),
+                         "max_sp": result["max_sp"],
                          "physical_scenario_qualified": False})
     return rows
 
@@ -162,23 +157,23 @@ def arithmetic_native_checks(stock):
             "timer_clamp": timer_results, "pio_accounting": pio_results}
 
 
-def rejected_prototype_counterexamples(stock, v8):
+def rejected_prototype_counterexamples(stock, ckcond):
     results = []
-    for base_name, base in (("stock", stock), ("original_ckcond_v8", v8)):
+    for base_name, base in (("factory", stock), ("ckcond", ckcond)):
         for ck_cond in (False, True):
             kwargs = dict(usb=(0, 1), active=(0,), unverified_arithmetic_result=0,
                           ck_cond=ck_cond)
-            old, _ = completion_case(rejected_overlay_for_test(base), **kwargs)
-            current, _ = completion_case(overlay_for_emulation(base), **kwargs)
-            if not old["cbe3_inactive_return_reached"] or old["csw"]["residue"] != 0:
-                raise AssertionError("Expected old-prototype falsification no longer reproduced")
-            if current["csw"]["residue"] != 512:
-                raise AssertionError("Trace candidate changed accounting")
+            unsafe, _ = completion_case(rejected_overlay_for_test(base), **kwargs)
+            native, _ = completion_case(base, **kwargs)
+            if not unsafe["cbe3_inactive_return_reached"] or unsafe["csw"]["residue"] != 0:
+                raise AssertionError("Expected unsafe-prototype falsification no longer reproduced")
+            if native["csw"]["residue"] != 512:
+                raise AssertionError("Native Data-Out accounting changed")
             results.append({"base": base_name, "ck_cond": ck_cond,
-                            "hypothesis": "CBE3 exits with CY1 after 5052=0 and 9F.bit2=0; a later read sees5052=1 while arithmetic result is stale zero",
-                            "rejected_prototype": semantic_result(old),
-                            "trace_only_candidate": semantic_result(current),
-                            "established": "The old helper does not reject the native inactive/abort return and can erase nonzero residue",
+                            "hypothesis": "CBE3 exits with CY1 after 5052=0 and 9F.bit2=0; a later read sees 5052=1 while arithmetic result is stale zero",
+                            "rejected_prototype": semantic_result(unsafe),
+                            "native_code": semantic_result(native),
+                            "established": "The unsafe helper does not reject the native inactive/abort return and can erase nonzero residue",
                             "not_established": "That exact register timing has occurred on physical hardware"})
     return results
 

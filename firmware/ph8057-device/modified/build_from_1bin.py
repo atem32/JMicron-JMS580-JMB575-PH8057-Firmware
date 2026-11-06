@@ -2,7 +2,7 @@
 """Offline-only re-packager for the exact PH8057 user readback.
 
 No device access; no firmware flashing. Maps original 67,072-byte JMicron
-readback to the audited 70,144-byte CK_COND-revised CODE delta and computes
+readback to the 70,144-byte CK_COND CODE delta and computes
 all four bridge CRC fields. Inputs are checked against pinned SHA256.
 """
 from __future__ import annotations
@@ -15,7 +15,7 @@ import zlib
 
 STOCK_SHA = '481e62548a3a7b9cf07e8552fa2e2a9d66a5f89d222a66301ad22982c8aca7c5'
 STOCK_FULL_SHA = 'ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09'
-FULL_REVISED_SHA = '2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b'
+FULL_CKCOND_SHA = '2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b'
 EXPECTED_OUT_SHA = 'f8406e8b83e9f97695ce4ae395a90b29e28d8210bc40c09087f3f6b43f33fd5b'
 CODE_OFF = 0x400
 OEM_OFF = 0x10400
@@ -127,7 +127,7 @@ def build(source: bytes, patch_records: list) -> bytes:
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--stock',required=True,type=Path,help='Exact 67,072-byte original 1.bin')
-    parser.add_argument('--patches',default=Path(__file__).with_name('ckcond_revised_patch_records.json'),type=Path)
+    parser.add_argument('--patches',default=Path(__file__).with_name('ckcond_patch_records.json'),type=Path)
     parser.add_argument('--output',required=True,type=Path)
     args=parser.parse_args()
     source = read_stock_package(args.stock)
@@ -140,7 +140,7 @@ def main():
     out=build(source,records)
     args.output.write_bytes(out)
     print('WROTE',args.output,'SIZE',len(out),'SHA256',sha(out))
-    print('STATUS: EXPERIMENTAL / NOT HARDWARE QUALIFIED / NO SPI ACTION PERFORMED')
+    print('STATUS: OFFLINE VALIDATED / NO DEVICE ACCESS PERFORMED')
 
 if __name__=='__main__':
     main()

@@ -15,7 +15,7 @@
       "oem_size": 512,
       "oem_sha256": "9521e63007a1289846438195896ef2908a6ccd695c983f90b54fd501eb00e635"
     },
-    "ckcond-revised": {
+    "ckcond": {
       "sha256": "2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b",
       "size": 70144,
       "code_offset": "0x1000"
@@ -4112,7 +4112,7 @@
       "reference": "tools/patching/ckcond/sense_patch.py:build_sense_patch"
     },
     "abort-valid-clear": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xFD20", "C0 A8", "PUSH A8h"],
         ["0xFD22", "C2 AF", "CLR AFh"],
@@ -4671,7 +4671,7 @@
       "reference": "tools/analysis/native_oem.py"
     },
     "patch-0x4D00-16-LUN-LUN0-15": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE861", "E4", "CLR A"],
         ["0xE862", "8A 82", "MOV 82h,R2"],
@@ -4683,7 +4683,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:capture_block"
     },
     "patch-slot-0x02-0x03": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE861", "E4", "CLR A"],
         ["0xE862", "8A 82", "MOV 82h,R2"],
@@ -4695,7 +4695,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:capture_block"
     },
     "patch-slot-0x04-0x05": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE861", "E4", "CLR A"],
         ["0xE862", "8A 82", "MOV 82h,R2"],
@@ -4707,7 +4707,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:capture_block"
     },
     "patch-slot-0x06-0x0D": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE861", "E4", "CLR A"],
         ["0xE862", "8A 82", "MOV 82h,R2"],
@@ -4719,7 +4719,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:capture_block"
     },
     "patch-slot-0x0E-0x0F": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE861", "E4", "CLR A"],
         ["0xE862", "8A 82", "MOV 82h,R2"],
@@ -4731,7 +4731,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:capture_block"
     },
     "patch-0x4E00": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE32A", "C0 E0", "PUSH E0h"],
         ["0xE32C", "75 86 00", "MOV 86h,#00h"],
@@ -4743,7 +4743,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:begin_block"
     },
     "patch-0x4E01-0x4E05": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE38E", "02 E3 F5", "LJMP E3F5h"],
         ["0xE391", "E5 5E", "MOV A,5Eh"],
@@ -4755,7 +4755,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:begin_block"
     },
     "patch-0x4E06": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE52A", "C0 E0", "PUSH E0h"],
         ["0xE52C", "75 86 00", "MOV 86h,#00h"],
@@ -4767,7 +4767,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:launch_block"
     },
     "patch-0x4E07": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE800", "90 4E 07", "MOV DPTR,#4E07h"],
         ["0xE803", "74 00", "MOV A,#00h"],
@@ -4777,7 +4777,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:capture_block"
     },
     "patch-0x4E08-0x4E0B": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE66D", "02 E6 8B", "LJMP E68Bh"],
         ["0xE670", "E5 2B", "MOV A,2Bh"],
@@ -4789,7 +4789,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:launch_block"
     },
     "patch-0x4E0C-0x4E0D": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE84E", "02 E9 48", "LJMP E948h"],
         ["0xE851", "EF", "MOV A,R7"],
@@ -4801,7 +4801,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:capture_block"
     },
     "patch-0x4E10-0x4E13": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE3CF", "90 79 84", "MOV DPTR,#7984h"],
         ["0xE3D2", "E0", "MOVX A,@DPTR"],
@@ -4813,7 +4813,7 @@
       "reference": "tools/patching/ckcond/core_patch.py:begin_block"
     },
     "patch-0x4E00-0x4E1F-allocation": {
-      "image": "ckcond-revised",
+      "image": "ckcond",
       "instructions": [
         ["0xE32A", "C0 E0", "PUSH E0h"],
         ["0xE32C", "75 86 00", "MOV 86h,#00h"],

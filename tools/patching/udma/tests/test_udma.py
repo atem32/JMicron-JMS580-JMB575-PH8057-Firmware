@@ -10,59 +10,48 @@ sys.path.insert(0, str(HERE.parents[1]))
 from accounting_contract import ProcessedBytes, future_residue_decision
 from audit import (load_sources, RAW_CBW, RAW_CSW, hardware_excerpt, static_checks,
                    completion_matrix, arithmetic_native_checks,
-                   rejected_prototype_counterexamples, DEFAULT_STOCK, DEFAULT_V8)
+                   rejected_prototype_counterexamples, DEFAULT_STOCK)
 from bot_evidence import analyze_transaction, decode_cbw, decode_csw
 from fixtures import completion_case, make_bus
-from trace_patch import (collect_patches, overlay_for_emulation, ORIGINAL, HELPER,
-                         STOCK_SHA256, V8_SHA256, sha256)
+from image import STOCK_FULL_SHA, CKCOND_SHA, sha
 from unsafe_prototype_fixture import rejected_overlay_for_test
 from run_audit import donor_record
 
 
 @unittest.skipUnless(os.environ.get("PH8057_STOCK") or
-                     (DEFAULT_STOCK.is_file() and DEFAULT_V8.is_file()),
-                     "Native firmware tests require PH8057_STOCK and PH8057_V8; no stock firmware is redistributed")
+                     DEFAULT_STOCK.is_file(),
+                     "Native firmware tests require PH8057_STOCK; no stock firmware is redistributed")
 class UDMAAudit(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.stock, cls.v8 = load_sources()
+        cls.stock, cls.ckcond = load_sources()
 
     def test_source_identity_and_exact_code_guards(self):
-        self.assertEqual(sha256(self.stock), STOCK_SHA256)
-        self.assertEqual(sha256(self.v8), V8_SHA256)
+        self.assertEqual(sha(self.stock), STOCK_FULL_SHA)
+        self.assertEqual(sha(self.ckcond), CKCOND_SHA)
         result = static_checks(self.stock)
         self.assertEqual(result["command02_then_result_read_sites"],
                          ["0x2B97", "0x7710", "0x7726", "0x973A", "0x9760", "0x9A91", "0xB2DE"])
 
-    def test_trace_builder_rejects_wrong_input_and_occupied_cave(self):
+    def test_counterexample_rejects_wrong_input_and_mutated_instructions(self):
         for mutated in (self.stock[:0x10000], self.stock[0x1000:0x11000],
                         self.stock + b"\0", b"\0" * len(self.stock)):
             with self.subTest(size=len(mutated)):
                 with self.assertRaises(ValueError):
-                    collect_patches(mutated)
-        # A byte mutation is rejected before it can authorize arbitrary code.
+                    rejected_overlay_for_test(mutated)
         for offset in (0, 0x8377, 0xF700, 0x11000):
             altered = bytearray(self.stock)
             altered[offset] ^= 1
             with self.assertRaises(ValueError):
-                collect_patches(bytes(altered))
+                rejected_overlay_for_test(bytes(altered))
         with self.assertRaises(ValueError):
-            collect_patches(rejected_overlay_for_test(self.stock))
+            rejected_overlay_for_test(rejected_overlay_for_test(self.stock))
 
-    def test_trace_patch_has_no_counter_access_or_persistent_memory(self):
-        patches = collect_patches(self.stock)
-        self.assertEqual([p["cpu"] for p in patches], ["0x7377", "0xE700"])
-        self.assertEqual(HELPER, ORIGINAL + bytes.fromhex("000022"))
-        patched = overlay_for_emulation(self.stock)
-        allowed = set(range(0x8377, 0x837C)) | set(range(0xF700, 0xF708))
-        changes = {i for i, (a, b) in enumerate(zip(self.stock, patched)) if a != b}
-        self.assertLessEqual(changes, allowed)
-        self.assertEqual(self.stock[0x11000:], patched[0x11000:])
-
-    def test_four_way_native_matrix_preserves_architectural_and_bus_state(self):
-        rows = completion_matrix(self.stock, self.v8)
+    def test_native_factory_and_ckcond_completion_matrix(self):
+        rows = completion_matrix(self.stock, self.ckcond)
         self.assertEqual(len(rows), 48)
-        self.assertTrue(all(row["trace_variant_equivalent"] for row in rows))
+        self.assertEqual({row["base"] for row in rows}, {"factory", "ckcond"})
+        self.assertTrue(all(not row["physical_scenario_qualified"] for row in rows))
 
     def test_original_cbw_to_taskfile_to_exact_csw(self):
         result, cpu = completion_case(self.stock)
@@ -80,13 +69,11 @@ class UDMAAudit(unittest.TestCase):
     def test_unsigned32_residue_boundaries_native(self):
         for value in (0, 1, 255, 256, 511, 512, 513, 65535, 65536,
                       0xFFFFFF, 0x1000000, 0x3FFFFFFF, 0x40000000, 0xFFFFFFFF):
-            for base in (self.stock, self.v8):
-                for trace in (False, True):
-                    with self.subTest(value=value, trace=trace):
-                        raw = overlay_for_emulation(base) if trace else base
-                        result, _ = completion_case(raw, length=value, stage=False)
-                        self.assertEqual(result["residue_before_finalizer"], value)
-                        self.assertEqual(result["csw"]["residue"], value)
+            for name, base in (("factory", self.stock), ("ckcond", self.ckcond)):
+                with self.subTest(value=value, firmware=name):
+                    result, _ = completion_case(base, length=value, stage=False)
+                    self.assertEqual(result["residue_before_finalizer"], value)
+                    self.assertEqual(result["csw"]["residue"], value)
 
     def test_data_in_sfr_mask_is_direction_gated(self):
         for remaining in (0, 1, 123, 0x12345678, 0xFFFFFFFF):
@@ -105,15 +92,15 @@ class UDMAAudit(unittest.TestCase):
         self.assertEqual([r["residue"] for r in result["pio_accounting"]], [0, 0, 256, 1, 512])
 
     def test_rejected_prototype_zeros_residue_after_native_abort(self):
-        results = rejected_prototype_counterexamples(self.stock, self.v8)
+        results = rejected_prototype_counterexamples(self.stock, self.ckcond)
         self.assertEqual(len(results), 4)
         for result in results:
             self.assertEqual(result["rejected_prototype"]["csw"]["residue"], 0)
-            self.assertEqual(result["trace_only_candidate"]["csw"]["residue"], 512)
+            self.assertEqual(result["native_code"]["csw"]["residue"], 512)
         ck = results[-1]
-        self.assertEqual(ck["rejected_prototype"]["csw"]["status"], 1)
-        # CSW FAILED in this fixture is caused by CK_COND informational sense,
-        # while the underlying ATA status was still GOOD (0x50).
+        self.assertEqual(ck["native_code"]["csw"]["status"], 0)
+        # The CK_COND abort guard suppresses a stale ATA descriptor; the unsafe
+        # helper can still erase residue after that abort.
 
     def test_unmapped_mmio_fails_closed(self):
         bus = make_bus()
