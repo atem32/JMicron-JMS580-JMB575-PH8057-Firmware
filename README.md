@@ -63,6 +63,17 @@ overlap, CRCs and OEM equality. It also writes `ckcond_manifest.json` and
 `ckcond_patch_records.json`. Building only creates local files; it does not
 flash a device. See [format and installation boundaries](docs/firmware-layout.md).
 
+## Port CK_COND to your own firmware
+
+Have a different JMS580 firmware image? The existing builder accepts only the
+exact PH8057 factory captures. For a different build, an AI assistant or
+engineer must identify its container, locate equivalent BOT/SAT/ATA hooks,
+relocate the patch and verify target-specific checksums, memory use and behavior.
+**Do not apply the published patch records at matching numeric offsets.**
+
+Follow the [AI-assisted CK_COND porting guide](docs/porting-ckcond.md) for
+required inputs, step-by-step mapping, tests and a reusable AI task prompt.
+
 ## Three successful hardware tests
 
 The following results were supplied by the device owner for two WD5000AAKX
@@ -138,6 +149,7 @@ paths and technical requirements for further work.
 | [Patches](docs/patches.md) | CK_COND implementation, native UDMA/SCSI/BOT findings and unsafe-accounting counterexamples |
 | [Testing](docs/testing.md), [hardware suite](tests/hardware/README.md) | Offline reproduction, hardware results and run instructions |
 | [Hardware coverage](tests/hardware/QUALIFICATION_PLAN.md) | Acceptance criteria for extending the tested configuration |
+| [Porting CK_COND](docs/porting-ckcond.md) | Instructions and AI task prompt for adapting the fix to another firmware image |
 | [References](docs/references.md) | Primary specifications and related controller research |
 
 `tools/` contains analysis, the 8051 emulator and the firmware builder.
