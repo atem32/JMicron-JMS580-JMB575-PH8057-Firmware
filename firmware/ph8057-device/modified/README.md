@@ -1,31 +1,31 @@
-# Revised SMART/CK_COND firmware (owner-device update package)
+# Revised CK_COND updater package
 
-This folder contains a **reproducible patch**, not a vendor-derived firmware binary. The modified firmware has been installed on one PH8057. The owner-supplied OMV test shows correct CK_COND ATA Return Descriptors for `SMART STATUS` and `CHECK POWER MODE` on one WD HDD.
+The source-only builder applies the revised CK_COND patch to the exact owner readback. No vendor-derived BIN or flash writer is included.
 
 | Property | Value |
 |---|---|
-| Local output name | `PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin` |
+| Output | `PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin` |
 | Size | 67,072 bytes |
-| SHA256 | `f8406e8b83e9f97695ce4ae395a90b29e28d8210bc40c09087f3f6b43f33fd5b` |
-| Base input | exact `../original/1.bin` per published SHA256 |
-| Audited 70,144-byte revised CODE SHA256 | `2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b` |
-| Scope | SMART/CK_COND and abort-snapshot correction only |
-| UDMA residue accounting | NOT FIXED |
-| OEM/NVRAM configuration in the image | Unchanged |
-| Qualification | Bounded hardware check on one LUN; otherwise experimental |
+| Whole-file SHA256 | `f8406e8b83e9f97695ce4ae395a90b29e28d8210bc40c09087f3f6b43f33fd5b` |
+| Input | Exact original `1.bin` described in [original](../original/README.md) |
+| Corresponding 70,144-byte full-image SHA256 | `2aaece707763b5dab32c46cf10c17c88345d73b8635365a354dcffe8817b422b` — this is a whole-file hash, not CODE-only |
+| Scope | Command-owned ATA Return Descriptor and native-abort snapshot invalidation |
+| OEM in the image | All 512 bytes unchanged |
+| UDMA residue | Unchanged; no confirmed fix |
+| Evidence | **OFFLINE VALIDATED**; limited **HARDWARE OBSERVED** SMART success; no post-flash readback or general hardware qualification |
 
-To rebuild using **your locally held** original file:
+From the repository root:
 
 ```bash
-python3 build_from_1bin.py \
-  --stock /path/to/1.bin \
-  --patches ckcond_revised_patch_records.json \
-  --output PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin
-python3 verify_device_build.py \
-  --candidate PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin \
-  --stock /path/to/1.bin
+mkdir -p build/device
+python3 firmware/ph8057-device/modified/build_from_1bin.py \
+  --stock /private/1.bin \
+  --output build/device/PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin
+python3 firmware/ph8057-device/modified/verify_device_build.py \
+  --candidate build/device/PH8057_SMART_CKCOND_REVISED_67072_EXPERIMENTAL.bin \
+  --stock /private/1.bin
 ```
 
-The builder checks the original SHA256, exact old bytes at all patch sites, patch overlap, all update-format checksums, original wrapper and unchanged 512-byte OEM; it does not access hardware. Do not blindly flash a reconstructed image on another device.
+The builder uses [ckcond_revised_patch_records.json](ckcond_revised_patch_records.json), validates exact source/old bytes, overlap and trailer limits, wrapper/CODE/metadata/full CRCs, OEM equality and the expected output hash. The verifier compares local bytes; it does not read firmware from a device.
 
-See [the limited hardware verification](../../../docs/postflash-hardware-check-2026-11-02.md) and [the main technical fix documentation](../../../docs/smart-ckcond-fix.md).
+The owner reported installing this package and observed valid SMART STATUS and active/idle CHECK POWER MODE descriptors on one WD disk. [Testing](../../../docs/testing.md#hardware-evidence) preserves those transactions and later two-disk workload summaries with their provenance and limits. [Patch semantics](../../../docs/patches.md) explains the revised guard and remaining hardware assumptions.

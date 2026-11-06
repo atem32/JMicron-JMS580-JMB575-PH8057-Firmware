@@ -1,46 +1,69 @@
-# Authorship, provenance and distribution scope
+# Authorship and distribution scope
 
-## AI-generated authorship and responsibility
+## Project contributions
 
-**The project-authored portions of this repository were written entirely with generative AI (ChatGPT), under the device owner's direction.** This includes the original analysis, documentation, patch builders, test harnesses and firmware patch proposals. This statement does **not** claim AI authorship of JMicron firmware or bundled third-party components; those remain their respective authors' works.
+Project-authored analysis, documentation, tools, tests and firmware patches were
+written with generative AI (ChatGPT) under the device owner's direction. This
+does not attribute JMicron firmware or third-party source to the project.
+Reverse-engineering conclusions and generated code may contain errors; no
+independent professional safety or reliability certification is claimed.
 
-AI-generated code and reverse-engineering conclusions may be incomplete or wrong. No independent professional safety or reliability certification is claimed. **You are solely responsible for the consequences of using, modifying or flashing firmware**, including device failure, data corruption and data loss; verify compatibility, preserve your own backups and establish a recovery procedure before proceeding. All project material is provided **AS IS, WITHOUT WARRANTY**, subject to the terms and limitations of the applicable licenses and law.
+The scoped MIT grant in [LICENSE](LICENSE) covers project-authored contributions.
+Material is supplied **AS IS, WITHOUT WARRANTY**. Users remain responsible for
+compatibility, backups, recovery, device damage and data loss, subject to the
+applicable licenses and law.
 
-## Copyright and omitted downloads
+## Vendor material and private evidence
 
-**Neither the original nor the modified full firmware binaries, nor proprietary Windows firmware flashing executables, are published in this repository.** They may contain third-party copyrighted material for which redistribution permission has not been established. This is intentional, not an indication that the binary images or flashing application are open-source or free to redistribute. The repository supplies patch source, verified hashes, reproducible build instructions and upstream references; users must obtain proprietary inputs and tools through lawful means.
+Full original, donor and modified firmware binaries and proprietary Windows
+flashers are omitted because permission to redistribute them has not been
+established. Modified full images still contain vendor code. A hash identifies
+an artifact; it does not grant redistribution rights.
 
-The project-specific patch builders, emulator, test fixtures and historical research were supplied by the project owner as the output of the PH8057 investigation and are consolidated here with independent corrections. Historical file hashes are preserved. The archive does not independently certify every earlier author's identity or acquisition chain; it provides traceable supplied-source provenance instead of attributing vendor work to this project.
+This repository provides patch source, bounded instruction replacement records,
+builders, manifests, redacted register interpretation and transaction excerpts.
+It does not distribute vendor CODE/OEM dumps, raw disk sectors, unredacted device
+logs, private research archives or external specification PDFs. The project
+license grants no rights in those materials, board designs or vendor trademarks.
+Users must obtain private inputs and proprietary tools through lawful means.
 
-The project license covers project-authored contributions only. Proprietary firmware, board design, private register definitions and vendor names remain their respective owners' material. A checksum is an identity, not a redistribution permission. All original, donor and modified full BIN files are omitted from the public package. Modified full images still contain vendor code and are therefore retained only in the separately supplied private research archive.
+The OEM serial payload at offsets `0x056–0x077` is redacted by default in public
+decoder output. Complete input images retain it and must remain private.
+Product-level VID/PID and model strings identify the researched product.
 
-## Included external source
+## Included third-party source
 
-`tools/emulator/oracle/emu8051_disasm.c` and `emu8051.h` come from Jari Komppa's [emu8051](https://github.com/jarikomppa/emu8051). Existing source copyright notices are retained, and its MIT LICENSE is included verbatim in that directory. Source headers and the current repository LICENSE carry different historical years; neither notice was rewritten. `decode_bridge.c` is the project's small historical test adapter. The decoder, header and adapter were already present in the supplied v5/v6 material. This consolidation independently fetched the pinned upstream disassembler and verified an exact source match, and independently checked the current upstream license.
+`tools/emulator/oracle/emu8051_disasm.c` and `emu8051.h` originate in Jari Komppa's
+[emu8051](https://github.com/jarikomppa/emu8051) project. Existing source copyright
+notices and the [bundled MIT license](tools/emulator/oracle/LICENSE) are retained.
+The reference upstream revision is
+`5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8`.
+Historical copyright years in source headers and the upstream license differ;
+both notices are preserved. `decode_bridge.c` is this project's test adapter.
 
-The bundled upstream decoder was independently compared with the project's decoder on 20,480 opcode/operand/address samples. It is a **disassembly oracle only**. This project neither imports nor treats the upstream execution core as an authoritative silicon model. Reserved opcode A5 is explicitly excluded from mnemonic equivalence because that external decoder renders it as NOP.
+The bundled code is a disassembly oracle, not an execution core or authoritative
+JMS580 silicon model. Reserved opcode `0xA5` is excluded from mnemonic comparison
+because the upstream decoder renders it as NOP.
 
-## Referenced projects, not ported or vendored
+## Referenced material
 
-| Project / author | License inspected | Use and limit |
-|---|---|---|
-| [9500/ds500u3-jms567-uas](https://github.com/9500/ds500u3-jms567-uas), 9500 | MIT, copyright 2026, explicitly scoped to authored scripts/docs and excluding its vendor-derived firmware | Read as a JMS567/JMB575 UAS research precedent; no patch or firmware transplanted |
-| [projectgus/jms567ctl](https://github.com/projectgus/jms567ctl), Angus Gratton | BSD-3-Clause, copyright 2023 | Historical protocol/tool reference; not shipped or executed against a device |
-| [xx25/jms567settings](https://github.com/xx25/jms567settings), contributors and attributed Angus Gratton portions | BSD-3-Clause in actual LICENSE | Settings-layout reference; does not establish PH8057 private registers |
-| [BertoldVdb/jms578flash](https://github.com/BertoldVdb/jms578flash) | MIT | Different-controller flashing research; not a PH8057 recovery qualification or supplied flasher |
-| [Zibri/JMS579](https://github.com/Zibri/JMS579) | No redistribution license identified in the inspected root/tree | Link only; no source copied |
-| Linux libata / USB source | Kernel licensing retained by upstream; inspected files not redistributed here | Primary protocol implementation comparison, not code imported into this project |
+The [references](docs/references.md) identify specifications and related
+projects. Their inclusion is by link, with no transfer of their licenses or
+hardware guarantees to this project. In particular, the MIT license of
+[9500/ds500u3-jms567-uas](https://github.com/9500/ds500u3-jms567-uas) covers its
+authored scripts and documentation, excludes vendor-derived firmware, and does
+not authorize JMS567 or JMS580 binary redistribution. Its recorded research
+snapshot is `743529e7a29febf501cc187b96f3691905ed3245`.
 
-Actual license files were read; a hosting service's `NOASSERTION` metadata was not treated as the license. The 9500 source snapshot inspected was commit `743529e7a29febf501cc187b96f3691905ed3245`. Its MIT grant cannot authorize redistribution of JMS567 or JMS580 firmware. The emu8051 upstream commit checked was `5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8`; the exact bundled source hashes are separately recorded.
-
-## Public/private split
-
-The public release includes current project sources, small guarded instruction replacement records, redacted OEM interpretation, hashes, bounded transaction excerpts, primary-source links and tests. It excludes full vendor CODE/BIN/OEM dumps, raw disk-sector backups, unredacted device logs, original nested archives and external specification PDFs. The full private package preserves those supplied research materials and clearly separates downloaded reference identities/license notices from user-supplied evidence. Newly downloaded specifications are identified by URLs and hashes rather than redistributed as full PDFs.
-
-The factory serial payload at OEM `056..077` is redacted in every public byte table and decoded view. Original full images necessarily retain that payload privately. Product-level VID/PID and model strings are retained because they identify the researched product, not an individual unit. No commit-author email or unrelated account data is included in the public source metadata.
-
-This GitHub repository is publicly published as a **source-only** research project. The distribution boundary is explicit: the private research archive and firmware candidate bundle must not be uploaded as public release assets merely because the project-authored source has an MIT license.
+No code or firmware from the referenced JMS567/JMS578/JMS579 projects or Linux
+drivers is bundled here. Their names, authorship and copyright remain with the
+respective owners.
 
 ## Image attribution
 
-`assets/images/ph8057.jpg` is a size-optimized copy of a product photograph provided by the repository owner; the supplied image was originally linked from [Ozon](https://ir.ozone.ru/s3/multimedia-1-g/7106407540.jpg). The photo is included solely as a visual illustration. Copyright in the photograph, if applicable, remains with its respective rightsholder; the repository's MIT license does **not** cover this third-party image. This attribution is not a statement that redistribution permission has been obtained.
+`assets/images/ph8057.jpg` is a size-optimized product photograph supplied by the
+repository owner, originally linked from
+[Ozon](https://ir.ozone.ru/s3/multimedia-1-g/7106407540.jpg). It illustrates the
+device. Copyright, if applicable, remains with the respective rightsholder;
+the repository's MIT license does **not** cover this image. Attribution is not
+a statement that redistribution permission has been obtained.

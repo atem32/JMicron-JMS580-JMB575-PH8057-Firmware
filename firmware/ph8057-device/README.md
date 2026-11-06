@@ -1,10 +1,10 @@
-# Owner PH8057 firmware — original and modified
+# PH8057 owner-device updater package
 
-This directory documents the **specific enclosure** for which the 67,072-byte JMicron update package was built and subsequently used. It is not a universal JMS580 firmware.
+This directory describes the exact **67,072-byte updater format** used for the owner's PH8057. It differs from the 70,144-byte full SPI research image.
 
-- [original/](original/README.md) — original readback `1.bin`, identification, hashes and restrictions.
-- [modified/](modified/README.md) — SMART-only CK_COND revision, reproducible source-only builder, hash and limited post-flash evidence.
+- [Original readback](original/README.md): pinned source identity and layout.
+- [Modified package](modified/README.md): source-only revised CK_COND builder and verifier.
 
-The public repository **does not contain either vendor-derived BIN**. The original includes OEM/device identity data; copyright and redistribution rights have not been established for the manufacturer's code. The modified image still contains most of that proprietary code. The user can keep both originals locally and use the provided builder.
+Vendor-derived BINs are not distributed. Both contain manufacturer code and the OEM block may include device identity data; rights and public-data boundaries are in [NOTICE](../../NOTICE.md).
 
-No UDMA CSW residue fix, UASP or hot-swap was added. For physical test results, see [post-flash evidence](../../docs/postflash-hardware-check-2026-11-02.md).
+The owner reported installing the revised package and supplied bounded SMART results, followed by two-disk BOT workload summaries. The exact evidence and missing readback/logs are recorded in [testing](../../docs/testing.md#hardware-evidence). No UDMA residue repair, UASP or hot-swap change is included.

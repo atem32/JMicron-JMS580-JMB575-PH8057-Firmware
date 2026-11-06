@@ -14,7 +14,7 @@ from pathlib import Path
 
 from mcs51 import CPU
 from oem import (IMAGE_SIZE, STOCK_SHA256, build_atlas, decode_oem,
-                 expected_7058, f2_slice_effect, retry_77da_model, setup_iram, timer_value)
+                 expected_7058, f2_slice_effect, retry_77da_model, setup_iram, timer_value, verify_atlas_evidence)
 
 
 class DualDPTRCPU(CPU):
@@ -93,7 +93,7 @@ class Audit:
         self.counts[name] += 1
 
     def f2(self):
-        # Reproduce the old clean fixture AND the missed dirty-state cases.
+        # Exercise both initialized and nonzero prior state.
         for value in range(256):
             for prior_value in (0, 1, 0xA5):
                 prior = {"44F3": prior_value, "487D": prior_value,
@@ -301,8 +301,7 @@ class Audit:
                 for r5 in (0, 1):
                     c, x = make_cpu(self.code, {0x4172: enable, 0x7A04: r4, 0x7A05: r5, 0x4575: 0xA5})
                     execute(c, 0x3A2D, (0x3A45,), 40)
-                    # No event preserves old4575; historical all-zero input
-                    # hid that this is conditional, not an assignment of0.
+                    # No event preserves old4575; the inactive path does not write zero.
                     expected = 3 if enable and (r4 or r5) else 0xA5
                     self.check(x[0x4575] == expected, "E7_bit5_preserves_inactive_state", (enable, r4, r5))
         for f3 in range(256):
@@ -353,7 +352,7 @@ class Audit:
                                    "F3_NCQ_gate", (flag, mode, capable, depth))
 
     def auxiliary(self):
-        # Correct historical v16 field-swapping with asymmetric setup words.
+        # Distinguish decoded wValue and wIndex with asymmetric setup words.
         for value, index, expected_recognized, expected_handled in (
             (0, 0, True, True), (1, 0, True, False), (0, 1, False, False),
             (0x100, 0, True, False), (0, 0x100, False, False), (0x1200, 0x0034, False, False)):
@@ -371,7 +370,7 @@ class Audit:
         self.evidence["setup_mapping_correction"] = {
             "IRAM": "1A:B=wValue high:low;1C:D=wIndex high:low;1E:F=wLength high:low",
             "counterexample": "GET_MAX_LUN wValue=1,wIndex=0 passesD970 recognizer but failsC702; wIndex=1 failsD970",
-            "historical_v16": "wValue and wIndex names were interchanged; final rejection boolean masked the mistake"}
+            "regression_scope": "Asymmetric fields distinguish recognizer rejection from handler rejection"}
         for value in range(256):
             for fc in (0, 31, 32, 33, 255):
                 c, x = make_cpu(self.code, {0x39F8: value, 0x39FA: value ^ 255,
@@ -531,7 +530,7 @@ class Audit:
         return {"factory_sha256": STOCK_SHA256, "counts": dict(self.counts),
                 "passed": sum(self.counts.values()), "evidence": self.evidence,
                 "qualification": "OFFLINE bounded original8051 CODE with synthetic RAM/MMIO; not hardware validation",
-                "historical_count": "Separate legacy replay retains 33,816 reported check units (44,211 instrumented guards); this suite is not a count-preserving relabeling"}
+                "atlas_evidence": verify_atlas_evidence(self.raw)}
 
 
 def audit_native(stock_path):
@@ -550,7 +549,7 @@ def main():
     result = audit_native(args.image)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2) + "\n")
-    print("PASS", result["passed"], "canonical bounded OEM checks")
+    print("PASS native OEM instruction and state regressions (offline fixtures)")
 
 
 if __name__ == "__main__":

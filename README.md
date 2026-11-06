@@ -1,12 +1,27 @@
-# JMicron JMS580 / JMB575 (PH8057) Firmware — Reverse Engineering & SMART Fix
+# PH8057 firmware: JMS580 / JMB575
 
+Reverse engineering, reproducible patch builders and offline tests for one
+captured PH8057 firmware. The five-bay enclosure uses a **JMicron JMS580
+USB-to-SATA bridge** and a **JMB575 SATA port multiplier**. The tested transport
+is **USB Bulk-Only Transport (BOT)**; sustained tests cover two attached HDDs.
 
-> [!CAUTION]
-> **AI-GENERATED PROJECT — USE AT YOUR OWN RISK.** All original research, analyses, documentation, tools, tests, and firmware patches in this project were written with generative AI (ChatGPT) under the device owner's direction. Third-party source code and proprietary vendor firmware remain the work of their respective authors. AI-generated results may contain errors, and the project has **not** received independent professional safety or reliability certification.
->
-> **YOU ARE RESPONSIBLE FOR YOUR DEVICE AND DATA.** Any use, modification, or flashing of firmware is entirely at your own risk. You are responsible for compatibility, backups, recovery planning, hardware damage, data corruption, and data loss. This project is provided **AS IS, WITHOUT WARRANTY**. A successful test on one PH8057 does not establish safety for another device.
->
-> **COPYRIGHT — NO VENDOR BINARIES OR WINDOWS FLASHER.** Complete original and modified firmware BIN files and proprietary Windows flashing software are **not distributed in this repository** because permission to redistribute these third-party copyrighted materials has not been established. The repository provides patch sources, reproducible builders, manifests, and references instead.
+<img src="assets/images/ph8057.jpg" alt="PH8057 USB-to-SATA enclosure controller board" width="560">
+
+*Owner-supplied product photograph from an Ozon listing;
+[image attribution](NOTICE.md#image-attribution).*
+
+## AIM
+
+Make **SMART STATUS** and **CHECK POWER MODE** return usable ATA registers, so
+standby-aware monitoring can determine whether a HDD is asleep and skip further
+queries. The factory firmware's incomplete ATA Return Descriptor prevented this.
+The standby timer itself is a separate drive setting, not a feature added by the
+patch.
+
+The owner observed successful SMART STATUS and CHECK POWER MODE responses on one
+physical HDD after installing the revised CK_COND updater package. Later I/O and
+protocol-load tests exercised two WD5000AAKX drives. These observations have
+different scopes: they do not qualify every command, abort path or SATA port.
 
 ### A word from the carbon-based owner 🥩
 
@@ -14,141 +29,90 @@
 >
 > And yes, this paragraph was also written by AI. The human was too lazy to write even his own disclaimer. 🤖
 
-## AIM
+## Current status
 
-This project began with a simple, practical problem: **the PH8057 USB-to-SATA bridge did not correctly report whether a hard drive was spinning or in standby**. ATA `CHECK POWER MODE` returned incomplete ATA register information, so tools such as `smartctl` could not reliably determine the drive's power state. `SMART STATUS` had a related return-register problem.
-
-That mattered because the owner wanted the HDDs to **stay asleep when they were not needed**, rather than have routine SMART monitoring repeatedly wake them up. Correct power-state reporting allows standby-aware checks such as `smartctl -n standby` to skip further SMART queries when a drive is sleeping. The goal was ordinary, reliable SMART data **without sacrificing automatic disk standby**.
-
-**That was the actual goal, and it was achieved for SMART STATUS and CHECK POWER MODE on one physical drive after installing the experimental CK_COND fix.** The standby timeout itself is a separate configurable setting (`sdparm`), not a new firmware feature. Other drives, failure paths, and long-term behavior have not been fully qualified.
-
-Everything else here—the 8051 disassembly, OEM register mapping, USB BOT/CSW residue investigation, UDMA research, UASP and hot-swap analysis, and assorted firmware archaeology—grew out of trying to solve that original problem. **These are side investigations, not necessarily related to the AIM and not required to accomplish it.** Some are still unresolved; in particular, the UDMA residue defect has **not** been fixed.
-
-## Scope
-
-<img src="assets/images/ph8057.jpg" alt="USB-to-SATA adapter board product photo" width="560">
-
-*Product photo supplied by the project owner, originally shown in an Ozon listing. The image is now stored in this repository; see [image attribution](NOTICE.md#image-attribution).*
-
-
-This project consolidates the supplied PH8057 research into reproducible offline analysis, a corrected OEM decoder, a strict 8051 executor, regression tests, and guarded firmware patch builders. PH8057 is the **five-bay enclosure** identified by the owner: a **JMicron JMS580 USB-to-SATA bridge** communicates with a **JMB575 SATA port multiplier**. Four attached USB HDDs were visible in the supplied OMV enumeration, but that does not establish a four-bay design or verify the fifth bay's firmware/LUN behavior. This repository applies to the exact captured firmware identified below; it is not a general JMS580 firmware distribution.
-
-**The independent audit produced a revised CK_COND candidate and corrected analysis/test defects. It did not establish a safe UDMA residue repair.** The UDMA candidate is an observation trampoline that deliberately retains the known accounting defect. The original audit was entirely offline. Subsequently, on **2026-11-02**, the enclosure owner installed the SMART-only revised firmware in a PH8057 and reported successful read-only SMART STATUS and CHECK POWER MODE tests on one physical HDD. This is **limited hardware evidence, not full qualification**; other commands, LUNs, interruption handling and data integrity remain unverified. See [post-flash verification](docs/postflash-hardware-check-2026-11-02.md).
-
-## Results and status
-
-| Area | Result | Qualification |
+| Component | Result | Evidence and boundary |
 |---|---|---|
-| Factory provenance and layout | Exact full capture, original v8, nine donor containers, nested historical evidence inventoried and hashed | **CONFIRMED** for supplied files; acquisition histories outside the archives remain unverified |
-| Factory UDMA Data-Out defect | The supplied WRITE DMA EXT transaction reports GOOD and residue=512 after 512 successful USB Data-Out bytes; native instructions reproduce the supplied CSW | **HARDWARE VALIDATED** observation supplied by the owner, plus **OFFLINE VALIDATED** reproduction; no new physical test |
-| OEM analysis | Corrected 512-byte atlas, 32 flag records, stateful models, native retry/USB-field regressions and serial redaction | **OFFLINE VALIDATED**; private hardware register semantics remain **UNKNOWN** |
-| Original CK_COND v8 | Reconstructed exactly; original suite passes; additional native abort path exposes a stale-snapshot defect | **EXPERIMENTAL**, superseded for further research by revised candidate |
-| Revised CK_COND | Clears unpublished ATA capture validity at both native USB-wait abort exits; SMART STATUS and CHECK POWER MODE now return ATA descriptors on one HDD | **LIMITED HARDWARE VALIDATED** for two owner-supplied commands; remainder **EXPERIMENTAL / UNQUALIFIED** |
-| UDMA residue correction | Root cause localized; a trustworthy per-command processed-byte quantity is missing | **NOT IMPLEMENTED**; release blocked by hardware evidence |
-| UDMA observation candidate | Adds entry/exit observation PCs without an assumed counter, persistent RAM allocation or changed residue/status | **OFFLINE VALIDATED / EXPERIMENTAL**; not a residue fix or autonomous logger |
-| Revised CK + UDMA observation | Combined image built once from stock; native state and bus-event comparisons verify the bounded interaction | **OFFLINE VALIDATED / EXPERIMENTAL**; no combined SMART+UDMA **fix** is claimed |
-| Ordinary SCSI READ/WRITE | Admission and shared state/sense behavior compared across candidates | **OFFLINE VALIDATED** for these paths; complete payload transfer and media integrity unqualified |
-| UASP | OEM descriptor gate alone is insufficient; foreign JMS567 patch was not ported | **NOT IMPLEMENTED** |
-| Hot-swap | Port/LUN compaction and event paths documented; disconnect cause unresolved | **NOT IMPLEMENTED** |
+| Revised CK_COND / SMART | Builds ATA Return Descriptors and invalidates unpublished snapshots on both native USB-wait abort exits | **OFFLINE VALIDATED**; two command responses on one HDD are **HARDWARE OBSERVED**. Abort handling, SRAM ownership and interrupt timing remain unqualified. |
+| OEM decoder and register atlas | Corrected flag semantics, F8.7 retries, sticky mismatch, state preservation and USB setup-field mapping | **OFFLINE VALIDATED** against exact firmware instructions; undocumented hardware semantics remain explicitly uncertain. |
+| UDMA Data-Out / CSW residue | Known `WRITE DMA EXT` transaction transferred 512 USB bytes but reported residue 512 | **HARDWARE OBSERVED** excerpt and offline reproduction. **No validated residue repair.** |
+| UDMA observation candidate | Adds observation PCs while preserving native accounting | **OFFLINE VALIDATED**; **NOT TESTED** on hardware. It is neither a residue fix nor an autonomous logger. |
+| Revised CK_COND + observation | Composes both changes from the exact factory image | **OFFLINE VALIDATED**; **NOT TESTED** on hardware. |
+| UASP, NCQ and hot-swap | No implementation or qualification in this project | Changing an OEM bit does not establish safe multi-command operation. Disk removal has caused USB disconnects. |
 
-The status words have precise scope. **CONFIRMED** identifies an artifact or directly established fact. **OFFLINE VALIDATED** means specified code executed under declared fixtures. **HARDWARE VALIDATED** is reserved for actual owner-supplied device observations, now including the limited post-audit SMART results on revised CK_COND firmware; it does not imply whole-image qualification. **EXPERIMENTAL** does not imply safe installation. **NOT IMPLEMENTED** and **UNKNOWN** are explicit boundaries, not successful tests.
+The full SPI image and the updater package are **different artifacts**, even
+when their CODE regions match. The observed installation used the 67,072-byte
+package; no post-flash readback is available. Exact identities, layouts and CRCs
+are recorded in [firmware layout](docs/firmware-layout.md) and
+[image manifest](firmware/manifests/images.json).
 
-## What changed
+## Hardware results through 6 November 2026
 
-The revised CK_COND firmware fixes a defect in v8 itself. v8 captured a successful ATA result before `AEF4 → CBE3` completed the USB Data-Out wait. On either native inactive/abort exit, that snapshot could remain valid and later be published as informational CK_COND sense if the scheduled finalizer ran. The new `CBF6`/`CC04` hooks preserve the normal retry paths and clear only the existing unpublished-valid byte `XDATA 4E07` on carry-set exits. Registers and native error policy are preserved. See [the CK_COND analysis](docs/smart-ckcond-fix.md).
+The following is the owner's supplied summary. Original long-run archives and
+the qualification script are not present in this repository.
 
-The UDMA investigation rejects the earlier `70C0..70C3 ==0` residue-clearing prototype. Native instructions provide a stronger arithmetic/compare interpretation of this interface than a universal DMA counter. A new counterexample also proves that the old helper can clear residue after the native wait aborts. The current project exposes that rejected implementation only as an in-memory negative regression. It has no release builder. See [UDMA accounting](docs/udma-csw-residue.md).
+| Run | Scope | Result |
+|---|---|---|
+| 3–4 November: I/O | 24.008 h; two HDDs; 6.839 TB written and 6.839 TB read in total | No fio or target kernel errors reported. |
+| 4 November: protocol-idle | 308 SCSI/SAT commands | No host timeouts or unexpected successes; 102 expected negative-command rejections. |
+| 4 November: protocol-load | 3.751 h; 81,773 SCSI commands | **ABORTED — TEST-HARNESS SAFETY** after Linux detected false AHDI partitions in the test region. |
+| 5–6 November: protocol-load v7.1 | 24.015 h; 520,828 SCSI commands | No fio errors, host timeouts, unexpected successes, target kernel errors or monitor warnings reported; AHDI partitions did not recur. |
 
-OEM corrections include the actual twelve-copy F8.7 failure path and sticky mismatch latch, the reversed historical wValue/wIndex fixture, state preservation concealed by clean-RAM tests, real callee clobbers concealed by return stubs, and serial disclosure through byte tables. The already-correct v29 E7.7 distinction is explicitly credited and retained. Unknown fields and optional hardware behavior remain unassigned; factory OEM settings are unchanged. See [the OEM reference](docs/oem-reference.md) and [machine-readable atlas](research/oem/oem_512_bytes.csv).
+The final run's manual SMART checks found no change in attributes 5, 197, 198 or
+199 on either HDD. The automatic SMART delta parser remained incomplete.
+No CSW phase/residue anomalies were recorded by the sampling monitor, which does
+**not** resolve the targeted UDMA residue defect. See
+[testing and evidence](docs/testing.md) for exact counts, bytes, provenance and
+limits. There is no whole-firmware **HARDWARE QUALIFIED** claim.
 
-The tools now reject ambiguous 64 KiB inputs, invalid fixture ranges, deterministic continuation after undefined DIV-by-zero results, assertion-disabled test execution, unsafe patch prerequisites and source/output aliasing. MMIO traces identify the actual executed instruction PC. Conditional branches read only their required modeled SFR condition. Historical replay validates the reviewed source hashes before execution. These corrections are covered by regressions, including failures reproduced against earlier implementations.
+## Reproduce
 
-## Reproduce the public offline checks
-
-Requirements: Python 3.11 or 3.12, standard library, and a C compiler (`cc` or `gcc`) for the independent decoder comparison. No Python packages, USB libraries, network access or vendor firmware downloads are needed for the public test run.
+Requirements: Python 3.11 or newer, its standard library, and `cc` or `gcc` for
+the bundled decoder comparison. Public checks do not need vendor firmware:
 
 ```bash
 python3 run_tests.py --out build/public-validation
 ```
 
-This runs portable tests and explicitly records private-firmware skips. A green public CI result does **not** mean the real firmware-dependent paths were executed. The GitHub Actions workflow runs the same safe entry point on both Python versions. It does not contain firmware secrets or hardware operations.
-
-For the native firmware suites, supply your local complete factory capture:
+Firmware-dependent checks are explicitly skipped when their inputs are absent.
+With the exact local full factory capture:
 
 ```bash
 python3 ph8057.py inspect /absolute/path/complete-factory.bin
 python3 run_tests.py --stock /absolute/path/complete-factory.bin --out build/full-validation
 python3 ph8057.py oem --stock /absolute/path/complete-factory.bin --out build/oem
-```
-
-Only this full factory input is accepted for exact-address patching:
-
-```text
-Length: 70144 bytes (0x11200)
-SHA256: ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09
-```
-
-The older `ph8057-original.bin` is the first 65536 bytes of that SPI image, not the CPU CODE image. The proper CODE slice is file `0x1000..0x10FFF`. The nine donor update containers instead place CODE at `0x400..0x103FF`. Confusing these layouts changes every inferred CPU address.
-
-### Build the experimental variants
-
-```bash
-python3 ph8057.py build ckcond-v8 --stock /absolute/path/complete-factory.bin --out build/candidates
 python3 ph8057.py build ckcond-revised --stock /absolute/path/complete-factory.bin --out build/candidates
-python3 ph8057.py build udma-trace --stock /absolute/path/complete-factory.bin --out build/candidates
-python3 ph8057.py build combined-revised-trace --stock /absolute/path/complete-factory.bin --out build/candidates
 ```
 
-`ckcond-v8` recreates the original artifact exactly. `ckcond-revised` adds the verified abort invalidation. `udma-trace` preserves factory accounting. `combined-revised-trace` composes revised CK_COND with that observation helper. There is intentionally no `udma-fix` option.
+The accepted full capture is 70,144 bytes, SHA256
+`ef5ad9af3f3b290c565a4dc65933d539b7bb8b8051ac9bd45386932a77862c09`.
+Other current build choices are `udma-trace` and `combined-revised-trace`.
+Superseded v8 exists only as a differential regression baseline.
 
-The builder validates the source SHA256, all expected bytes, code-cave contents, patch overlap, CODE/trailer boundaries, OEM preservation and four CRC relationships. It records exact CPU/file offsets, before/after bytes and SHA256 in JSON. Valid checksums demonstrate container consistency; they do not prove correct loader behavior, free SRAM, interrupt safety or recoverability.
+Builders enforce source identity, expected bytes, code-cave boundaries, patch
+overlap, checksums and unchanged OEM data. The source-only
+[device package builder](firmware/ph8057-device/README.md) separately accepts the
+exact 67,072-byte input. No tool here establishes safe flashing or recovery.
+See [patches](docs/patches.md) for patch records and
+[testing](docs/testing.md) for commands, skipped checks and fixture assumptions.
 
-Firmware binaries are omitted from this public package because redistribution rights are not established. [Firmware manifests](firmware/manifests/) identify reproducible outputs. The separately supplied private research archive contains original evidence and experimental BINs. For the 67,072-byte updater-style package derived from the owner's exact `1.bin`, see [device-specific source-only folder](firmware/ph8057-device/README.md).
+## Engineering references
 
-### Replay the historical research
-
-The original v2–v29 material is retained in the private research archive. Versions describe research stages; they are not 29 distinct firmware releases. The archives contain three obsolete 65536-byte lab IMG files, but no complete v2–v6 flash-image chain. There is no separate v9 offline test suite; v9/v9.1 collectors and captures are present. The original v3 restricted-wrapper source is missing and its binary-backed reconstruction is identified separately. The exact available artifacts are indexed in [historical provenance](research/historical/README.md).
-
-To reconstruct the content-addressed evidence tree from the two original attachments:
-
-```bash
-python3 tools/history/extract_history.py /path/first-attachment.zip /path/second-attachment.zip --out /private/audit_input
-python3 run_tests.py --stock /absolute/path/complete-factory.bin --history-root /private/audit_input --out build/history-validation
-```
-
-Historical wrappers copy the reviewed inputs to temporary directories, retain expected values, substitute the corrected emulator where documented, and run only the reviewed offline entry points. A source mismatch is a failure. The v20 hardcoded path is adapted explicitly. Hardware collectors remain historical evidence and are not current operational tools.
-
-## Evidence quality
-
-The famous **33,816** is a total of heterogeneous, overlapping historical check units. Instrumentation counted **44,211** executed assertion/check guards. Most suites execute original 8051 instructions, but memory and peripheral states are fixtures; some copy/peripheral callees are stubbed, and 241 units are static/bookkeeping checks. Neither total is a coverage percentage or a number of independent physical tests.
-
-New evidence includes 19,790 native OEM checks; 128 abort-leaf ABI cases; 112 paired native SAT dispatch scenarios; ordinary-SCSI state comparisons; and 24 UDMA scenario definitions across three bases with and without observation instrumentation, yielding 72 pairs. These remain separate categories. See [validation methodology](docs/validation.md), [the audit and fix report](docs/independent-audit-and-fix-report.md), and [firmware comparison](docs/firmware-validation-report.md).
-
-The archived SG_IO report, the later user-supplied USB CBW/CSW excerpt, and the new emulated CSW are distinct evidence. A complete original usbmon capture was not supplied. The test framework does not relabel generated traces as real captures.
-
-## Hardware limits and next evidence
-
-Before any modified firmware can be qualified, the project needs independently established SRAM ownership for `4D00..4DFF`/`4E00..4E1F`, command-coherent `6300` snapshots, stack/interrupt headroom, code-cave execution and recovery. A real UDMA fix additionally needs a stable count or event contract for bytes **processed**, including partial, error and recovery cases. The [manual qualification plan](tests/hardware/QUALIFICATION_PLAN.md) specifies observations and acceptance criteria without runnable disk-write or SPI commands.
-
-UASP and hot-swap are excluded from this implementation. The external `9500/ds500u3-jms567-uas` project targets JMS567 and has useful experiments, but it neither proves JMS580 compatibility nor licenses vendor firmware. The JMB575 product brief advertises hardware capabilities that this board firmware has not qualified. See [limitations](docs/limitations.md), [architecture](docs/architecture.md), [references](docs/references.md), and [NOTICE](NOTICE.md).
-
-## Owner-device update package and Windows updater
-
-The owner read back a 67,072-byte JMicron update-container `1.bin`, then installed a modified package generated from it with revised CK_COND instructions and recalculated CRC fields. The public repository contains **the source-only reproducible builder, patch records and hashes, not either binary**. See [original](firmware/ph8057-device/original/README.md) and [modified](firmware/ph8057-device/modified/README.md). The owner also requested a [Windows flasher staging folder](software/windows-flasher/README.md); third-party executables have not been included because their redistribution permission has not been established.
-
-## Repository map
-
-| Location | Purpose |
+| Location | Canonical content |
 |---|---|
-| `ph8057.py`, `run_tests.py` | Unified build/analysis and offline regression entry points |
-| `tools/emulator/` | One corrected ISA executor, dual-DPTR fixture and independent MIT decoder oracle |
-| `tools/analysis/` | Canonical OEM and explicit container inspection |
-| `tools/patching/ckcond/`, `tools/patching/udma/` | Guarded source builders and their tests |
-| `tools/history/` | Bounded extraction and hash-verified historical replay |
-| `research/oem/`, `research/findings/`, `research/validation/` | Redacted tables, issue registry and evidence summaries |
-| `tests/integration/`, `tests/hardware/` | Composition regressions and manual hardware qualification plan |
-| `firmware/manifests/`, `firmware/ph8057-device/` | Hashes, offsets, reproducible updater-format builder, separate original/modified placeholders; no vendor BINs |
-| `software/windows-flasher/` | Staging instructions for third-party Windows flashing software; no EXE supplied |
-| `docs/` | Engineering reports and the twelve direct final-status answers |
+| [Architecture](docs/architecture.md) | USB BOT, SATA port mapping, 8051 memory and command lifecycle |
+| [Firmware layout](docs/firmware-layout.md) | CPU addresses versus file offsets, container identities and CRCs |
+| [Register map](docs/register-map.md), [machine-readable atlas](research/oem/registers.json) | OEM fields, MMIO, IRAM/XDATA, instruction evidence and confidence |
+| [Patches](docs/patches.md) | CK_COND implementation, rejected UDMA approach and observation-only variant |
+| [Testing](docs/testing.md), [hardware qualification plan](tests/hardware/QUALIFICATION_PLAN.md) | Reproduction, evidence levels and remaining qualification work |
+| [Known issues](docs/known-issues.md) | Severity, evidence, impact and next action for unresolved problems |
+| [References](docs/references.md) | Primary specifications and related projects |
 
-Project-authored code and documentation use the scoped MIT license in [LICENSE](LICENSE). Third-party notices and exclusions are in [NOTICE](NOTICE.md). No rights in vendor firmware or private identifiers are asserted.
+`tools/` contains analysis, the 8051 emulator and patch builders; `tests/`
+contains regression, integration and hardware test documentation.
+`firmware/` contains manifests and the device-specific builder.
+`research/` contains the canonical atlas and bounded source evidence.
+
+Project contributions use the scoped [MIT license](LICENSE). Vendor BINs and
+proprietary Windows flashers are not distributed. Authorship, third-party
+copyright boundaries and responsibility are in [NOTICE](NOTICE.md).

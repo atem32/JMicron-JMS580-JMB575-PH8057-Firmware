@@ -1,11 +1,11 @@
-"""PH8057 v8 candidate deferred-sense/lifecycle bytecode generator.
+"""CK_COND deferred descriptor-sense and per-LUN lifecycle bytecode generator.
 
 Offline construction only. Does not access a device or write a firmware image.
 The table at 4D00 and active state at 4E00 are explicit unqualified RAM
 assumptions of the integrated candidate, not proven allocations.
 
 Slot: valid A5, saved nonzero sense code, 14-byte ATA Return Descriptor.
-Root's completion code must publish valid only AFTER the stock D8AC call.
+The completion wrapper publishes valid only after the stock D8AC call.
 """
 from dataclasses import dataclass
 import json

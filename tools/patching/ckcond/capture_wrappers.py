@@ -1,4 +1,4 @@
-"""Generate PH8057 v8 research hook wrappers; OFFLINE bytes only.
+"""Generate CK_COND completion hook wrappers; offline bytes only.
 
 All addresses are CPU CODE addresses. This module has no device access and
 does not write a firmware image. Caller integrates returned exact-byte patches.
